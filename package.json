@@ -2,6 +2,8 @@
   "name": "gopherconsg-2026",
   "type": "module",
   "version": "0.0.1",
+  "private": true,
+  "description": "GopherCon Singapore 2026's website",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -10,5 +12,17 @@
   },
   "dependencies": {
     "astro": "^5.16.6"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
