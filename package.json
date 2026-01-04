@@ -8,7 +8,10 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "lint": "oxlint",
+    "format": "prettier --config .prettierrc.yml --write \"**/*.{js,jsx,ts,tsx,cjs,mjs,astro,md,mdx,json}\"",
+    "format:diff": "prettier --config .prettierrc.yml --list-different \"**/*.{js,jsx,ts,tsx,cjs,mjs,astro,md,mdx,json}\""
   },
   "dependencies": {
     "astro": "^5.16.6"
@@ -24,5 +27,10 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "oxlint": "^1.36.0",
+    "prettier": "^3.7.4",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }
