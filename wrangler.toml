@@ -1,0 +1,5 @@
+name = "gopherconsg-2026"
+pages_build_output_dir = "./public"
+
+[vars]
+HUGO_VERSION = "0.155.1"
