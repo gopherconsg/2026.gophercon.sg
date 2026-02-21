@@ -1061,5 +1061,9 @@ Changes made after initial implementation, during visual review:
 ### Config Restructuring
 
 15. **Moved `siteConfig` to `src/config.ts`:** The `siteConfig` object (site title, description, baseUrl, ogImage, logo, eventStatus, nav) now lives at `src/config.ts` instead of `src/data/config.ts`. This keeps the core site configuration at the source root for easy access.
-16. **Extracted content to `src/data/content.toml`:** All non-structural configuration (hero text, ticket copy, code of conduct, sponsor CTA, footer details) moved from TypeScript to `src/data/content.toml`. Components import the TOML file and destructure the relevant section (e.g., `const { hero, tickets, footer } = contentRaw as Record<string, any>`). This separates content from code, making it easier for non-developers to edit copy.
+16. **Extracted content to `src/data/content.toml`:** All non-structural configuration (hero text, ticket copy, code of conduct, sponsor CTA, footer details) moved from TypeScript to `src/data/content.toml`. Components import the TOML file and cast via `ContentData` interface. This separates content from code, making it easier for non-developers to edit copy.
 17. **Deleted `src/data/config.ts`:** The old monolithic config file was removed. All imports across components and pages updated to use `src/config.ts` for `siteConfig` and `src/data/content.toml` for content data.
+
+### Biome Lint Fix
+
+18. **Replaced `Record<string, any>` with `ContentData` interface:** Biome's `noExplicitAny` rule flagged all TOML content casts using `Record<string, any>`. Added a `ContentData` interface to `src/types.ts` with fully typed sections (hero, tickets, codeOfConduct, sponsors, footer). All 10 affected files now use `contentRaw as unknown as ContentData` instead.
