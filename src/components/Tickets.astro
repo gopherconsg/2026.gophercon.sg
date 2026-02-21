@@ -1,0 +1,36 @@
+---
+import { marked } from "marked";
+import { siteConfig } from "../config";
+import contentRaw from "../data/content.toml";
+import type { ContentData } from "../types";
+const content = contentRaw as unknown as ContentData;
+const ticketsConfig = content.tickets;
+
+const isArchived = siteConfig.eventStatus === "archived";
+const isLive = siteConfig.eventStatus === "live";
+const scholarshipHtml = marked.parse(ticketsConfig.scholarshipInfo);
+const refundHtml = marked.parse(ticketsConfig.refundPolicy);
+---
+
+{isLive && (
+  <section id="tickets" style="padding: 4rem 0;">
+    <div class="container">
+      <div style="max-width: 800px; margin: 0 auto;">
+        <h2 style="text-align: center; margin-bottom: 2rem;">{ticketsConfig.headline}</h2>
+
+        <tito-widget event={ticketsConfig.titoEvent}></tito-widget>
+        <noscript>
+          <p>
+            JavaScript is required to display tickets.{' '}
+            <a href={`https://ti.to/${ticketsConfig.titoEvent}`}>Buy tickets on ti.to</a>
+          </p>
+        </noscript>
+
+        <div style="margin-top: 2rem;">
+          <div set:html={scholarshipHtml} />
+          <div set:html={refundHtml} />
+        </div>
+      </div>
+    </div>
+  </section>
+)}

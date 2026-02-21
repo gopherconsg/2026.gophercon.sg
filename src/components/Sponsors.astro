@@ -1,0 +1,136 @@
+---
+import { Image } from "astro:assets";
+import { marked } from "marked";
+import { siteConfig } from "../config";
+import contentRaw from "../data/content.toml";
+import type { ContentData, SponsorsData } from "../types";
+const content = contentRaw as unknown as ContentData;
+const sponsorCtaText = content.sponsors.ctaText;
+import sponsorsRaw from "../data/sponsors.toml";
+
+const sponsors = sponsorsRaw as unknown as SponsorsData;
+const sponsorCtaHtml = marked.parse(sponsorCtaText);
+const isArchived = siteConfig.eventStatus === "archived";
+
+const sponsorImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/sponsors/*.{png,jpg,jpeg,webp}",
+  { eager: true },
+);
+
+function getSponsorImage(filename: string): ImageMetadata | null {
+  const key = `/src/assets/images/sponsors/${filename}`;
+  const img = sponsorImages[key];
+  return img ? img.default : null;
+}
+
+const tiers = [
+  { key: "platinum" as const, label: "Platinum" },
+  { key: "diversity" as const, label: "Diversity Scholarships" },
+  { key: "gold" as const, label: "Gold" },
+  { key: "workshop" as const, label: "Workshop Venue" },
+];
+
+const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
+---
+
+<section class="partners" style="padding-bottom: 2rem;">
+  <div class="container">
+    <h2 class="partners-heading">Our Partners</h2>
+
+    {hasAnySponsors ? (
+      <div>
+        {tiers.map(({ key, label }) => {
+          const list = sponsors[key] ?? [];
+          if (list.length === 0) return null;
+          return (
+            <div class="sponsor-tier">
+              <strong class="sponsor-tier-label">{label}</strong>
+              <div class="sponsor-tier-logos">
+                {list.map((sponsor) => {
+                  const img = getSponsorImage(sponsor.logo);
+                  return img ? (
+                    <Image
+                      src={img}
+                      alt={sponsor.name}
+                      height={80}
+                      style="height: 80px; width: auto; object-fit: contain;"
+                    />
+                  ) : (
+                    <span style="font-weight: 600;">{sponsor.name}</span>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+        <div set:html={sponsorCtaHtml} style="text-align: center; margin-top: 2rem;" />
+      </div>
+    ) : !isArchived ? (
+      <div set:html={sponsorCtaHtml} style="text-align: center;" />
+    ) : null}
+  </div>
+</section>
+
+<style>
+  .partners-heading {
+    text-align: center;
+    padding-top: 8rem;
+    margin-bottom: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .partners-heading {
+      padding-top: 14rem;
+      margin-bottom: 7rem;
+    }
+  }
+
+  .sponsor-tier {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 3.5rem 0;
+    border-bottom: 1px solid #9ca3af;
+  }
+
+  @media (min-width: 768px) {
+    .sponsor-tier {
+      flex-direction: row;
+      text-align: left;
+      align-items: center;
+    }
+  }
+
+  .sponsor-tier-label {
+    display: block;
+    font-size: 1.25rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .sponsor-tier-label {
+      font-size: 1rem;
+      margin-right: 2rem;
+      margin-bottom: 0;
+      flex-basis: 8.333%;
+      flex-shrink: 0;
+      text-align: left;
+    }
+  }
+
+  .sponsor-tier-logos {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    flex: 1;
+  }
+
+  @media (min-width: 768px) {
+    .sponsor-tier-logos {
+      gap: 2rem;
+    }
+  }
+</style>

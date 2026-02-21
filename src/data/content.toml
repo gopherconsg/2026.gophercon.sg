@@ -1,0 +1,51 @@
+[hero]
+tagline = "Southeast Asia's largest Go conference"
+ctaText = "Get Your Tickets"
+ctaLink = "/#tickets"
+previousYearText = "Check out what happened in 2025!"
+previousYearVideoId = ""
+conferenceDate = "22&ndash;24 January 2026"
+workshopDates = "22-23 January"
+workshopVenue = "IMDA PIXEL Innovation Hub"
+workshopVenueUrl = "https://maps.app.goo.gl/eS1CRMc8MSDW5GFY6"
+conferenceDates = "24 January"
+conferenceVenue = "JW Marriott Singapore Ballroom"
+conferenceVenueUrl = "https://maps.app.goo.gl/7ag5ZuZWJ5NHSxsc9"
+practicalInfo = ""
+
+[tickets]
+headline = "Tickets"
+buttonText = "Get Your Ticket Now"
+link = "/#tickets"
+titoEvent = "gopherconsg/2026"
+scholarshipInfo = """
+### Scholarships
+
+We are happy to offer diversity scholarships to support members of underrepresented groups who may not otherwise have the opportunity to attend the conference. Please apply using [this form](https://docs.google.com/forms/d/e/1FAIpQLSdr7K62ojg90E4vEtp72-bduBJCwm7h48qfPzZnDjhIGBLamQ/viewform). Applications close on Monday, 6 January 2026 (end-of-day Singapore time).
+"""
+refundPolicy = """
+### Refund policy
+
+We offer refunds for all requests made before Monday, 6 January 2026 (end-of-day Singapore time). There will be a 10% fee for all refunds to cover ticketing and payment processing costs.
+"""
+
+[codeOfConduct]
+content = """
+All attendees, speakers, sponsors and volunteers at our conference are required to agree with the following code of conduct. Organisers will enforce this code throughout the event. We expect cooperation from all participants to help ensure a safe environment for everybody.
+
+Our conference is dedicated to providing a harassment-free conference experience for everyone, regardless of gender, gender identity and expression, age, sexual orientation, disability, physical appearance, body size, race, ethnicity, religion (or lack thereof), or technology choices. We do not tolerate harassment of conference participants in any form. Sexual language and imagery is not appropriate for any conference venue, including talks, workshops, parties, Twitter and other online media. Conference participants violating these rules may be sanctioned or expelled from the conference without a refund at the discretion of the conference organisers.
+
+If someone makes you or anyone else feel unsafe or unwelcome, please report it as soon as possible by emailing [hello@gophercon.sg](mailto:hello@gophercon.sg), or by speaking to a member of the conference staff. Conference staff will be wearing badges with the label "Organiser".
+"""
+
+[sponsors]
+ctaText = "Interested in becoming a partner? [Get in touch!](mailto:hello@gophercon.sg)"
+
+[footer]
+email = "hello@gophercon.sg"
+twitterURL = "https://twitter.com/gopherconsg"
+facebookURL = "https://www.facebook.com/GopherConSG"
+copyright = "&copy; GopherCon Singapore 2026"
+copyright1 = "GopherCon Singapore is run under the auspices of the [CU Society](https://cu.sg) (UEN: T18SS0020F)."
+copyright2 = """The Gopher character is based on the Go mascot designed by Renee French and copyrighted under <a rel="license" href="http://creativecommons.org/licenses/by/3.0/us/"><img alt="Creative Commons License" style="display: inline-block; border-width:0" src="https://i.creativecommons.org/l/by/3.0/us/80x15.png" /></a>"""
+updatedDate = "21 February 2026"

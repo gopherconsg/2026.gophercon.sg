@@ -1,0 +1,93 @@
+---
+import { marked } from "marked";
+import contentRaw from "../data/content.toml";
+import type { ContentData } from "../types";
+const content = contentRaw as unknown as ContentData;
+const heroConfig = content.hero;
+
+const practicalInfoHtml = heroConfig.practicalInfo
+  ? marked.parse(heroConfig.practicalInfo)
+  : "";
+---
+
+<section class="venue antialiased text-center md:text-left">
+  <div class="container">
+    <div class="venue-grid">
+      <!-- Workshops -->
+      <div class="venue-col venue-col-left">
+        <h2 style="margin-bottom: 1rem; font-family: var(--font-display);">Pre-conference Workshops</h2>
+        <div class="venue-details">
+          {heroConfig.workshopDates}<br />
+          <a
+            href={heroConfig.workshopVenueUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: #fff;"
+          >
+            {heroConfig.workshopVenue}
+          </a>
+        </div>
+      </div>
+
+      <!-- Conference -->
+      <div class="venue-col">
+        <h2 style="margin-bottom: 1rem; font-family: var(--font-display);">Conference</h2>
+        <div class="venue-details">
+          {heroConfig.conferenceDates}<br />
+          <a
+            href={heroConfig.conferenceVenueUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style="color: #fff;"
+          >
+            {heroConfig.conferenceVenue}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    {practicalInfoHtml && (
+      <div set:html={practicalInfoHtml} style="margin-top: 1.5rem;" />
+    )}
+  </div>
+</section>
+
+<style>
+  .venue-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .venue-grid {
+      flex-direction: row;
+    }
+  }
+
+  .venue-col {
+    flex: 1;
+  }
+
+  @media (min-width: 768px) {
+    .venue-col-left {
+      border-right: 1px solid #fff;
+      padding-right: 5rem;
+    }
+
+    .venue-col:not(.venue-col-left) {
+      padding-left: 5rem;
+    }
+  }
+
+  .venue-details {
+    font-size: 1.5rem;
+    line-height: 1.25;
+  }
+
+  @media (min-width: 768px) {
+    .venue-details {
+      font-size: 2rem;
+    }
+  }
+</style>

@@ -1,0 +1,29 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="Page Not Found" description="Page not found — GopherCon Singapore 2026">
+  <div style="min-height: 60vh; display: flex; align-items: center; justify-content: center; padding: 4rem 1rem;">
+    <div style="text-align: center; max-width: 500px;">
+      <img
+        src="/img/hero-mascots.png"
+        alt="GopherCon Singapore mascot"
+        style="height: 200px; width: auto; margin: 0 auto 2rem;"
+      />
+      <h1 style="font-size: 3rem; margin-bottom: 0.5rem;">404</h1>
+      <h2 style="font-size: 1.5rem; margin-bottom: 1.5rem;">Page not found</h2>
+      <p style="color: #666; margin-bottom: 2rem;">
+        Looks like this gopher wandered off the path. Let's get you back on track.
+      </p>
+      <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+        <a href="/" class="cta-button">Go Home</a>
+        <a href="https://2025.gophercon.sg" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 0.5rem 1rem; border: 2px solid var(--color-brand-blue); color: var(--color-brand-blue); border-radius: 0.3125rem; text-decoration: none; font-weight: 300; white-space: nowrap;">
+          GopherCon SG 2025
+        </a>
+        <a href="https://2019.gophercon.sg" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 0.5rem 1rem; border: 2px solid var(--color-brand-blue); color: var(--color-brand-blue); border-radius: 0.3125rem; text-decoration: none; font-weight: 300; white-space: nowrap;">
+          GopherCon SG 2019
+        </a>
+      </div>
+    </div>
+  </div>
+</BaseLayout>

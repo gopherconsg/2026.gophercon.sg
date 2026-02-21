@@ -2,7 +2,7 @@
 title: 'GopherCon Singapore 2026 Website'
 slug: 'gopherconsg-2026-website'
 created: '2026-02-21'
-status: 'ready-for-dev'
+status: 'completed'
 stepsCompleted: [1, 2, 3, 4]
 tech_stack: ['astro', 'tailwind-v4', 'typescript', 'biome', 'astro-icon', '@iconify-json/fa', '@astrojs/sitemap', 'vite-plugin-toml', 'marked']
 files_to_modify:
@@ -136,7 +136,11 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
     - Workshops: "Workshop details coming soon. Follow us on Twitter for updates." (link to `footerConfig.twitterURL`)
     - Sponsors: "Interested in becoming a partner? Get in touch!" (link to `mailto:hello@gophercon.sg`)
 - **Post-event forward-compatibility:** Data schemas include optional fields for post-event use: `recordingUrl` on schedule entries (link to YouTube), `eventStatus` on config (`"upcoming"` | `"live"` | `"archived"`) to conditionally show/hide the ticket widget and adjust messaging.
-  - **Archived mode behavior:** When `eventStatus` is `"archived"`: ticket widget and Tito script hidden, header CTA button hidden or changed to "Watch Recordings" (linking to schedule page), "Thank you!" banner displayed at top of home page (above Hero). Keep implementation simple — just conditional visibility checks on `eventStatus`.
+  - **Three-state eventStatus behavior:**
+    - `"upcoming"`: Default state. Tito widget, ticket section, Tito script, header CTA button, and sub-page ticket CTAs are all hidden. Site shows conference info, speakers, schedule, workshops, sponsors, and CoC.
+    - `"live"`: Tito widget and ticket section visible. Tito script loaded in `<head>`. Header shows "Get Your Tickets" CTA. Sub-pages show "Get your ticket →" CTA at bottom.
+    - `"archived"`: Tito widget and ticket section hidden. Header shows "Watch Recordings" CTA linking to `/schedule`. "Thank you!" banner displayed above Hero on home page. Sub-page ticket CTAs hidden.
+  - **Archived mode behavior:** When `eventStatus` is `"archived"`: ticket widget and Tito script hidden, header CTA button changed to "Watch Recordings" (linking to schedule page), "Thank you!" banner displayed at top of home page (above Hero). Keep implementation simple — just conditional visibility checks on `eventStatus`.
 - **Sub-pages:** `/speakers` (circular photos, keynote badge, full bios, talk links), `/schedule` (timeline layout), `/workshops` (timeline layout with venue + instructor + prerequisites callout).
   - **Ticket CTA on sub-pages:** Each sub-page (`/speakers`, `/schedule`, `/workshops`) includes a brief CTA section at the bottom linking to `/#tickets` (e.g., "Ready to join us? Get your ticket →"). Ensures visitors who land directly on a sub-page from a shared link have a clear path to purchase.
 - **Shareable anchors:** Every schedule entry and speaker profile has a clean anchor ID. A small "copy link" icon (via astro-icon) next to each title allows attendees and speakers to easily copy a direct link for social sharing. On click, show a brief "Copied!" tooltip that fades after 1.5s (CSS transition, no JS framework needed — just toggle a class).
@@ -378,7 +382,7 @@ export const siteConfig = {
   baseUrl: 'https://2026.gophercon.sg/',
   ogImage: 'gopherconsg202x-og.png',   // NOTE: placeholder — update to 2026 OG image
   logo: 'gopherconsg202x-long.png',    // NOTE: placeholder — update to 2026 logo
-  eventStatus: 'upcoming' as EventStatus, // 'live' currently behaves identically to 'upcoming' (forward-compatible placeholder); only 'archived' triggers distinct behavior
+  eventStatus: 'upcoming' as EventStatus, // 'upcoming' hides tickets/Tito entirely; 'live' shows tickets + Tito; 'archived' shows "Watch Recordings" + thank-you banner
   nav: [
     { title: 'Workshops', link: '/workshops' },
     { title: 'Schedule', link: '/schedule' },
@@ -1022,3 +1026,40 @@ Key animations (reference `2025/themes/gopherconsg-2023/tailwind.css` for exact 
 All hero images are in `public/img/` and referenced via CSS `background-image` or plain `<img>` tags — NOT `astro:assets`. The dev agent must rewrite the 2025 Tailwind v3 animation CSS for v4 syntax.
 
 **Mobile hero behavior:** On small screens (`< md`), the hero should gracefully degrade: hide or significantly scale down the mascot and stars (they're decorative, not essential), ensure wave layers don't overflow, and keep the content overlay (title, tagline, CTA) readable with adequate padding. Reference the 2025 site's mobile hero for guidance — the key principle is that decorative elements yield to content legibility on small screens.
+
+
+## Post-Implementation Changes
+
+Changes made after initial implementation, during visual review:
+
+### Visual & Layout Fixes
+
+1. **Hero section:** Removed CTA button from hero — hero now shows only title + date (matching 2025 pattern). CTA lives in the header nav only.
+2. **Hero layer order:** Reordered hero layers to match 2025 stacking: waves → mascot → wave-front → stars. Added `z-index: 10` on `.hero-text` so content sits above decorative layers.
+3. **Venue section:** Updated to match 2025 proportions — `text-2xl md:text-[2rem]` with `leading-[1.25]`, left border divider between columns, proper mobile stacking via scoped `<style>` block. Headings ("Pre-conference Workshops", "Conference") use Dangrek font.
+4. **Speaker cards (home page):** Shrunk significantly to fit all 13 in a single row on desktop. Cards use `flex: 1 1 0%` with `flex-wrap: nowrap` on `md:` breakpoint. Images 120px source, text 0.8rem. On mobile, cards wrap at 100px width. Removed talk titles from landing page cards — shows only name + company.
+5. **Sponsors/Partners section:** Added massive top padding (`pt-[8rem] md:pt-[14rem]`) on heading to clear wave background. Switched to 2025's horizontal tier row layout (label left, logos right) instead of centered headings.
+6. **Tickets + Code of Conduct alignment:** Both sections now use identical structure: full `.container` → nested `div` with `max-width: 800px; margin: 0 auto` for consistent text alignment.
+7. **Footer:** Replaced inverted logo image with "GopherCon Singapore" text heading in Dangrek font (matching 2025 footer pattern).
+
+### Font Changes
+
+8. **Dropped Inter:** Body font changed from Inter to system font stack (`Helvetica Neue, Arial, ui-sans-serif, system-ui, sans-serif`). Inter removed from Google Fonts link.
+9. **Nav CTA button:** Uses Dangrek font (`font-family: var(--font-display)`).
+
+### eventStatus Behavior Change
+
+10. **Three-state ticketing logic:** Tito widget, ticket section, Tito `<script>` tag, header "Get Your Tickets" CTA, and sub-page ticket CTAs now only render when `eventStatus === 'live'`. When `upcoming`, all ticket-related UI is hidden (prevents "Cannot connect to event" errors before the Tito event is created). When `archived`, shows "Watch Recordings" CTA and thank-you banner instead.
+
+### Adversarial Review Fixes
+
+11. **WorkshopEntry instructor photo:** Fixed 100px → 170px per spec.
+12. **Tito dev mode script:** Added `is:inline` directive to prevent Astro from processing the script tag.
+13. **`<Image />` dimensions:** Added explicit `width`/`height` props to all `<Image />` components (SpeakerCard: 120×120, SpeakerProfile: 170×170, ScheduleEntry thumbnails: 50×50, WorkshopEntry instructor: 170×170).
+14. **Sponsors double CTA:** Fixed — `sponsorCtaHtml` now renders once (inside sponsor tiers block or as empty state, not both).
+
+### Config Restructuring
+
+15. **Moved `siteConfig` to `src/config.ts`:** The `siteConfig` object (site title, description, baseUrl, ogImage, logo, eventStatus, nav) now lives at `src/config.ts` instead of `src/data/config.ts`. This keeps the core site configuration at the source root for easy access.
+16. **Extracted content to `src/data/content.toml`:** All non-structural configuration (hero text, ticket copy, code of conduct, sponsor CTA, footer details) moved from TypeScript to `src/data/content.toml`. Components import the TOML file and destructure the relevant section (e.g., `const { hero, tickets, footer } = contentRaw as Record<string, any>`). This separates content from code, making it easier for non-developers to edit copy.
+17. **Deleted `src/data/config.ts`:** The old monolithic config file was removed. All imports across components and pages updated to use `src/config.ts` for `siteConfig` and `src/data/content.toml` for content data.

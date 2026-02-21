@@ -1,0 +1,55 @@
+---
+import { Image } from "astro:assets";
+import type { Speaker } from "../types";
+
+interface Props {
+  speaker: Speaker;
+  imageMap: Record<string, { default: ImageMetadata }>;
+}
+
+const { speaker, imageMap } = Astro.props;
+
+function getSpeakerImage(filename: string): ImageMetadata {
+  const key = `/src/assets/images/speakers/${filename}`;
+  const img = imageMap[key];
+  if (!img) throw new Error(`Speaker image not found: ${filename}`);
+  return img.default;
+}
+---
+
+<li class="speaker-card">
+  <a href={`/speakers#${speaker.id}`} style="text-decoration: none; color: inherit;">
+    <Image
+      src={getSpeakerImage(speaker.image)}
+      alt={speaker.name}
+      width={120}
+      height={120}
+      style="width: 100%; margin: 0 auto 0.5rem; display: block;"
+    />
+    <h3 class="speaker-card-name">{speaker.name}</h3>
+    {speaker.company && (
+      <div class="speaker-card-company">{speaker.company}</div>
+    )}
+  </a>
+</li>
+
+<style>
+  .speaker-card {
+    text-align: center;
+    list-style: none;
+  }
+
+  .speaker-card-name {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.15rem;
+    font-family: var(--font-body);
+    line-height: 1.2;
+  }
+
+  .speaker-card-company {
+    font-size: 0.7rem;
+    color: #666;
+    line-height: 1.2;
+  }
+</style>

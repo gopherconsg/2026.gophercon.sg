@@ -1,0 +1,18 @@
+---
+import { marked } from "marked";
+import contentRaw from "../data/content.toml";
+import type { ContentData } from "../types";
+const content = contentRaw as unknown as ContentData;
+const codeOfConductConfig = content.codeOfConduct;
+
+const contentHtml = marked.parse(codeOfConductConfig.content);
+---
+
+<section style="padding: 4rem 0; background: #f9fafb;">
+  <div class="container">
+    <div style="max-width: 800px; margin: 0 auto;">
+      <h2 style="margin-bottom: 1.5rem;">Code of Conduct</h2>
+      <div set:html={contentHtml} />
+    </div>
+  </div>
+</section>

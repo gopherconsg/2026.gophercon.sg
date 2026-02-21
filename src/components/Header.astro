@@ -1,0 +1,67 @@
+---
+import { siteConfig } from "../config";
+
+const pathname = Astro.url.pathname;
+const isArchived = siteConfig.eventStatus === "archived";
+const isLive = siteConfig.eventStatus === "live";
+---
+
+<header class="header">
+  <div class="container" style="width: 100%; display: flex; align-items: center; gap: 1rem;">
+    <a href="/" aria-label="GopherCon Singapore 2026 home" style="text-decoration: none; flex-shrink: 0;">
+      <img
+        src={`/img/${siteConfig.logo}`}
+        alt="GopherCon Singapore 2026"
+        height="40"
+        style="height: 40px; width: auto;"
+      />
+    </a>
+
+    <button
+      id="navbar-toggle"
+      class="navbar-toggle md:hidden"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="navbar-container"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+
+    <nav
+      id="navbar-container"
+      class="hidden md:flex md:items-center md:gap-6 md:ml-auto"
+      aria-label="Main navigation"
+    >
+      <ul class="flex flex-col md:flex-row md:items-center md:gap-6 list-none p-0 m-0">
+        {siteConfig.nav.map((item) => {
+          const isActive = pathname === item.link || pathname.startsWith(item.link + '/');
+          return (
+            <li class={`menu-item${isActive ? ' active' : ''}`}>
+              <a href={item.link}>{item.title}</a>
+            </li>
+          );
+        })}
+      </ul>
+      {isLive && (
+        <a href="/#tickets" class="cta-button" style="font-family: var(--font-display);">Get Your Tickets</a>
+      )}
+      {isArchived && (
+        <a href="/schedule" class="cta-button" style="font-family: var(--font-display);">Watch Recordings</a>
+      )}
+    </nav>
+  </div>
+</header>
+
+<script>
+  const toggle = document.getElementById('navbar-toggle');
+  const nav = document.getElementById('navbar-container');
+  if (toggle && nav) {
+    toggle.addEventListener('click', () => {
+      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      nav.classList.toggle('hidden');
+    });
+  }
+</script>

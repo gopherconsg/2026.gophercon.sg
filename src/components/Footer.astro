@@ -1,0 +1,56 @@
+---
+import { Icon } from "astro-icon/components";
+import { marked } from "marked";
+import { siteConfig } from "../config";
+import contentRaw from "../data/content.toml";
+import type { ContentData } from "../types";
+const content = contentRaw as unknown as ContentData;
+const footerConfig = content.footer;
+
+const copyright1Html = marked.parseInline(footerConfig.copyright1);
+---
+
+<footer class="footer">
+  <div class="container">
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 1.5rem; text-align: center;">
+      <div>
+        <h3 style="font-family: var(--font-display); font-size: 1.5rem; margin-bottom: 0;">GopherCon Singapore</h3>
+      </div>
+
+      <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <a
+          href={footerConfig.twitterURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GopherCon Singapore on Twitter"
+          style="color: #fff; text-decoration: none;"
+        >
+          <Icon name="fa:twitter" class="w-6 h-6" />
+        </a>
+        <a
+          href={footerConfig.facebookURL}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="GopherCon Singapore on Facebook"
+          style="color: #fff; text-decoration: none;"
+        >
+          <Icon name="fa:facebook" class="w-6 h-6" />
+        </a>
+        <a
+          href={`mailto:${footerConfig.email}`}
+          aria-label="Email GopherCon Singapore"
+          style="color: #fff; text-decoration: none;"
+        >
+          <Icon name="fa:envelope" class="w-6 h-6" />
+        </a>
+      </div>
+
+      <div style="font-size: 0.875rem; color: #ccc; max-width: 600px;">
+        <p set:html={footerConfig.copyright} style="margin-bottom: 0.5rem;" />
+        <p set:html={copyright1Html} style="margin-bottom: 0.5rem;" />
+        <p set:html={footerConfig.copyright2} style="margin-bottom: 0.5rem;" />
+        <p style="margin-bottom: 0;">Last updated: {footerConfig.updatedDate}</p>
+      </div>
+    </div>
+  </div>
+</footer>

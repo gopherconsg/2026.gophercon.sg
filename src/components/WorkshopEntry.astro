@@ -1,0 +1,130 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { marked } from "marked";
+import type { Workshop } from "../types";
+
+interface Props {
+  workshop: Workshop;
+  speakerImageMap: Record<string, { default: ImageMetadata }>;
+}
+
+const { workshop, speakerImageMap } = Astro.props;
+
+function getSpeakerImage(filename: string): ImageMetadata | null {
+  const key = `/src/assets/images/speakers/${filename}`;
+  const img = speakerImageMap[key];
+  return img ? img.default : null;
+}
+
+const descriptionHtml = marked.parse(workshop.description);
+const venueHtml = marked.parse(workshop.venue);
+const speakerBioHtml = marked.parse(workshop.speakerBio);
+const prerequisitesHtml = workshop.prerequisites
+  ? marked.parse(workshop.prerequisites)
+  : "";
+
+const speakerImg = getSpeakerImage(workshop.speakerImage);
+---
+
+<div
+  id={workshop.id}
+  class="timeline-entry timeline-entry-talk"
+>
+  <!-- Date/time column -->
+  <div class="timeline-time">
+    <div>{workshop.date}</div>
+    <div style="font-size: 0.875rem;">{workshop.time}</div>
+  </div>
+
+  <!-- Content column -->
+  <div class="timeline-content workshops">
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+      <h3 style="margin-bottom: 0; font-size: 1.25rem; font-family: var(--font-body); font-weight: 600;">
+        {workshop.title}
+      </h3>
+      <span class="copy-link-wrapper">
+        <button
+          class="copy-link"
+          data-href={`/workshops#${workshop.id}`}
+          aria-label="Copy link to this workshop"
+        >
+          <Icon name="fa:link" class="w-4 h-4" />
+        </button>
+        <span class="copy-link-tooltip" aria-live="polite">Copied!</span>
+      </span>
+    </div>
+
+    <div set:html={descriptionHtml} style="margin-bottom: 1rem;" />
+
+    {prerequisitesHtml && (
+      <div class="prerequisites-callout">
+        <h4 style="margin-top: 0;">Prerequisites</h4>
+        <div set:html={prerequisitesHtml} />
+      </div>
+    )}
+
+    <!-- Venue -->
+    <div style="margin: 1rem 0; display: flex; align-items: flex-start; gap: 0.5rem;">
+      <Icon name="fa:map-marker" class="w-5 h-5" style="color: var(--color-brand-red); flex-shrink: 0; margin-top: 0.25rem;" />
+      <div>
+        <div set:html={venueHtml} style="margin-bottom: 0;" />
+        {workshop.venueRegistration && (
+          <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">({workshop.venueRegistration})</p>
+        )}
+        {workshop.venueMapUrl && (
+          <a
+            href={workshop.venueMapUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style="font-size: 0.875rem; color: var(--color-link-blue);"
+          >
+            View on map →
+          </a>
+        )}
+      </div>
+    </div>
+
+    {workshop.additional && (
+      <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">{workshop.additional}</p>
+    )}
+
+    <!-- Instructor -->
+    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
+      <h4 style="margin-top: 0; margin-bottom: 1rem;">Instructor</h4>
+      <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start;">
+        {speakerImg && (
+          <div style="width: 170px; height: 170px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
+            <Image
+              src={speakerImg}
+              alt={workshop.speaker}
+              width={170}
+              height={170}
+              style="width: 100%; height: 100%; object-fit: cover;"
+            />
+          </div>
+        )}
+        <div style="flex: 1; min-width: 200px;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
+            <strong>
+              <a href={workshop.speakerLink} style="color: var(--color-link-blue);">
+                {workshop.speaker}
+              </a>
+            </strong>
+            {workshop.speakerSocialUrl && (
+              <a
+                href={workshop.speakerSocialUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                style="display: inline-flex; align-items: center; gap: 0.25rem; color: var(--color-link-blue); font-size: 0.875rem;"
+              >
+                <Icon name="fa:twitter" class="w-4 h-4" />
+              </a>
+            )}
+          </div>
+          <div set:html={speakerBioHtml} />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

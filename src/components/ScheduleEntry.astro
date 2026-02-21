@@ -1,0 +1,115 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import { marked } from "marked";
+import type { ScheduleEntry } from "../types";
+
+interface Props {
+  entry: ScheduleEntry;
+  imageMap: Record<string, { default: ImageMetadata }>;
+}
+
+const { entry, imageMap } = Astro.props;
+
+function getSpeakerImage(filename: string): ImageMetadata | null {
+  const key = `/src/assets/images/speakers/${filename}`;
+  const img = imageMap[key];
+  return img ? img.default : null;
+}
+
+const descriptionHtml = entry.description
+  ? marked.parse(entry.description)
+  : "";
+const isBreakOrMeta = entry.type === "break" || entry.type === "meta";
+---
+
+<div
+  id={entry.id}
+  class={`timeline-entry timeline-entry-${entry.type}`}
+>
+  <!-- Time column -->
+  <div class="timeline-time">
+    {entry.time}
+  </div>
+
+  <!-- Content column -->
+  <div class="timeline-content">
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+      <h3 style={`margin-bottom: 0; font-size: 1.1rem; ${isBreakOrMeta ? 'font-family: var(--font-mono); font-weight: 600;' : 'font-family: var(--font-body); font-weight: 600;'}`}>
+        {entry.title}
+      </h3>
+      {!isBreakOrMeta && (
+        <span class="copy-link-wrapper">
+          <button
+            class="copy-link"
+            data-href={`/schedule#${entry.id}`}
+            aria-label="Copy link to this session"
+          >
+            <Icon name="fa:link" class="w-4 h-4" />
+          </button>
+          <span class="copy-link-tooltip" aria-live="polite">Copied!</span>
+        </span>
+      )}
+    </div>
+
+    {descriptionHtml && (
+      <div set:html={descriptionHtml} style="margin-bottom: 0.75rem;" />
+    )}
+
+    {entry.recordingUrl && (
+      <a
+        href={entry.recordingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        style="display: inline-block; background: var(--color-brand-blue); color: #fff; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem; text-decoration: none; margin-bottom: 0.75rem;"
+      >
+        Watch Recording ▶
+      </a>
+    )}
+
+    <!-- Speaker thumbnails -->
+    {!isBreakOrMeta && (
+      <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem;">
+        {entry.speakers.map((speaker) => {
+          if (!speaker.image) return (
+            <span style="font-size: 0.875rem; color: #666;">{speaker.name}</span>
+          );
+          const img = getSpeakerImage(speaker.image);
+          if (!img) return (
+            <span style="font-size: 0.875rem; color: #666;">{speaker.name}</span>
+          );
+          return (
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div class="timeline-speaker-thumb">
+                {speaker.link ? (
+                  <a href={speaker.link} style="display: block; width: 100%; height: 100%;">
+                    <Image
+                      src={img}
+                      alt={speaker.name}
+                      style="width: 100%; height: 100%; object-fit: cover;"
+                    />
+                  </a>
+                ) : (
+                  <Image
+                    src={img}
+                    alt={speaker.name}
+                    width={50}
+                    height={50}
+                    style="width: 100%; height: 100%; object-fit: cover;"
+                  />
+                )}
+              </div>
+              {speaker.link ? (
+                <a href={speaker.link} style="font-size: 0.875rem; color: var(--color-link-blue);">
+                  {speaker.name}
+                </a>
+              ) : (
+                <span style="font-size: 0.875rem; color: #666;">{speaker.name}</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    )}
+  </div>
+</div>

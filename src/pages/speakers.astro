@@ -1,0 +1,61 @@
+---
+import SpeakerProfile from "../components/SpeakerProfile.astro";
+import { siteConfig } from "../config";
+import contentRaw from "../data/content.toml";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { ContentData, Speaker } from "../types";
+const content = contentRaw as unknown as ContentData;
+const footerConfig = content.footer;
+const ticketsConfig = content.tickets;
+import speakerRaw from "../data/speakers.toml";
+
+const speakerData = speakerRaw as unknown as { speakers: Speaker[] };
+const speakers = speakerData.speakers ?? [];
+const isArchived = siteConfig.eventStatus === "archived";
+const isLive = siteConfig.eventStatus === "live";
+
+const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/speakers/*.{jpg,jpeg,webp,png}",
+  { eager: true },
+);
+---
+
+<BaseLayout
+  title="Speakers"
+  description="Meet the speakers at GopherCon Singapore 2026"
+>
+  <div class="page-bg">
+    <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
+      <h1 style="font-family: var(--font-heading); margin-bottom: 2rem;">
+        Our Speakers{speakers.length > 0 ? ` (${speakers.length})` : ''}
+      </h1>
+
+      {speakers.length > 0 ? (
+        <div>
+          {speakers.map((speaker) => (
+            <SpeakerProfile speaker={speaker} imageMap={speakerImages} />
+          ))}
+        </div>
+      ) : (
+        <p style="color: #666;">
+          Speaker lineup coming soon. Follow us on{' '}
+          <a href={footerConfig.twitterURL} target="_blank" rel="noopener noreferrer">
+            Twitter
+          </a>{' '}
+          for announcements.
+        </p>
+      )}
+
+      {isLive && (
+        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee;">
+          <p style="font-size: 1.1rem;">
+            Ready to join us?{' '}
+            <a href={ticketsConfig.link} style="color: var(--color-link-blue); font-weight: 600;">
+              Get your ticket →
+            </a>
+          </p>
+        </div>
+      )}
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,62 @@
+---
+import CodeOfConduct from "../components/CodeOfConduct.astro";
+import Hero from "../components/Hero.astro";
+import SpeakerCard from "../components/SpeakerCard.astro";
+import Sponsors from "../components/Sponsors.astro";
+import Tickets from "../components/Tickets.astro";
+import VenueInfo from "../components/VenueInfo.astro";
+import { siteConfig } from "../config";
+import contentRaw from "../data/content.toml";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import type { ContentData, Speaker } from "../types";
+const content = contentRaw as unknown as ContentData;
+const footerConfig = content.footer;
+import speakerRaw from "../data/speakers.toml";
+
+const speakerData = speakerRaw as unknown as { speakers: Speaker[] };
+const speakers = speakerData.speakers ?? [];
+const isArchived = siteConfig.eventStatus === "archived";
+
+const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/speakers/*.{jpg,jpeg,webp,png}",
+  { eager: true },
+);
+---
+
+<BaseLayout>
+  {isArchived && (
+    <div style="background: var(--color-brand-blue); color: #fff; text-align: center; padding: 1rem; font-weight: 600; font-size: 1.1rem;">
+      Thank you for joining us at GopherCon Singapore 2026!
+    </div>
+  )}
+
+  <Hero />
+  <VenueInfo />
+
+  <!-- Speakers Section -->
+  <section class="speakers" style="margin-bottom: 4rem;">
+    <div class="container text-center">
+      <h2 style="padding-top: 2rem; margin-bottom: 3rem; text-align: center;">Our Speakers</h2>
+
+      {speakers.length > 0 ? (
+        <ul class="speakers-flex">
+          {speakers.map((speaker) => (
+            <SpeakerCard speaker={speaker} imageMap={speakerImages} />
+          ))}
+        </ul>
+      ) : (
+        <p style="text-align: center; color: #666;">
+          Speaker lineup coming soon. Follow us on{' '}
+          <a href={footerConfig.twitterURL} target="_blank" rel="noopener noreferrer">
+            Twitter
+          </a>{' '}
+          for announcements.
+        </p>
+      )}
+    </div>
+  </section>
+
+  <Tickets />
+  <CodeOfConduct />
+  <Sponsors />
+</BaseLayout>
