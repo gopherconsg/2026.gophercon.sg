@@ -1,0 +1,16 @@
+---
+import { content } from "@/lib/data";
+
+interface Props {
+  message: string;
+}
+
+const { message } = Astro.props;
+const twitterURL = content.footer.twitterURL;
+---
+
+<p style="color: #666;">
+  {message} coming soon. Follow us on{' '}
+  <a href={twitterURL} target="_blank" rel="noopener noreferrer">Twitter</a>{' '}
+  for updates.
+</p>

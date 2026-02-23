@@ -1,16 +1,11 @@
 ---
 import { Image } from "astro:assets";
 import { marked } from "marked";
-import { siteConfig } from "../config";
-import contentRaw from "../data/content.toml";
-import type { ContentData, SponsorsData } from "../types";
-const content = contentRaw as unknown as ContentData;
+import { isArchived } from "@/config";
+import { content, sponsors } from "@/lib/data";
 const sponsorCtaText = content.sponsors.ctaText;
-import sponsorsRaw from "../data/sponsors.toml";
 
-const sponsors = sponsorsRaw as unknown as SponsorsData;
 const sponsorCtaHtml = marked.parse(sponsorCtaText);
-const isArchived = siteConfig.eventStatus === "archived";
 
 const sponsorImages = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/sponsors/*.{png,jpg,jpeg,webp}",

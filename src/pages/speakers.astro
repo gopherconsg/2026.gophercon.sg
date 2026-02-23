@@ -1,23 +1,10 @@
 ---
-import SpeakerProfile from "../components/SpeakerProfile.astro";
-import { siteConfig } from "../config";
-import contentRaw from "../data/content.toml";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import type { ContentData, Speaker } from "../types";
-const content = contentRaw as unknown as ContentData;
-const footerConfig = content.footer;
-const ticketsConfig = content.tickets;
-import speakerRaw from "../data/speakers.toml";
-
-const speakerData = speakerRaw as unknown as { speakers: Speaker[] };
-const speakers = speakerData.speakers ?? [];
-const isArchived = siteConfig.eventStatus === "archived";
-const isLive = siteConfig.eventStatus === "live";
-
-const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/speakers/*.{jpg,jpeg,webp,png}",
-  { eager: true },
-);
+import ComingSoon from "@/components/ComingSoon.astro";
+import SpeakerProfile from "@/components/SpeakerProfile.astro";
+import TicketCta from "@/components/TicketCta.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { speakers } from "@/lib/data";
+import { speakerImages } from "@/lib/images";
 ---
 
 <BaseLayout
@@ -37,25 +24,10 @@ const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
           ))}
         </div>
       ) : (
-        <p style="color: #666;">
-          Speaker lineup coming soon. Follow us on{' '}
-          <a href={footerConfig.twitterURL} target="_blank" rel="noopener noreferrer">
-            Twitter
-          </a>{' '}
-          for announcements.
-        </p>
+        <ComingSoon message="Speaker lineup" />
       )}
 
-      {isLive && (
-        <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee;">
-          <p style="font-size: 1.1rem;">
-            Ready to join us?{' '}
-            <a href={ticketsConfig.link} style="color: var(--color-link-blue); font-weight: 600;">
-              Get your ticket →
-            </a>
-          </p>
-        </div>
-      )}
+      <TicketCta />
     </div>
   </div>
 </BaseLayout>

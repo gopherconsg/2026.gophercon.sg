@@ -1,26 +1,15 @@
 ---
-import CodeOfConduct from "../components/CodeOfConduct.astro";
-import Hero from "../components/Hero.astro";
-import SpeakerCard from "../components/SpeakerCard.astro";
-import Sponsors from "../components/Sponsors.astro";
-import Tickets from "../components/Tickets.astro";
-import VenueInfo from "../components/VenueInfo.astro";
-import { siteConfig } from "../config";
-import contentRaw from "../data/content.toml";
-import BaseLayout from "../layouts/BaseLayout.astro";
-import type { ContentData, Speaker } from "../types";
-const content = contentRaw as unknown as ContentData;
-const footerConfig = content.footer;
-import speakerRaw from "../data/speakers.toml";
-
-const speakerData = speakerRaw as unknown as { speakers: Speaker[] };
-const speakers = speakerData.speakers ?? [];
-const isArchived = siteConfig.eventStatus === "archived";
-
-const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/speakers/*.{jpg,jpeg,webp,png}",
-  { eager: true },
-);
+import CodeOfConduct from "@/components/index/CodeOfConduct.astro";
+import ComingSoon from "@/components/ComingSoon.astro";
+import Hero from "@/components/index/Hero.astro";
+import SpeakerCard from "@/components/index/SpeakerCard.astro";
+import Sponsors from "@/components/index/Sponsors.astro";
+import Tickets from "@/components/index/Tickets.astro";
+import VenueInfo from "@/components/index/VenueInfo.astro";
+import { isArchived } from "@/config";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { speakers } from "@/lib/data";
+import { speakerImages } from "@/lib/images";
 ---
 
 <BaseLayout>
@@ -33,7 +22,6 @@ const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
   <Hero />
   <VenueInfo />
 
-  <!-- Speakers Section -->
   <section class="speakers" style="margin-bottom: 4rem;">
     <div class="container text-center">
       <h2 style="padding-top: 2rem; margin-bottom: 3rem; text-align: center;">Our Speakers</h2>
@@ -45,13 +33,7 @@ const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
           ))}
         </ul>
       ) : (
-        <p style="text-align: center; color: #666;">
-          Speaker lineup coming soon. Follow us on{' '}
-          <a href={footerConfig.twitterURL} target="_blank" rel="noopener noreferrer">
-            Twitter
-          </a>{' '}
-          for announcements.
-        </p>
+        <ComingSoon message="Speaker lineup" />
       )}
     </div>
   </section>

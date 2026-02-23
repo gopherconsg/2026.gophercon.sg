@@ -1,4 +1,4 @@
-import type { EventStatus } from "./types";
+import type { EventStatus } from "@/types";
 
 export const siteConfig = {
   title: "GopherCon Singapore 2026",
@@ -14,3 +14,6 @@ export const siteConfig = {
     { title: "Speakers", link: "/speakers" },
   ],
 } as const;
+
+export const isLive = siteConfig.eventStatus === "live";
+export const isArchived = siteConfig.eventStatus === "archived";

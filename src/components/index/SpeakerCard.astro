@@ -1,26 +1,20 @@
 ---
 import { Image } from "astro:assets";
-import type { Speaker } from "../types";
+import { resolveSpeakerImage, type ImageMap } from "@/lib/images";
+import type { Speaker } from "@/types";
 
 interface Props {
   speaker: Speaker;
-  imageMap: Record<string, { default: ImageMetadata }>;
+  imageMap: ImageMap;
 }
 
 const { speaker, imageMap } = Astro.props;
-
-function getSpeakerImage(filename: string): ImageMetadata {
-  const key = `/src/assets/images/speakers/${filename}`;
-  const img = imageMap[key];
-  if (!img) throw new Error(`Speaker image not found: ${filename}`);
-  return img.default;
-}
 ---
 
 <li class="speaker-card">
   <a href={`/speakers#${speaker.id}`} style="text-decoration: none; color: inherit;">
     <Image
-      src={getSpeakerImage(speaker.image)}
+      src={resolveSpeakerImage(imageMap, speaker.image)}
       alt={speaker.name}
       width={120}
       height={120}

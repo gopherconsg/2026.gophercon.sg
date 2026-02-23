@@ -6,7 +6,8 @@ status: 'completed'
 stepsCompleted: [1, 2, 3, 4]
 tech_stack: ['astro', 'tailwind-v4', 'typescript', 'biome', 'astro-icon', '@iconify-json/fa', '@astrojs/sitemap', 'vite-plugin-toml', 'marked']
 files_to_modify:
-  - 'src/data/config.ts'
+  - 'src/config.ts'
+  - 'src/data/content.toml'
   - 'src/data/speakers.toml'
   - 'src/data/schedule.toml'
   - 'src/data/workshops.toml'
@@ -14,6 +15,8 @@ files_to_modify:
   - 'src/types.ts'
   - 'src/env.d.ts'
   - 'src/styles/global.css'
+  - 'src/lib/data.ts'
+  - 'src/lib/images.ts'
   - 'src/layouts/BaseLayout.astro'
   - 'src/pages/index.astro'
   - 'src/pages/speakers.astro'
@@ -22,16 +25,18 @@ files_to_modify:
   - 'src/pages/404.astro'
   - 'src/components/Header.astro'
   - 'src/components/Footer.astro'
-  - 'src/components/Hero.astro'
-  - 'src/components/VenueInfo.astro'
-  - 'src/components/SpeakerCard.astro'
+  - 'src/components/ComingSoon.astro'
+  - 'src/components/TicketCta.astro'
   - 'src/components/SpeakerProfile.astro'
   - 'src/components/Timeline.astro'
   - 'src/components/ScheduleEntry.astro'
   - 'src/components/WorkshopEntry.astro'
-  - 'src/components/Sponsors.astro'
-  - 'src/components/Tickets.astro'
-  - 'src/components/CodeOfConduct.astro'
+  - 'src/components/index/Hero.astro'
+  - 'src/components/index/VenueInfo.astro'
+  - 'src/components/index/SpeakerCard.astro'
+  - 'src/components/index/Sponsors.astro'
+  - 'src/components/index/Tickets.astro'
+  - 'src/components/index/CodeOfConduct.astro'
   - 'astro.config.mjs'
   - 'biome.json'
   - 'package.json'
@@ -43,17 +48,23 @@ files_to_modify:
 code_patterns:
   - 'TOML data files with triple-quoted strings for multiline'
   - 'Direct TOML imports via vite-plugin-toml (no Astro content collections)'
+  - 'Centralized data access via src/lib/data.ts (single TOML loading + casting module)'
+  - 'Centralized image utilities via src/lib/images.ts (shared glob + resolve/find helpers)'
   - 'Astro components with scoped <style> blocks'
   - 'Tailwind v4 CSS-first config via @theme in global.css'
   - 'astro:assets <Image /> for speaker/sponsor images'
   - 'CSS backgrounds in public/img/ for hero waves/patterns/mascot/stars'
   - 'Inline <script> for mobile nav toggle and copy-link'
   - 'Conditional rendering based on eventStatus for archived mode'
+  - 'Derived isLive/isArchived booleans exported from src/config.ts'
   - 'CSS Grid auto-fill/minmax for speakers grid'
   - 'Timeline layout: vertical line at 25%, dot markers, time left, content right'
   - 'Snowplow analytics production-only via !import.meta.env.DEV'
   - 'Tito dev mode via import.meta.env.DEV'
   - 'marked for rendering markdown in TOML triple-quoted fields'
+  - 'TypeScript path alias: @ maps to src/ (configured in tsconfig.json)'
+  - 'Landing-page-only components in src/components/index/ subfolder'
+  - 'Shared components (ComingSoon, TicketCta) for repeated UI patterns'
 test_patterns:
   - 'Manual visual testing against 2025 site'
   - 'No automated tests (out of scope)'
@@ -235,11 +246,13 @@ export type EventStatus = 'upcoming' | 'live' | 'archived';
 
 **Import pattern** (used in all components):
 ```ts
-// In any .astro component:
-import speakerData from '../data/speakers.toml';
-import type { Speaker } from '../types';
-const speakers = speakerData.speakers as Speaker[];
+// In any .astro component or page:
+import { speakers, content } from "@/lib/data";
+import { speakerImages } from "@/lib/images";
+import { isLive, isArchived } from "@/config";
 ```
+
+All TOML loading and casting is centralized in `src/lib/data.ts`. Speaker image glob and helpers are centralized in `src/lib/images.ts`. The `@/` alias maps to `src/` (configured in `tsconfig.json`).
 
 **speakers.toml** (`src/data/speakers.toml`):
 ```toml
@@ -444,34 +457,41 @@ export const footerConfig = {
 │   │       ├── speakers/      # Speaker photos (optimized by astro:assets)
 │   │       └── sponsors/      # Sponsor logos (optimized by astro:assets)
 │   ├── components/
-│   │   ├── Header.astro
-│   │   ├── Footer.astro
-│   │   ├── Hero.astro
-│   │   ├── VenueInfo.astro
-│   │   ├── SpeakerCard.astro  # Used in home page grid
-│   │   ├── SpeakerProfile.astro  # Used in /speakers page (circular photo, full bio)
-│   │   ├── Timeline.astro     # Shared timeline component
-│   │   ├── ScheduleEntry.astro  # Timeline entry for schedule
-│   │   ├── WorkshopEntry.astro  # Timeline entry for workshops
-│   │   ├── Sponsors.astro
-│   │   ├── Tickets.astro
-│   │   └── CodeOfConduct.astro
+│   │   ├── index/             # Components used only on the landing page
+│   │   │   ├── Hero.astro
+│   │   │   ├── VenueInfo.astro
+│   │   │   ├── SpeakerCard.astro
+│   │   │   ├── Sponsors.astro
+│   │   │   ├── Tickets.astro
+│   │   │   └── CodeOfConduct.astro
+│   │   ├── Header.astro       # Shared — used in BaseLayout
+│   │   ├── Footer.astro       # Shared — used in BaseLayout
+│   │   ├── ComingSoon.astro   # Shared empty-state placeholder
+│   │   ├── TicketCta.astro    # Shared "Get your ticket" CTA for sub-pages
+│   │   ├── SpeakerProfile.astro  # Used in /speakers page
+│   │   ├── Timeline.astro     # Shared timeline wrapper (schedule + workshops)
+│   │   ├── ScheduleEntry.astro   # Timeline entry for schedule
+│   │   └── WorkshopEntry.astro   # Timeline entry for workshops
 │   ├── data/
-│   │   ├── config.ts          # Site config, hero, tickets, CoC, footer (TypeScript)
-│   │   ├── speakers.toml      # Speaker profiles (direct import via vite-plugin-toml)
+│   │   ├── content.toml       # All editable content (hero, tickets, CoC, footer, sponsor CTA)
+│   │   ├── speakers.toml      # Speaker profiles
 │   │   ├── schedule.toml      # Conference day schedule
 │   │   ├── workshops.toml     # Workshop details
 │   │   └── sponsors.toml      # Sponsor tiers and logos
 │   ├── layouts/
 │   │   └── BaseLayout.astro   # <head>, meta, analytics, fonts, nav, footer
+│   ├── lib/
+│   │   ├── data.ts            # Centralized TOML loading + typed exports
+│   │   └── images.ts          # Shared speaker image glob + resolve/find helpers
 │   ├── pages/
 │   │   ├── index.astro
 │   │   ├── speakers.astro
 │   │   ├── schedule.astro
 │   │   ├── workshops.astro
-│   │   └── 404.astro          # Branded 404 with links to past events
+│   │   └── 404.astro
 │   ├── styles/
 │   │   └── global.css         # Tailwind v4 @theme + custom CSS (hero, timeline, etc.)
+│   ├── config.ts              # Site config (title, baseUrl, eventStatus, nav) + isLive/isArchived
 │   ├── env.d.ts               # TOML module declaration + Astro client types
 │   └── types.ts               # TypeScript interfaces for TOML data shapes
 ├── public/
@@ -1067,3 +1087,23 @@ Changes made after initial implementation, during visual review:
 ### Biome Lint Fix
 
 18. **Replaced `Record<string, any>` with `ContentData` interface:** Biome's `noExplicitAny` rule flagged all TOML content casts using `Record<string, any>`. Added a `ContentData` interface to `src/types.ts` with fully typed sections (hero, tickets, codeOfConduct, sponsors, footer). All 10 affected files now use `contentRaw as unknown as ContentData` instead.
+
+### Code Review Refactors (DRY + Structure)
+
+19. **Centralized TOML data loading into `src/lib/data.ts`:** All TOML imports and `as unknown as` casts now happen once in `src/lib/data.ts`. Components and pages import typed, ready-to-use exports (`content`, `speakers`, `schedule`, `sponsors`, `workshops`) instead of repeating the import-cast-destructure boilerplate. Eliminated ~7 duplicate import blocks across the codebase.
+
+20. **Centralized speaker image utilities into `src/lib/images.ts`:** The `getSpeakerImage` helper (previously copy-pasted into 4 components) and the `import.meta.glob` speaker image glob (previously duplicated across 4 pages) now live in a single module. Exports `resolveSpeakerImage` (throws on missing — for required images), `findSpeakerImage` (returns null — for optional images), `speakerImages` (the glob result), and `ImageMap` type.
+
+21. **Exported `isLive`/`isArchived` from `src/config.ts`:** Derived booleans `isLive` and `isArchived` are now exported alongside `siteConfig`, replacing 9 scattered `siteConfig.eventStatus === "..."` comparisons across components and pages.
+
+22. **Extracted `ComingSoon.astro` component:** The "coming soon / follow us on Twitter" empty-state pattern (previously copy-pasted in 4 pages) is now a single component accepting a `message` prop.
+
+23. **Extracted `TicketCta.astro` component:** The "Get your ticket →" CTA block (previously copy-pasted verbatim in 3 sub-pages) is now a single component that self-manages its `isLive` visibility check.
+
+24. **Moved landing-page-only components to `src/components/index/`:** Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, and CodeOfConduct — all used exclusively by `index.astro` — moved into a dedicated subfolder to reduce clutter in the shared components directory.
+
+25. **Removed obvious HTML comments:** Deleted self-evident comments like `<!-- Circular photo -->`, `<!-- Info -->`, `<!-- Speaker thumbnails -->`, `<!-- Instructor -->`, `<!-- Venue -->`, `<!-- Conference -->`, `<!-- Workshops -->`, `<!-- Speakers Section -->` from component templates.
+
+26. **Removed deprecated `execCommand` clipboard fallback:** The `document.execCommand('copy')` textarea fallback in BaseLayout's copy-link script was removed. `navigator.clipboard` API is sufficient for all target browsers in 2026.
+
+27. **Added `@` path alias:** `tsconfig.json` now maps `@/*` to `src/*`. All relative imports across the codebase updated to use `@/` prefix (e.g., `import { content } from "@/lib/data"`), eliminating fragile `../../` chains especially in the `components/index/` subfolder.

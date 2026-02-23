@@ -1,11 +1,7 @@
 ---
-import { siteConfig } from "../config";
-import contentRaw from "../data/content.toml";
-import type { ContentData } from "../types";
-const content = contentRaw as unknown as ContentData;
+import { siteConfig } from "@/config";
+import { content } from "@/lib/data";
 const heroConfig = content.hero;
-
-const isArchived = siteConfig.eventStatus === "archived";
 ---
 
 <section class="hero">

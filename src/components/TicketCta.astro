@@ -1,0 +1,17 @@
+---
+import { isLive } from "@/config";
+import { content } from "@/lib/data";
+
+const ticketsConfig = content.tickets;
+---
+
+{isLive && (
+  <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #eee;">
+    <p style="font-size: 1.1rem;">
+      Ready to join us?{' '}
+      <a href={ticketsConfig.link} style="color: var(--color-link-blue); font-weight: 600;">
+        Get your ticket →
+      </a>
+    </p>
+  </div>
+)}

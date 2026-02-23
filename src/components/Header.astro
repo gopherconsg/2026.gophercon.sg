@@ -1,9 +1,7 @@
 ---
-import { siteConfig } from "../config";
+import { siteConfig, isArchived, isLive } from "@/config";
 
 const pathname = Astro.url.pathname;
-const isArchived = siteConfig.eventStatus === "archived";
-const isLive = siteConfig.eventStatus === "live";
 ---
 
 <header class="header">

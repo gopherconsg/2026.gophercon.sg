@@ -2,20 +2,15 @@
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { marked } from "marked";
-import type { Workshop } from "../types";
+import { findSpeakerImage, type ImageMap } from "@/lib/images";
+import type { Workshop } from "@/types";
 
 interface Props {
   workshop: Workshop;
-  speakerImageMap: Record<string, { default: ImageMetadata }>;
+  speakerImageMap: ImageMap;
 }
 
 const { workshop, speakerImageMap } = Astro.props;
-
-function getSpeakerImage(filename: string): ImageMetadata | null {
-  const key = `/src/assets/images/speakers/${filename}`;
-  const img = speakerImageMap[key];
-  return img ? img.default : null;
-}
 
 const descriptionHtml = marked.parse(workshop.description);
 const venueHtml = marked.parse(workshop.venue);
@@ -24,20 +19,18 @@ const prerequisitesHtml = workshop.prerequisites
   ? marked.parse(workshop.prerequisites)
   : "";
 
-const speakerImg = getSpeakerImage(workshop.speakerImage);
+const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
 ---
 
 <div
   id={workshop.id}
   class="timeline-entry timeline-entry-talk"
 >
-  <!-- Date/time column -->
   <div class="timeline-time">
     <div>{workshop.date}</div>
     <div style="font-size: 0.875rem;">{workshop.time}</div>
   </div>
 
-  <!-- Content column -->
   <div class="timeline-content workshops">
     <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
       <h3 style="margin-bottom: 0; font-size: 1.25rem; font-family: var(--font-body); font-weight: 600;">
@@ -64,7 +57,6 @@ const speakerImg = getSpeakerImage(workshop.speakerImage);
       </div>
     )}
 
-    <!-- Venue -->
     <div style="margin: 1rem 0; display: flex; align-items: flex-start; gap: 0.5rem;">
       <Icon name="fa:map-marker" class="w-5 h-5" style="color: var(--color-brand-red); flex-shrink: 0; margin-top: 0.25rem;" />
       <div>
@@ -89,7 +81,6 @@ const speakerImg = getSpeakerImage(workshop.speakerImage);
       <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">{workshop.additional}</p>
     )}
 
-    <!-- Instructor -->
     <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
       <h4 style="margin-top: 0; margin-bottom: 1rem;">Instructor</h4>
       <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start;">

@@ -2,32 +2,24 @@
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { marked } from "marked";
-import type { Speaker } from "../types";
+import { resolveSpeakerImage, type ImageMap } from "@/lib/images";
+import type { Speaker } from "@/types";
 
 interface Props {
   speaker: Speaker;
-  imageMap: Record<string, { default: ImageMetadata }>;
+  imageMap: ImageMap;
 }
 
 const { speaker, imageMap } = Astro.props;
-
-function getSpeakerImage(filename: string): ImageMetadata {
-  const key = `/src/assets/images/speakers/${filename}`;
-  const img = imageMap[key];
-  if (!img) throw new Error(`Speaker image not found: ${filename}`);
-  return img.default;
-}
-
 const descriptionHtml = marked.parse(speaker.description);
 ---
 
 <div id={speaker.id} style="scroll-margin-top: 5rem; padding: 2rem 0; border-bottom: 1px solid #eee;">
   <div style="display: flex; flex-direction: column; gap: 1.5rem;">
     <div style="display: flex; align-items: flex-start; gap: 1.5rem; flex-wrap: wrap;">
-      <!-- Circular photo -->
       <div style="width: 170px; height: 170px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
         <Image
-          src={getSpeakerImage(speaker.image)}
+          src={resolveSpeakerImage(imageMap, speaker.image)}
           alt={speaker.name}
           width={170}
           height={170}
@@ -35,7 +27,6 @@ const descriptionHtml = marked.parse(speaker.description);
         />
       </div>
 
-      <!-- Info -->
       <div style="flex: 1; min-width: 200px;">
         <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem;">
           <h2 style="font-size: 1.5rem; margin-bottom: 0;">{speaker.name}</h2>

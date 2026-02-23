@@ -1,8 +1,6 @@
 ---
 import { marked } from "marked";
-import contentRaw from "../data/content.toml";
-import type { ContentData } from "../types";
-const content = contentRaw as unknown as ContentData;
+import { content } from "@/lib/data";
 const heroConfig = content.hero;
 
 const practicalInfoHtml = heroConfig.practicalInfo
@@ -13,7 +11,6 @@ const practicalInfoHtml = heroConfig.practicalInfo
 <section class="venue antialiased text-center md:text-left">
   <div class="container">
     <div class="venue-grid">
-      <!-- Workshops -->
       <div class="venue-col venue-col-left">
         <h2 style="margin-bottom: 1rem; font-family: var(--font-display);">Pre-conference Workshops</h2>
         <div class="venue-details">
@@ -29,7 +26,6 @@ const practicalInfoHtml = heroConfig.practicalInfo
         </div>
       </div>
 
-      <!-- Conference -->
       <div class="venue-col">
         <h2 style="margin-bottom: 1rem; font-family: var(--font-display);">Conference</h2>
         <div class="venue-details">
