@@ -7,7 +7,7 @@ export const siteConfig = {
   baseUrl: "https://2026.gophercon.sg/",
   ogImage: "gopherconsg202x-og.png",
   logo: "gopherconsg202x-long.png",
-  eventStatus: "upcoming" as EventStatus,
+  eventStatus: "live" as EventStatus,
   nav: [
     { title: "Workshops", link: "/workshops" },
     { title: "Schedule", link: "/schedule" },
