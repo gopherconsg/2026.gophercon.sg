@@ -3,9 +3,12 @@ import ComingSoon from "@/components/ComingSoon.astro";
 import TicketCta from "@/components/TicketCta.astro";
 import Timeline from "@/components/Timeline.astro";
 import WorkshopEntry from "@/components/WorkshopEntry.astro";
+import { isNavEnabled } from "@/config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { workshops } from "@/lib/data";
 import { speakerImages } from "@/lib/images";
+
+const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
 ---
 
 <BaseLayout
@@ -16,10 +19,12 @@ import { speakerImages } from "@/lib/images";
     <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
       <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Workshops</h1>
 
-      <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
-        <a href="/schedule" class="schedule-tab">Conference</a>
-        <a href="/workshops" class="schedule-tab active">Workshops</a>
-      </div>
+      {showTabs && (
+        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
+          <a href="/schedule" class="schedule-tab">Conference</a>
+          <a href="/workshops" class="schedule-tab active">Workshops</a>
+        </div>
+      )}
 
       {workshops.length > 0 ? (
         <Timeline>

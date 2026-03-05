@@ -6,7 +6,7 @@ import SpeakerCard from "@/components/index/SpeakerCard.astro";
 import Sponsors from "@/components/index/Sponsors.astro";
 import Tickets from "@/components/index/Tickets.astro";
 import VenueInfo from "@/components/index/VenueInfo.astro";
-import { isArchived } from "@/config";
+import { isArchived, isLineupConfirmed } from "@/config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { speakers } from "@/lib/data";
 import { speakerImages } from "@/lib/images";
@@ -27,11 +27,16 @@ import { speakerImages } from "@/lib/images";
       <h2 class="pt-8 mb-12 text-center md:pt-40 md:mb-24">Our Speakers</h2>
 
       {speakers.length > 0 ? (
-        <ul class="speakers-flex">
-          {speakers.map((speaker) => (
-            <SpeakerCard speaker={speaker} imageMap={speakerImages} />
-          ))}
-        </ul>
+        <>
+          <ul class="speakers-flex">
+            {speakers.map((speaker) => (
+              <SpeakerCard speaker={speaker} imageMap={speakerImages} />
+            ))}
+          </ul>
+          {!isLineupConfirmed && (
+            <p style="color: #555; font-size: 1.1rem; margin-top: -1rem;"><em>More speakers will be announced as they are confirmed.</em></p>
+          )}
+        </>
       ) : (
         <ComingSoon message="Speaker lineup" />
       )}

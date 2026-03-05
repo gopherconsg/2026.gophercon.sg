@@ -71,7 +71,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Always use `@/` path alias for imports — never relative `../../` chains
 
 ### Config vs Content Split
-- Structural config (site URL, nav items, eventStatus, OG image) → `src/config.ts`
+- Structural config (site URL, nav items, eventStatus, speakerLineup, OG image) → `src/config.ts`
 - Editable content (hero text, ticket copy, CoC, footer text, sponsor CTA) → `src/data/content.toml`
 - New editor-facing content → `content.toml` + matching shape in `ContentData` interface in `types.ts`
 - New structural/behavioral config → `config.ts`
@@ -98,12 +98,27 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ### Image Handling
 - `<Image />` requires explicit `width` and `height` props. CSS handles responsive sizing (`w-full`, `object-cover`)
 - Circular photos: fixed-size container with `rounded-full overflow-hidden`, `<Image class="w-full h-full object-cover" />` inside
+- **Landing page speaker photos fail gracefully:** `SpeakerCard` uses `findSpeakerImage()` (returns null) — if image is missing, shows a circular placeholder with the speaker's initial instead of crashing the build
+- **Sponsor images fail gracefully:** `Sponsors.astro` uses `getSponsorImage()` (returns null) — renders sponsor name as text fallback
+- **Sponsor links:** `Sponsor` type has optional `url` field. When present, sponsor logo/name is wrapped in `<a>` tag
 
 ### Three-State eventStatus
 - `"upcoming"` (default): All ticket UI hidden — Tito widget, ticket section, Tito script, header CTA, sub-page CTAs
 - `"live"`: Tito widget visible, script loaded, header shows "Get Your Tickets", sub-pages show ticket CTA
 - `"archived"`: Tickets hidden, header shows "Watch Recordings" → `/schedule`, "Thank you!" banner on home page
 - `eventStatus: 'live'` will error if the Tito event doesn't exist on ti.to yet — only set when event is created
+
+### Speaker Lineup Setting
+- `speakerLineup` in `config.ts`: `"confirmed"` or `"unconfirmed"` (type `SpeakerLineup` in `types.ts`)
+- When `"unconfirmed"`: shows "More speakers will be announced as they are confirmed." on both landing page and speakers page
+- When `"confirmed"`: the message is hidden
+- Check via `isLineupConfirmed` exported from `config.ts`
+
+### Nav Item Visibility
+- Each nav item in `siteConfig.nav` has an `enabled: boolean` flag
+- Header only renders nav items where `enabled: true`
+- Schedule and workshops pages show Conference/Workshops tab buttons only when BOTH `/schedule` and `/workshops` nav items are enabled
+- Use `isNavEnabled(link)` helper from `config.ts` to check
 
 ### Copy-Link Contract
 - HTML: `<button class="copy-link" data-href="/schedule#id">` + sibling `<span class="copy-link-tooltip">Copied!</span>` inside a `.copy-link-wrapper`
@@ -145,16 +160,18 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 
 ## Cross-File Dependencies (What Changes Together)
 
-- **Add a speaker:** `speakers.toml` + image file in `src/assets/images/speakers/`
+- **Add a speaker:** `speakers.toml` + image file in `src/assets/images/speakers/` (image is optional — landing page renders gracefully without it)
 - **Speakers page layout:** Detail card grid (`.speakers-detail-grid` flexbox with `justify-content: center`, `.speaker-detail-card`) — last row centered
 - **Add a schedule entry:** `schedule.toml` only (speaker images resolve from existing photos)
 - **Add a workshop:** `workshops.toml` + instructor image in `src/assets/images/speakers/` (if not already there)
-- **Add a sponsor:** `sponsors.toml` + logo file in `src/assets/images/sponsors/`
+- **Add a sponsor:** `sponsors.toml` + logo file in `src/assets/images/sponsors/` + optional `url` field for linking
 - **Add a sponsor tier:** `sponsors.toml` + `SponsorsData` in `types.ts` + render order in `Sponsors.astro`
 - **Add a page:** `.astro` in `src/pages/` + nav entry in `siteConfig.nav` in `config.ts`
 - **Add a content section:** `content.toml` + `ContentData` interface in `types.ts` — cast in `data.ts` silently loses untyped sections
 - **Update site copy:** edit `content.toml` only — no TypeScript changes needed
 - **Change event status:** single field in `src/config.ts` — all components react via `isLive`/`isArchived`
+- **Toggle speaker lineup message:** `speakerLineup` in `config.ts` — `"unconfirmed"` shows announcement note, `"confirmed"` hides it
+- **Enable/disable nav links:** `enabled` flag on each nav item in `siteConfig.nav` — Header, schedule tabs, and workshop tabs all react
 - **Empty states:** reuse `ComingSoon.astro` with `message` prop — don't create new placeholders
 - **Redirects:** `public/_redirects` — 2026-specific only, do NOT carry forward 2025 entries
 

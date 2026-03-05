@@ -47,6 +47,7 @@ export interface Workshop {
 export interface Sponsor {
   name: string;
   logo: string;
+  url?: string;
 }
 
 export interface SponsorsData {
@@ -57,6 +58,7 @@ export interface SponsorsData {
 }
 
 export type EventStatus = "upcoming" | "live" | "archived";
+export type SpeakerLineup = "confirmed" | "unconfirmed";
 
 export interface ContentData {
   hero: {

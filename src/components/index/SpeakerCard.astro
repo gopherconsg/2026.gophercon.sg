@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-import { type ImageMap, resolveSpeakerImage } from "@/lib/images";
+import { type ImageMap, findSpeakerImage } from "@/lib/images";
 import type { Speaker } from "@/types";
 
 interface Props {
@@ -9,17 +9,22 @@ interface Props {
 }
 
 const { speaker, imageMap } = Astro.props;
+const speakerImg = findSpeakerImage(imageMap, speaker.image);
 ---
 
 <li class="speaker-card">
   <a href={`/speakers#${speaker.id}`} style="text-decoration: none; color: inherit;">
-    <Image
-      src={resolveSpeakerImage(imageMap, speaker.image)}
-      alt={speaker.name}
-      width={120}
-      height={120}
-      style="width: 100%; margin: 0 auto 0.5rem; display: block;"
-    />
+    {speakerImg ? (
+      <Image
+        src={speakerImg}
+        alt={speaker.name}
+        width={120}
+        height={120}
+        style="width: 100%; margin: 0 auto 0.5rem; display: block;"
+      />
+    ) : (
+      <div class="speaker-card-placeholder">{speaker.name.charAt(0)}</div>
+    )}
     <h3 class="speaker-card-name">{speaker.name}</h3>
     {speaker.company && (
       <div class="speaker-card-company">{speaker.company}</div>
@@ -45,5 +50,19 @@ const { speaker, imageMap } = Astro.props;
     font-size: 0.7rem;
     color: #666;
     line-height: 1.2;
+  }
+
+  .speaker-card-placeholder {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: #e0e7ee;
+    color: #667085;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 auto 0.5rem;
   }
 </style>

@@ -137,7 +137,7 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
   - Combined: Two-font stack — Dangrek (display), Inter (headings + body).
 - **Timeline component (shared by schedule + workshops):** Left-aligned vertical line with circular dot markers, time displayed as text above content, break items styled as pills with badge background. For schedule: speaker thumbnails (32px circular), monospace font for break entries. For workshops: full description, venue with location SVG icon, instructor section with circular photo + bio.
   - **Layout:** All viewport sizes use the same left-aligned layout — vertical line on the left, dot markers, content indented to the right. No separate time column.
-- **Component structure:** Header (responsive nav + CTA button), Hero (with tagline, CTA button, optional video embed), Venue info, Speakers grid (CSS Grid, auto-fill/minmax), Tickets (Tito embed + `<noscript>` fallback with direct link to ti.to event page), Code of Conduct, Sponsors by tier (with "become a partner" CTA), Footer (social icons, copyright).
+- **Component structure:** Header (responsive nav with per-item `enabled` flag + CTA button), Hero (with tagline, CTA button, optional video embed), Venue info, Speakers grid (CSS Grid, auto-fill/minmax), Tickets (Tito embed + `<noscript>` fallback with direct link to ti.to event page), Code of Conduct, Sponsors by tier with optional links (with "become a partner" CTA), Footer (social icons, copyright).
   - **Sponsor tier display order** is hardcoded in `Sponsors.astro` (platinum → diversity → gold → workshop), not derived from TOML key order.
   - **Auto-derived counts:** Section headings for workshops can display counts auto-derived from data file lengths (e.g., "2 Workshops"). The speakers page uses a simple "Speakers" heading without count.
 - **Empty state handling (data-driven, not status-driven):** Components conditionally render based on data presence, not `eventStatus`. If the speakers array has entries → show grid. If empty → show a centered placeholder. Same pattern for schedule, workshops, sponsors. If `eventStatus` is `"archived"` → always show sections regardless (historical content). This supports the natural conference lifecycle: announcement → speaker reveals → full program → archive.
@@ -146,13 +146,13 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
     - Schedule: "Schedule coming soon. Follow us on Twitter for updates." (link to `footerConfig.twitterURL`)
     - Workshops: "Workshop details coming soon. Follow us on Twitter for updates." (link to `footerConfig.twitterURL`)
     - Sponsors: "Interested in becoming a partner? Get in touch!" (link to `mailto:hello@gophercon.sg`)
-- **Post-event forward-compatibility:** Data schemas include optional fields for post-event use: `recordingUrl` on schedule entries (link to YouTube), `eventStatus` on config (`"upcoming"` | `"live"` | `"archived"`) to conditionally show/hide the ticket widget and adjust messaging.
+- **Post-event forward-compatibility:** Data schemas include optional fields for post-event use: `recordingUrl` on schedule entries (link to YouTube), `eventStatus` on config (`"upcoming"` | `"live"` | `"archived"`) to conditionally show/hide the ticket widget and adjust messaging. `speakerLineup` config (`"confirmed"` | `"unconfirmed"`) controls whether "More speakers will be announced" message appears on landing page and speakers page.
   - **Three-state eventStatus behavior:**
     - `"upcoming"`: Default state. Tito widget, ticket section, Tito script, header CTA button, and sub-page ticket CTAs are all hidden. Site shows conference info, speakers, schedule, workshops, sponsors, and CoC.
     - `"live"`: Tito widget and ticket section visible. Tito script loaded in `<head>`. Header shows "Get Your Tickets" CTA. Sub-pages show "Get your ticket →" CTA at bottom.
     - `"archived"`: Tito widget and ticket section hidden. Header shows "Watch Recordings" CTA linking to `/schedule`. "Thank you!" banner displayed above Hero on home page. Sub-page ticket CTAs hidden.
   - **Archived mode behavior:** When `eventStatus` is `"archived"`: ticket widget and Tito script hidden, header CTA button changed to "Watch Recordings" (linking to schedule page), "Thank you!" banner displayed at top of home page (above Hero). Keep implementation simple — just conditional visibility checks on `eventStatus`.
-- **Sub-pages:** `/speakers` (detail card grid with circular photos, keynote badge, full bios, talk links, copy-link), `/schedule` (left-aligned timeline layout with Conference/Workshops tabs — active tab solid brand-blue, inactive white/grey), `/workshops` (same timeline layout with venue + instructor + prerequisites callout, matching tabs).
+- **Sub-pages:** `/speakers` (detail card grid with circular photos, keynote badge, full bios, talk links, copy-link), `/schedule` (left-aligned timeline layout with Conference/Workshops tabs — tabs only shown when both nav items are enabled — active tab solid brand-blue, inactive white/grey), `/workshops` (same timeline layout with venue + instructor + prerequisites callout, matching tabs).
   - **Ticket CTA on sub-pages:** Each sub-page (`/speakers`, `/schedule`, `/workshops`) includes a brief CTA section at the bottom linking to `/#tickets` (e.g., "Ready to join us? Get your ticket →"). Ensures visitors who land directly on a sub-page from a shared link have a clear path to purchase.
 - **Shareable anchors:** Every schedule entry and speaker profile has a clean anchor ID. A small "copy link" icon (via astro-icon) next to each title allows attendees and speakers to easily copy a direct link for social sharing. On click, show a brief "Copied!" tooltip that fades after 1.5s (CSS transition, no JS framework needed — just toggle a class).
   - **Scroll offset:** All anchored elements (`id` attributes on schedule entries, speaker profiles) must have `scroll-margin-top` set to match the header height (e.g., `scroll-margin-top: 5rem`). This prevents content from hiding behind a sticky/fixed header when navigating via anchor links.
@@ -232,6 +232,7 @@ export interface Workshop {
 export interface Sponsor {
   name: string;
   logo: string;               // resolves to src/assets/images/sponsors/
+  url?: string;               // optional link wrapping the logo/name
 }
 
 export interface SponsorsData {
@@ -242,6 +243,7 @@ export interface SponsorsData {
 }
 
 export type EventStatus = 'upcoming' | 'live' | 'archived';
+export type SpeakerLineup = 'confirmed' | 'unconfirmed';
 ```
 
 **Import pattern** (used in all components):
@@ -249,7 +251,7 @@ export type EventStatus = 'upcoming' | 'live' | 'archived';
 // In any .astro component or page:
 import { speakers, content } from "@/lib/data";
 import { speakerImages } from "@/lib/images";
-import { isLive, isArchived } from "@/config";
+import { isLive, isArchived, isLineupConfirmed, isNavEnabled } from "@/config";
 ```
 
 All TOML loading and casting is centralized in `src/lib/data.ts`. Speaker image glob and helpers are centralized in `src/lib/images.ts`. The `@/` alias maps to `src/` (configured in `tsconfig.json`).
@@ -365,10 +367,12 @@ Singapore 138649
 [[platinum]]
 name = "Go"
 logo = "go.png"
+url = "https://go.dev"
 
 [[platinum]]
 name = "Grab"
 logo = "grab.png"
+url = "https://grab.com"
 
 [[diversity]]
 name = "GoBridge"
@@ -385,6 +389,7 @@ logo = "imda-pixel.png"
 # NOTE: vite-plugin-toml parses this file's default export as:
 # { platinum: [...], diversity: [...], gold: [...], workshop: [...] }
 # This maps directly to the SponsorsData TypeScript interface — no transformation needed.
+# The optional `url` field wraps the sponsor logo/name in a link.
 ```
 
 **config.ts** (`src/data/config.ts`) — typed site config:
@@ -396,10 +401,11 @@ export const siteConfig = {
   ogImage: 'gopherconsg202x-og.png',   // NOTE: placeholder — update to 2026 OG image
   logo: 'gopherconsg202x-long.png',    // NOTE: placeholder — update to 2026 logo
   eventStatus: 'upcoming' as EventStatus, // 'upcoming' hides tickets/Tito entirely; 'live' shows tickets + Tito; 'archived' shows "Watch Recordings" + thank-you banner
+  speakerLineup: 'unconfirmed' as SpeakerLineup, // 'unconfirmed' shows "More speakers will be announced" on landing + speakers page
   nav: [
-    { title: 'Workshops', link: '/workshops' },
-    { title: 'Schedule', link: '/schedule' },
-    { title: 'Speakers', link: '/speakers' },
+    { title: 'Workshops', link: '/workshops', enabled: true },
+    { title: 'Schedule', link: '/schedule', enabled: true },
+    { title: 'Speakers', link: '/speakers', enabled: true },
   ],
 } as const;
 

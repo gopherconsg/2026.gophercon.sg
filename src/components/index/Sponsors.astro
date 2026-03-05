@@ -43,7 +43,7 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
               <div class="sponsor-tier-logos">
                 {list.map((sponsor) => {
                   const img = getSponsorImage(sponsor.logo);
-                  return img ? (
+                  const content = img ? (
                     <Image
                       src={img}
                       alt={sponsor.name}
@@ -53,6 +53,11 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
                   ) : (
                     <span style="font-weight: 600;">{sponsor.name}</span>
                   );
+                  return sponsor.url ? (
+                    <a href={sponsor.url} target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
+                      {content}
+                    </a>
+                  ) : content;
                 })}
               </div>
             </div>

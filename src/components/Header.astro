@@ -33,7 +33,7 @@ const pathname = Astro.url.pathname;
       aria-label="Main navigation"
     >
       <ul class="flex flex-col md:flex-row md:items-center md:gap-6 list-none p-0 m-0">
-        {siteConfig.nav.map((item) => {
+        {siteConfig.nav.filter((item) => item.enabled).map((item) => {
           const isActive = pathname === item.link || pathname.startsWith(item.link + '/');
           return (
             <li class={`menu-item${isActive ? ' active' : ''}`}>
