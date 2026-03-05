@@ -1,21 +1,22 @@
 installation:
-  version: 6.0.1
+  version: 6.0.4
   installDate: 2026-02-20T23:22:25.389Z
-  lastUpdated: 2026-02-20T23:22:25.389Z
+  lastUpdated: 2026-03-05T01:15:35.796Z
 modules:
   - name: core
-    version: 6.0.1
+    version: 6.0.4
     installDate: 2026-02-20T23:22:25.389Z
-    lastUpdated: 2026-02-20T23:22:25.389Z
+    lastUpdated: 2026-03-05T01:15:35.796Z
     source: built-in
     npmPackage: null
     repoUrl: null
   - name: bmm
-    version: 6.0.1
+    version: 6.0.4
     installDate: 2026-02-20T23:22:25.370Z
-    lastUpdated: 2026-02-20T23:22:25.389Z
+    lastUpdated: 2026-03-05T01:15:35.796Z
     source: built-in
     npmPackage: null
     repoUrl: null
 ides:
   - kiro
+  - github-copilot
