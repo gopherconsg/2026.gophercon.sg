@@ -132,7 +132,7 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
   - `src/assets/images/` — Speaker photos, sponsor logos. Processed by `astro:assets` at build time for WebP/AVIF conversion, responsive `srcset`, lazy loading, and CLS prevention via width/height attributes. Rendered with `<Image />` component.
   - `public/img/` — All hero section images (mascot, stars, wave layers), CSS background images (speaker background pattern, partner wave/bg), and logos. Referenced directly in CSS `background-image` rules or plain `<img>` tags. Hero images stay here because the hero is a visual composition with CSS animations and absolute positioning — `astro:assets` optimization would add complexity without meaningful benefit.
 - **Visual brand — best of both years:**
-  - From 2025: Hero section with wave background layers, mascot popup animation, star burst, brand colors (`--brand-blue: #14C8E0`, `--brand-red: #EE4059`, `--link-blue: #0F71BB`), Dangrek display font for hero/venue.
+  - From 2025: Hero section with wave background layers, mascot popup animation, star burst, brand colors (`--brand-blue: #0891B2`, `--brand-red: #EE4059`, `--link-blue: #0F71BB`), Dangrek display font for hero/venue.
   - From 2019: Circular speaker photos, timeline layouts, keynote badge, location icon treatment, social icons in footer, "become a partner" CTA, previous year video embed.
   - Combined: Two-font stack — Dangrek (display), Inter (headings + body).
 - **Timeline component (shared by schedule + workshops):** Left-aligned vertical line with circular dot markers, time displayed as text above content, break items styled as pills with badge background. For schedule: speaker thumbnails (32px circular), monospace font for break entries. For workshops: full description, venue with location SVG icon, instructor section with circular photo + bio.
@@ -170,7 +170,7 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
   - **IMPORTANT v4 migration notes:** The 2025 site's CSS is Tailwind v3 — use it as design intent reference only, do NOT copy-paste. Key v4 differences: `@import "tailwindcss"` replaces `@tailwind base/components/utilities`; `@theme {}` replaces `theme.extend` in config; `@apply` syntax may differ; some utility names shifted. Rewrite custom CSS for v4 syntax.
   - **Tailwind v4 quick-reference (most common v3→v4 differences):**
     - `@tailwind base; @tailwind components; @tailwind utilities;` → `@import "tailwindcss";`
-    - `tailwind.config.js` `theme.extend.colors` → `@theme { --color-brand-blue: #14C8E0; }` in CSS
+    - `tailwind.config.js` `theme.extend.colors` → `@theme { --color-brand-blue: #0891B2; }` in CSS
     - `tailwind.config.js` `theme.extend.fontFamily` → `@theme { --font-display: "Dangrek", cursive; }` in CSS
     - `bg-brand-blue` → `bg-[var(--color-brand-blue)]` or define in `@theme` as `--color-brand-blue` and use `bg-brand-blue` (v4 auto-generates utilities from `@theme` custom properties)
     - `@apply` still works but is discouraged for new code — prefer utility classes in markup
@@ -607,7 +607,7 @@ export const footerConfig = {
 
 - [ ] Task 5a: Create Tailwind v4 base theme and tokens
   - File: `src/styles/global.css`
-  - Action: Create with `@import "tailwindcss"`, `@theme {}` block defining custom properties: `--color-brand-blue: #14C8E0`, `--color-brand-red: #EE4059`, `--color-link-blue: #0F71BB`, font families (Dangrek, Merriweather, Inter), and any custom spacing/sizing tokens. Include base typography styles (body font, heading font, link colors).
+  - Action: Create with `@import "tailwindcss"`, `@theme {}` block defining custom properties: `--color-brand-blue: #0891B2`, `--color-brand-red: #EE4059`, `--color-link-blue: #0F71BB`, font families (Dangrek, Inter), and any custom spacing/sizing tokens. Include base typography styles (body font, heading font, link colors).
   - Notes: Reference `2025/themes/gopherconsg-2023/tailwind.css` for design intent only. Key v4 differences: `@import "tailwindcss"` replaces `@tailwind` directives; `@theme {}` replaces `theme.extend`; utility names may differ.
 
 - [ ] Task 5b: Create custom CSS (hero, timeline, waves, patterns)
@@ -1104,6 +1104,6 @@ Changes made after initial implementation, during visual review:
 
 25. **Removed obvious HTML comments:** Deleted self-evident comments like `<!-- Circular photo -->`, `<!-- Info -->`, `<!-- Speaker thumbnails -->`, `<!-- Instructor -->`, `<!-- Venue -->`, `<!-- Conference -->`, `<!-- Workshops -->`, `<!-- Speakers Section -->` from component templates.
 
-26. **Removed deprecated `execCommand` clipboard fallback:** The `document.execCommand('copy')` textarea fallback in BaseLayout's copy-link script was removed. `navigator.clipboard` API is sufficient for all target browsers in 2026.
+26. **Restored `execCommand` clipboard fallback:** The copy-link `is:inline` script in BaseLayout now uses `navigator.clipboard.writeText()` with a `document.execCommand('copy')` textarea fallback for non-secure contexts. The script is marked `is:inline` to run as a classic script (not an Astro module), ensuring reliable event delegation across all pages.
 
 27. **Added `@` path alias:** `tsconfig.json` now maps `@/*` to `src/*`. All relative imports across the codebase updated to use `@/` prefix (e.g., `import { content } from "@/lib/data"`), eliminating fragile `../../` chains especially in the `components/index/` subfolder.

@@ -4,7 +4,7 @@
    Tailwind v4 Theme Tokens
    ============================================================ */
 @theme {
-  --color-brand-blue: #14c8e0;
+  --color-brand-blue: #0891b2;
   --color-brand-red: #ee4059;
   --color-link-blue: #0f71bb;
   --color-body-text: #1d2939;
@@ -49,6 +49,7 @@ h3 {
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 2rem;
+  margin-bottom: 0.75rem;
 }
 
 h4 {
@@ -588,9 +589,15 @@ p {
    Speakers Page — Detail Cards Grid
    ============================================================ */
 .speakers-detail-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
+  justify-content: center;
+}
+
+.speakers-detail-grid > .speaker-detail-card {
+  flex: 1 1 340px;
+  max-width: 500px;
 }
 
 .speaker-detail-card {

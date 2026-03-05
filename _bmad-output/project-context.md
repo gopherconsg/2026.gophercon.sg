@@ -27,7 +27,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - **Tailwind CSS v4** (`^4.0.0`) — CSS-first config via `@theme` block in `src/styles/global.css`. No `tailwind.config.js` exists or is needed
 - Key v3→v4 differences that cause build errors:
   - `@tailwind base; @tailwind components; @tailwind utilities;` → `@import "tailwindcss";`
-  - `tailwind.config.js` theme config → `@theme { --color-brand-blue: #14C8E0; }` in CSS (auto-generates utilities like `bg-brand-blue`)
+  - `tailwind.config.js` theme config → `@theme { --color-brand-blue: #0891B2; }` in CSS (auto-generates utilities like `bg-brand-blue`)
   - `bg-opacity-*` / `text-opacity-*` → slash syntax: `bg-white/80`, `text-black/50`
 
 ### Data & Content
@@ -108,7 +108,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ### Copy-Link Contract
 - HTML: `<button class="copy-link" data-href="/schedule#id">` + sibling `<span class="copy-link-tooltip">Copied!</span>` inside a `.copy-link-wrapper`
 - CSS: `.copy-link-tooltip` opacity transition + `.copied` class in `global.css`
-- JS: Event delegation in `BaseLayout.astro` listens for `.copy-link` clicks, reads `data-href`, writes to clipboard, toggles `.copied` class
+- JS: Classic inline script (`is:inline`) in `BaseLayout.astro` — event delegation on `.copy-link` clicks, reads `data-href`, writes to clipboard (with `execCommand` fallback for non-secure contexts), toggles `.copied` class
 - All three must agree on: `.copy-link` (button class), `data-href` (attribute), `.copy-link-tooltip` (tooltip class), `.copied` (active class)
 
 ### Timeline Layout
@@ -144,7 +144,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ## Cross-File Dependencies (What Changes Together)
 
 - **Add a speaker:** `speakers.toml` + image file in `src/assets/images/speakers/`
-- **Speakers page layout:** Detail card grid (`.speakers-detail-grid`, `.speaker-detail-card`) — no thumbnail row
+- **Speakers page layout:** Detail card grid (`.speakers-detail-grid` flexbox with `justify-content: center`, `.speaker-detail-card`) — last row centered
 - **Add a schedule entry:** `schedule.toml` only (speaker images resolve from existing photos)
 - **Add a workshop:** `workshops.toml` + instructor image in `src/assets/images/speakers/` (if not already there)
 - **Add a sponsor:** `sponsors.toml` + logo file in `src/assets/images/sponsors/`

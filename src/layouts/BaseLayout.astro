@@ -33,9 +33,9 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#14c8e0" />
-    <meta name="msapplication-TileColor" content="#14c8e0" />
-    <meta name="theme-color" content="#14c8e0" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#0891b2" />
+    <meta name="msapplication-TileColor" content="#0891b2" />
+    <meta name="theme-color" content="#0891b2" />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
@@ -75,17 +75,43 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
       <slot />
     </main>
     <Footer />
-    <script>
-      document.addEventListener('click', (e) => {
-        const btn = (e.target as Element).closest('.copy-link');
+    <script is:inline>
+      document.addEventListener('click', function(e) {
+        var btn = e.target.closest && e.target.closest('.copy-link');
         if (!btn) return;
-        const href = btn.getAttribute('data-href');
+        e.preventDefault();
+        var href = btn.getAttribute('data-href');
         if (!href) return;
-        const tooltip = btn.parentElement?.querySelector('.copy-link-tooltip');
-        navigator.clipboard.writeText(window.location.origin + href);
-        if (tooltip) {
-          tooltip.classList.add('copied');
-          setTimeout(() => tooltip.classList.remove('copied'), 1500);
+        var url = window.location.origin + href;
+        var tooltip = btn.parentElement && btn.parentElement.querySelector('.copy-link-tooltip');
+
+        function showTooltip() {
+          if (tooltip) {
+            tooltip.classList.add('copied');
+            setTimeout(function() { tooltip.classList.remove('copied'); }, 1500);
+          }
+        }
+
+        function fallbackCopy(text) {
+          var textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.select();
+          try { document.execCommand('copy'); } catch(err) {}
+          document.body.removeChild(textarea);
+        }
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(showTooltip).catch(function() {
+            fallbackCopy(url);
+            showTooltip();
+          });
+        } else {
+          fallbackCopy(url);
+          showTooltip();
         }
       });
     </script>
