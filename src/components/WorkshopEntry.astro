@@ -90,10 +90,10 @@ const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
     <div class="workshop-card-overview" set:html={overviewHtml} />
 
     {syllabusHtml && (
-      <details class="workshop-details">
-        <summary>Full Curriculum</summary>
-        <div class="workshop-details-content" set:html={syllabusHtml} />
-      </details>
+      <div class="workshop-section">
+        <h3 class="workshop-section-heading">Full Curriculum</h3>
+        <div class="workshop-section-content" set:html={syllabusHtml} />
+      </div>
     )}
 
     {prerequisitesHtml && (
@@ -103,9 +103,9 @@ const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
       </div>
     )}
 
-    <details class="workshop-details">
-      <summary>About the Instructor</summary>
-      <div class="workshop-details-content">
+    <div class="workshop-section">
+      <h3 class="workshop-section-heading">About the Instructor</h3>
+      <div class="workshop-section-content">
         <div class="workshop-instructor-bio">
           {speakerImg && (
             <div class="workshop-instructor-photo">
@@ -121,7 +121,7 @@ const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
           <div set:html={speakerBioHtml} />
         </div>
       </div>
-    </details>
+    </div>
 
     <div class="workshop-card-footer">
       <div class="workshop-card-venue">

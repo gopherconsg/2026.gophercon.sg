@@ -138,12 +138,12 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 
 ### Workshops Card Layout
 - `WorkshopEntry.astro` renders each workshop as a standalone card (`.workshop-card`) — NOT inside a Timeline
-- Card-based design: header with instructor photo + title + date/time, body with overview, collapsible `<details>` sections for curriculum and instructor bio
-- Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (collapsed by default via `<details>/<summary>`)
-- Jump navigation (`.workshop-nav`): pill links at page top for quick access to each workshop card
-- Instructor photos use `findSpeakerImage` (returns null gracefully) — missing images show a gradient fallback with the instructor's initial
-- Workshop cards have `scroll-margin-top: 6rem` to clear sticky header
-- Mobile: card header stacks vertically and centers; instructor bio stacks vertically
+- Card-based design: header with instructor photo + title + date/time, body with overview, always-expanded sections (`.workshop-section`) for curriculum and instructor bio
+- Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (in a separate `.workshop-section` with heading)
+- Sticky jump navigation (`.workshop-nav`): pill links below sticky header for quick access to each workshop card. Uses `position: sticky; top: 5rem; z-index: 40` with frosted-glass background (`backdrop-filter: blur`)
+- Instructor photos use `findSpeakerImage` (returns null gracefully) — missing images show a gradient fallback with the instructor’s initial
+- Workshop cards have `scroll-margin-top: 9rem` to clear both sticky header and sticky workshop nav
+- Mobile: card header stacks vertically and centers; instructor bio stacks vertically; workshop-nav wraps and remains sticky
 
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)

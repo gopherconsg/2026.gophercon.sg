@@ -762,7 +762,15 @@ p {
   gap: 0.75rem;
   justify-content: center;
   flex-wrap: wrap;
-  margin-bottom: 2.5rem;
+  padding: 0.75rem 1rem;
+  margin: 0 -1rem 2.5rem;
+  position: sticky;
+  top: 5rem;
+  z-index: 40;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .workshop-nav a {
@@ -795,7 +803,7 @@ p {
   border-radius: 1rem;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-  scroll-margin-top: 6rem;
+  scroll-margin-top: 9rem;
   transition: box-shadow 0.2s;
 }
 
@@ -894,57 +902,39 @@ p {
   margin-bottom: 0;
 }
 
-/* Collapsible details/summary sections */
-.workshop-details {
+/* Workshop section headings (always expanded) */
+.workshop-section {
   border: 1px solid #e5e7eb;
   border-radius: 0.75rem;
   margin: 1.5rem 0;
   overflow: hidden;
 }
 
-.workshop-details summary {
+.workshop-section-heading {
   padding: 1rem 1.25rem;
   font-weight: 600;
   font-size: 1.05rem;
-  cursor: pointer;
   background: #f9fafb;
   color: var(--color-body-text);
-  list-style: none;
-  user-select: none;
+  margin-bottom: 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.workshop-details summary::-webkit-details-marker {
-  display: none;
-}
-
-.workshop-details summary::before {
-  content: "▸ ";
-}
-
-.workshop-details[open] summary::before {
-  content: "▾ ";
-}
-
-.workshop-details summary:hover {
-  background: #f3f4f6;
-}
-
-.workshop-details-content {
+.workshop-section-content {
   padding: 1.25rem;
-  border-top: 1px solid #e5e7eb;
   line-height: 1.7;
   color: #374151;
 }
 
-.workshop-details-content h4 {
+.workshop-section-content h4 {
   margin-top: 1.5rem;
 }
 
-.workshop-details-content h4:first-child {
+.workshop-section-content h4:first-child {
   margin-top: 0;
 }
 
-.workshop-details-content h5 {
+.workshop-section-content h5 {
   font-size: 1rem;
   font-weight: 600;
   margin-top: 1.25rem;
@@ -952,11 +942,11 @@ p {
   color: #0e7490;
 }
 
-.workshop-details-content li {
+.workshop-section-content li {
   margin-bottom: 0.25rem;
 }
 
-.workshop-details-content p {
+.workshop-section-content p {
   margin-bottom: 0.75rem;
 }
 
