@@ -66,14 +66,14 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
 
                 /* Pills: translucent white to blend with page-bg gradient */
                 .workshop-pill {
-                  border-color: rgba(255,255,255,0.4);
+                  border-color: rgba(255,255,255,0.6);
                   color: white;
-                  background: rgba(255,255,255,0.15);
+                  background: rgba(255,255,255,0.25);
                 }
                 .workshop-pill:hover {
                   border-color: white;
                   color: white;
-                  background: rgba(255,255,255,0.3);
+                  background: rgba(255,255,255,0.4);
                   text-decoration: none;
                 }
 
@@ -133,7 +133,7 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
                 // Jump to workshop on select change
                 select.addEventListener('change', function() {
                   var el = document.getElementById(this.value);
-                  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  if (el) el.scrollIntoView({ block: 'start' });
                 });
 
                 // Track which workshop is in view and update dropdown
