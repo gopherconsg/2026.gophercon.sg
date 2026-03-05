@@ -150,6 +150,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ### Script Handling
 - Astro processes `<script>` tags through its build pipeline by default (TypeScript, bundling, deferred as ES modules)
 - Use `is:inline` on scripts that must run as-is without processing (e.g., `<script is:inline>TitoDevelopmentMode = true;</script>`)
+- **Tito widget script uses `is:inline`** — `<script is:inline src="https://js.tito.io/v2" async>` prevents Astro from transforming it. Explicit `<link rel="stylesheet" href="https://css.tito.io/v2" />` loaded alongside for reliability (Tito's self-injected CSS can fail intermittently)
 - **Header mobile nav toggle uses `is:inline`** with event delegation (`document.addEventListener('click', ...)` + `e.target.closest('#navbar-toggle')`) — Astro-bundled module scripts run deferred and can fail on iPhone Safari. Keep this script `is:inline`
 - Mobile nav dropdown: `.navbar-nav` class on the `<nav>` element, absolute-positioned below header on `max-width: 767px`. Links stack vertically with white background and box shadow
 
@@ -157,7 +158,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Biome handles all formatting and linting — 2-space indent, organized imports. No ESLint, no Prettier
 - Font usage: Dangrek = display/hero/venue, Inter = headings/schedule times/body, Source Code Pro = break entries
 - Responsive: `md:` (768px) is the primary breakpoint used consistently across all components
-- **Overflow prevention:** `html, body { overflow-x: hidden; }` in `global.css` — safety net against horizontal scroll. Header uses `height: auto; min-height: 5rem` to accommodate mobile nav expansion
+- **Overflow prevention:** `html, body { overflow-x: hidden; touch-action: manipulation; }` in `global.css` — safety net against horizontal scroll and prevents double-tap zoom on mobile (preserves pinch-to-zoom). Header uses `height: auto; min-height: 5rem` to accommodate mobile nav expansion. Mobile nav dropdown centers CTA button via `text-align: center`
 - **VenueInfo responsive text:** `.venue-heading` class wraps text on mobile (`overflow-wrap: break-word`) and applies `white-space: nowrap` only at `min-width: 768px` — prevents "Pre-conference Workshops" from causing horizontal scroll on mobile
 - Layout: `.container` class for page-width wrapper — don't reinvent it
 

@@ -47,7 +47,10 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
       <script is:inline>TitoDevelopmentMode = true;</script>
     )}
     {isLive && (
-      <script src="https://js.tito.io/v2" async></script>
+      <link rel="stylesheet" href="https://css.tito.io/v2" />
+    )}
+    {isLive && (
+      <script is:inline src="https://js.tito.io/v2" async></script>
     )}
     {!import.meta.env.DEV && (
       <script>

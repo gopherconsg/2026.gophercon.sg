@@ -21,6 +21,7 @@
 html,
 body {
   overflow-x: hidden;
+  touch-action: manipulation;
 }
 
 body {
@@ -119,6 +120,11 @@ p {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     padding: 1rem;
     z-index: 50;
+    text-align: center;
+  }
+
+  .navbar-nav .cta-button {
+    margin-top: 0.5rem;
   }
 }
 
