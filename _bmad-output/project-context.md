@@ -117,7 +117,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Left-aligned line with dot markers, time displayed as text above content, break items styled as pills (`.timeline-break-pill`)
 - All timeline entries have `scroll-margin-top: 5rem` to clear sticky header
 - Break/meta entries: monospace font, `font-weight: 600`. Talk entries: body font, `font-weight: 600`
-- Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`)
+- Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`): active tab is solid brand-blue with white text; inactive is white with grey border
 
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)
@@ -144,7 +144,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ## Cross-File Dependencies (What Changes Together)
 
 - **Add a speaker:** `speakers.toml` + image file in `src/assets/images/speakers/`
-- **Speakers page layout:** Horizontal thumbnail row at top + detail card grid below (`.speakers-row`, `.speakers-detail-grid`, `.speaker-detail-card`)
+- **Speakers page layout:** Detail card grid (`.speakers-detail-grid`, `.speaker-detail-card`) — no thumbnail row
 - **Add a schedule entry:** `schedule.toml` only (speaker images resolve from existing photos)
 - **Add a workshop:** `workshops.toml` + instructor image in `src/assets/images/speakers/` (if not already there)
 - **Add a sponsor:** `sponsors.toml` + logo file in `src/assets/images/sponsors/`

@@ -12,7 +12,7 @@ const practicalInfoHtml = heroConfig.practicalInfo
   <div class="container">
     <div class="venue-grid">
       <div class="venue-col venue-col-left">
-        <h2 style="margin-bottom: 1rem; font-family: var(--font-display);">Pre-conference Workshops</h2>
+        <h2 style="margin-bottom: 1rem; font-family: var(--font-display); white-space: nowrap;">Pre-conference Workshops</h2>
         <div class="venue-details">
           {heroConfig.workshopDates}<br />
           <a
@@ -66,13 +66,24 @@ const practicalInfoHtml = heroConfig.practicalInfo
   }
 
   @media (min-width: 768px) {
+    .venue-grid {
+      justify-content: center;
+    }
+
+    .venue-col {
+      flex: 1 1 0;
+      max-width: 50%;
+    }
+
     .venue-col-left {
       border-right: 1px solid #fff;
-      padding-right: 5rem;
+      padding-right: 3rem;
+      text-align: right;
     }
 
     .venue-col:not(.venue-col-left) {
-      padding-left: 5rem;
+      padding-left: 3rem;
+      text-align: left;
     }
   }
 
