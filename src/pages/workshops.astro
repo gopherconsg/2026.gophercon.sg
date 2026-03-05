@@ -64,32 +64,26 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
                   .workshop-pills-mobile { display: none; }
                 }
 
-                /* Pills: translucent white to blend with page-bg gradient */
+                /* Pills: always grey text on semi-opaque white — legible over gradient and white */
                 .workshop-pill {
-                  border-color: rgba(255,255,255,0.6);
-                  color: white;
-                  background: rgba(255,255,255,0.25);
+                  border-color: #d0d5dd;
+                  color: #667085;
+                  background: rgba(255,255,255,0.85);
                 }
                 .workshop-pill:hover {
-                  border-color: white;
-                  color: white;
-                  background: rgba(255,255,255,0.4);
+                  border-color: var(--color-brand-blue);
+                  color: var(--color-brand-blue);
+                  background: rgba(255,255,255,0.95);
                   text-decoration: none;
                 }
 
-                /* Scrolled: opaque white background */
+                /* Scrolled: fully opaque nav background; pills colours already match */
                 #workshop-nav[data-scrolled] {
                   background-color: rgba(255,255,255,0.95);
                   border-bottom-color: #e5e7eb;
                 }
                 #workshop-nav[data-scrolled] .workshop-pill {
-                  border-color: #d0d5dd;
-                  color: #667085;
                   background: white;
-                }
-                #workshop-nav[data-scrolled] .workshop-pill:hover {
-                  border-color: var(--color-brand-blue);
-                  color: var(--color-brand-blue);
                 }
 
                 /* Mobile scrolled: swap pills for dropdown */
