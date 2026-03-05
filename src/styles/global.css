@@ -18,6 +18,11 @@
 /* ============================================================
    Base Styles
    ============================================================ */
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-body);
   line-height: 2;
@@ -97,9 +102,24 @@ p {
   top: 0;
   z-index: 50;
   background: #fff;
-  height: 5rem;
+  height: auto;
+  min-height: 5rem;
   display: flex;
   align-items: center;
+}
+
+/* Mobile nav dropdown */
+@media (max-width: 767px) {
+  .navbar-nav:not(.hidden) {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    z-index: 50;
+  }
 }
 
 .navbar-toggle {

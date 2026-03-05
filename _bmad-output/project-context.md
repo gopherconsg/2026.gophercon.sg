@@ -148,13 +148,17 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - **Redirect pages** use `RedirectLayout` instead of `BaseLayout` — same `<head>` (SEO meta, OG tags, analytics) but adds `<meta http-equiv="refresh">` and omits Tito JS / copy-link script. Props: `title`, `description`, `redirectURL`. Slot content is a fallback message with a manual link
 
 ### Script Handling
-- Astro processes `<script>` tags through its build pipeline by default (TypeScript, bundling)
+- Astro processes `<script>` tags through its build pipeline by default (TypeScript, bundling, deferred as ES modules)
 - Use `is:inline` on scripts that must run as-is without processing (e.g., `<script is:inline>TitoDevelopmentMode = true;</script>`)
+- **Header mobile nav toggle uses `is:inline`** with event delegation (`document.addEventListener('click', ...)` + `e.target.closest('#navbar-toggle')`) — Astro-bundled module scripts run deferred and can fail on iPhone Safari. Keep this script `is:inline`
+- Mobile nav dropdown: `.navbar-nav` class on the `<nav>` element, absolute-positioned below header on `max-width: 767px`. Links stack vertically with white background and box shadow
 
 ### Code Quality & Style
 - Biome handles all formatting and linting — 2-space indent, organized imports. No ESLint, no Prettier
 - Font usage: Dangrek = display/hero/venue, Inter = headings/schedule times/body, Source Code Pro = break entries
 - Responsive: `md:` (768px) is the primary breakpoint used consistently across all components
+- **Overflow prevention:** `html, body { overflow-x: hidden; }` in `global.css` — safety net against horizontal scroll. Header uses `height: auto; min-height: 5rem` to accommodate mobile nav expansion
+- **VenueInfo responsive text:** `.venue-heading` class wraps text on mobile (`overflow-wrap: break-word`) and applies `white-space: nowrap` only at `min-width: 768px` — prevents "Pre-conference Workshops" from causing horizontal scroll on mobile
 - Layout: `.container` class for page-width wrapper — don't reinvent it
 
 ---
@@ -198,4 +202,4 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Update when technology stack or patterns change
 - Remove rules that become obvious over time
 
-Last Updated: 2026-03-05
+Last Updated: 2026-03-06

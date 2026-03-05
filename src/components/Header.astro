@@ -29,7 +29,7 @@ const pathname = Astro.url.pathname;
 
     <nav
       id="navbar-container"
-      class="hidden md:flex md:items-center md:gap-6 md:ml-auto"
+      class="navbar-nav hidden md:flex md:items-center md:gap-6 md:ml-auto"
       aria-label="Main navigation"
     >
       <ul class="flex flex-col md:flex-row md:items-center md:gap-6 list-none p-0 m-0">
@@ -52,14 +52,14 @@ const pathname = Astro.url.pathname;
   </div>
 </header>
 
-<script>
-  const toggle = document.getElementById('navbar-toggle');
-  const nav = document.getElementById('navbar-container');
-  if (toggle && nav) {
-    toggle.addEventListener('click', () => {
-      const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-      toggle.setAttribute('aria-expanded', String(!isExpanded));
-      nav.classList.toggle('hidden');
-    });
-  }
+<script is:inline>
+  document.addEventListener('click', function(e) {
+    var toggle = e.target.closest && e.target.closest('#navbar-toggle');
+    if (!toggle) return;
+    var nav = document.getElementById('navbar-container');
+    if (!nav) return;
+    var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isExpanded));
+    nav.classList.toggle('hidden');
+  });
 </script>
