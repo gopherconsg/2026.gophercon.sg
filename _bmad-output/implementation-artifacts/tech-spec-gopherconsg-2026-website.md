@@ -1079,7 +1079,7 @@ Changes made after initial implementation, during visual review:
 
 ### Font Changes
 
-8. **Dropped Inter:** Body font changed from Inter to system font stack (`Helvetica Neue, Arial, ui-sans-serif, system-ui, sans-serif`). Inter removed from Google Fonts link.
+8. **Body font to system stack:** Body font changed from Inter to system font stack (`Helvetica Neue, Arial, ui-sans-serif, system-ui, sans-serif`). Inter retained for headings (`--font-heading`) and as display font fallback. Google Fonts link loads `Dangrek` and `Inter:wght@400;500;600;700` only — Merriweather dropped entirely.
 9. **Nav CTA button:** Uses Dangrek font (`font-family: var(--font-display)`).
 
 ### eventStatus Behavior Change
@@ -1090,7 +1090,7 @@ Changes made after initial implementation, during visual review:
 
 11. **WorkshopEntry instructor photo:** Fixed 100px → 170px per spec.
 12. **Tito dev mode script:** Added `is:inline` directive to prevent Astro from processing the script tag.
-13. **`<Image />` dimensions:** Added explicit `width`/`height` props to all `<Image />` components (SpeakerCard: 120×120, SpeakerProfile: 170×170, ScheduleEntry thumbnails: 50×50, WorkshopEntry instructor: 170×170).
+13. **`<Image />` dimensions:** Explicit `width`/`height` props on all `<Image />` components: SpeakerCard 120×120, SpeakerProfile 80×80, ScheduleEntry thumbnails 32×32, WorkshopEntry card header 80×80, WorkshopEntry instructor bio 120×120 (in 100px container).
 14. **Sponsors double CTA:** Fixed — `sponsorCtaHtml` now renders once (inside sponsor tiers block or as empty state, not both).
 
 ### Config Restructuring
@@ -1122,3 +1122,23 @@ Changes made after initial implementation, during visual review:
 26. **Restored `execCommand` clipboard fallback:** The copy-link `is:inline` script in BaseLayout now uses `navigator.clipboard.writeText()` with a `document.execCommand('copy')` textarea fallback for non-secure contexts. The script is marked `is:inline` to run as a classic script (not an Astro module), ensuring reliable event delegation across all pages.
 
 27. **Added `@` path alias:** `tsconfig.json` now maps `@/*` to `src/*`. All relative imports across the codebase updated to use `@/` prefix (e.g., `import { content } from "@/lib/data"`), eliminating fragile `../../` chains especially in the `components/index/` subfolder.
+
+### Workshop Redesign & Data
+
+28. **Workshop card redesign (replaces timeline layout):** Workshops no longer use `Timeline.astro`. Each workshop rendered as a standalone card in `WorkshopEntry.astro` using Tailwind utility classes. Card structure: gradient header (80×80 instructor photo with `findSpeakerImage` fallback initial, title, date/time with icon badges), body with overview, always-expanded "Full Curriculum" and "About the Instructor" bordered sections, prerequisites callout, venue footer with map marker icon. Description split at first `####` heading. Cards have `scroll-mt-36` to clear both sticky header and sticky workshop nav. Markdown content styled via Astro scoped `<style>` with `:global()` selectors.
+
+29. **Sticky workshop jump navigation:** When more than one workshop exists, `workshops.astro` renders `#workshop-nav`: `sticky top-[var(--header-height)]` with `backdrop-blur`. Desktop always shows pill links. Mobile shows all workshop pills initially (so visitors see every option), then swaps to a compact `<select>` dropdown with IntersectionObserver scroll-tracking once `scrollY > 80`. Background transitions from transparent to `rgba(255,255,255,0.95)` via `data-scrolled` attribute. Display switching via CSS `#workshop-nav[data-scrolled]` selectors in `<style is:inline>`. Pills always use grey text (`#667085`) on semi-opaque white (`rgba(255,255,255,0.85)`) for legibility against both gradient and white page.
+
+30. **Updated workshop data for 2026:** Replaced 2025 workshops (Hardware Hacking with TinyGo by Ron Evans, Manuel de la Peña's workshop) with 2026 workshops (Ultimate Software Design with William Kennedy, Data Engineering with Miriah Peterson). Updated all titles, descriptions, dates, venues, bios, and prerequisites.
+
+### Build & Config Corrections
+
+31. **`vite-plugin-toml` named export:** `astro.config.mjs` imports as `import { ViteToml as toml } from "vite-plugin-toml"` (named export), not the default import shown in the original Astro Config Pattern section.
+
+32. **TOML module declaration uses `unknown`:** `src/env.d.ts` declares `*.toml` modules as `Record<string, unknown>` (not `any`) to satisfy Biome's `noExplicitAny` rule.
+
+33. **Tito CSS link omitted:** No explicit `<link>` to `css.tito.io/v2` in `<head>` — Tito loads its own CSS dynamically at runtime. The endpoint was unreliable/404.
+
+34. **Merriweather removed from Google Fonts:** Google Fonts link loads only `Dangrek` and `Inter:wght@400;500;600;700`. Merriweather was dropped during the font simplification (see #8).
+
+35. **eventStatus set to `"live"`:** Config changed from initial `"upcoming"` to `"live"`, enabling Tito widget, ticket section, header "Get Your Tickets" CTA, and sub-page ticket CTAs.

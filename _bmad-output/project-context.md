@@ -1,7 +1,7 @@
 ---
 project_name: '2026.gophercon.sg'
 user_name: 'Valentine'
-date: '2026-02-24'
+date: '2026-03-06'
 status: 'complete'
 sections_completed: ['technology_stack', 'critical_implementation_rules', 'cross_file_dependencies']
 rule_count: 78
@@ -184,7 +184,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 
 ### Code Quality & Style
 - Biome handles all formatting and linting — 2-space indent, organized imports. No ESLint, no Prettier
-- Font usage: Dangrek = display/hero/venue, Inter = headings/schedule times/body, Source Code Pro = break entries
+- Font usage: Dangrek = display/hero/venue, Inter = headings (h1-h6), system font stack (Helvetica Neue, Arial) = body/UI text, Source Code Pro = break entries (CSS-only, not loaded from Google Fonts)
 - Responsive: `md:` (768px) is the primary breakpoint used consistently across all components
 - **Overflow prevention:** `html, body { overflow-x: hidden; touch-action: manipulation; }` in `global.css` — safety net against horizontal scroll and prevents double-tap zoom on mobile (preserves pinch-to-zoom). Header uses `height: auto; min-height: 5rem` to accommodate mobile nav expansion. Mobile nav dropdown centers CTA button via `text-align: center`
 - **VenueInfo responsive text:** `.venue-heading` class wraps text on mobile (`overflow-wrap: break-word`) and applies `white-space: nowrap` only at `min-width: 768px` — prevents "Pre-conference Workshops" from causing horizontal scroll on mobile
