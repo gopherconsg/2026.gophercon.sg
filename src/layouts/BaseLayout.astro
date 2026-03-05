@@ -2,7 +2,7 @@
 import "@/styles/global.css";
 import Footer from "@/components/Footer.astro";
 import Header from "@/components/Header.astro";
-import { siteConfig, isLive } from "@/config";
+import { isLive, siteConfig } from "@/config";
 
 interface Props {
   title?: string;
@@ -26,7 +26,7 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <link
-      href="https://fonts.googleapis.com/css2?family=Dangrek&family=Merriweather:wght@400;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Dangrek&family=Inter:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />

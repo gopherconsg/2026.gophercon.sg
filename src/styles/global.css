@@ -10,7 +10,7 @@
   --color-body-text: #1d2939;
 
   --font-display: "Dangrek", "Inter", "Helvetica Neue", Arial, sans-serif;
-  --font-heading: "Merriweather", Georgia, serif;
+  --font-heading: "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Source Code Pro", "Inconsolata", Courier, monospace;
 }
@@ -392,83 +392,60 @@ p {
 }
 
 /* ============================================================
-   Timeline Layout
+   Timeline Layout (mockup-style left-aligned)
    ============================================================ */
 .timeline {
+  max-width: 800px;
+  margin: 0 auto;
   position: relative;
-  padding: 1rem 0;
+  padding-left: 2rem;
 }
 
-/* Vertical line — desktop only */
-@media (min-width: 768px) {
-  .timeline::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 25%;
-    width: 1px;
-    background: #272727;
-  }
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #d0dbe6;
+  border-radius: 2px;
 }
 
 .timeline-entry {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  padding: 1.5rem 0;
+  padding: 0 0 2rem 2rem;
   scroll-margin-top: 5rem;
 }
 
-@media (min-width: 768px) {
-  .timeline-entry {
-    flex-direction: row;
-  }
+.timeline-entry::before {
+  content: "";
+  position: absolute;
+  left: -2rem;
+  top: 0.3rem;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--color-brand-blue);
+  border: 3px solid #fff;
+  transform: translateX(-5px);
 }
 
-/* Dot marker — desktop only */
-@media (min-width: 768px) {
-  .timeline-entry::before {
-    content: "";
-    position: absolute;
-    left: 25%;
-    top: 2rem;
-    width: 15px;
-    height: 15px;
-    background: #272727;
-    border-radius: 50%;
-    margin-left: -7px;
-    z-index: 1;
-  }
+.timeline-entry-break::before,
+.timeline-entry-meta::before {
+  background: #f0b300;
 }
 
 .timeline-time {
-  font-family: var(--font-heading);
-  color: #33b0c0;
+  font-size: 0.85rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
-}
-
-@media (min-width: 768px) {
-  .timeline-time {
-    width: 25%;
-    text-align: right;
-    padding-right: 3rem;
-    margin-bottom: 0;
-    flex-shrink: 0;
-  }
+  color: var(--color-brand-blue);
+  margin-bottom: 0.25rem;
 }
 
 .timeline-content {
   word-wrap: break-word;
   overflow-wrap: break-word;
-}
-
-@media (min-width: 768px) {
-  .timeline-content {
-    padding-left: 3rem;
-    flex: 1;
-  }
 }
 
 .timeline-entry-break .timeline-content h3,
@@ -482,14 +459,49 @@ p {
   font-weight: 600;
 }
 
+.timeline-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+/* Timeline break pill (badge style) */
+.timeline-break-pill {
+  background: #e8f7fc;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #007d9c;
+}
+
+/* Timeline description */
+.timeline-desc {
+  color: #555;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  line-height: 1.6;
+}
+
+.timeline-desc p {
+  margin-bottom: 0.5rem;
+}
+
+/* Timeline speaker inline row */
+.timeline-speaker-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
 /* Speaker thumbnails in timeline */
 .timeline-speaker-thumb {
-  width: 50px;
-  height: 50px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   overflow: hidden;
   display: inline-block;
-  margin-right: 1.5em;
   flex-shrink: 0;
 }
 
@@ -497,6 +509,156 @@ p {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* ============================================================
+   Schedule Tabs
+   ============================================================ */
+.schedule-tab {
+  padding: 0.65rem 1.5rem;
+  border-radius: 50px;
+  border: 2px solid #e0e0e0;
+  background: #fff;
+  color: var(--color-body-text);
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.schedule-tab:hover,
+.schedule-tab.active {
+  border-color: var(--color-brand-blue);
+  background: #e8f7fc;
+  color: var(--color-brand-blue);
+}
+
+/* ============================================================
+   Speakers Page — Thumbnail Row
+   ============================================================ */
+.speakers-row {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding-bottom: 1rem;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1200px) {
+  .speakers-row {
+    flex-wrap: wrap;
+  }
+}
+
+.speaker-thumb {
+  flex: 0 0 auto;
+  width: 140px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s;
+}
+
+.speaker-thumb:hover {
+  transform: translateY(-4px);
+}
+
+.speaker-thumb-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 3px solid var(--color-brand-blue);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.speaker-thumb:hover .speaker-thumb-img {
+  border-color: var(--color-brand-red);
+  box-shadow: 0 4px 16px rgba(20, 200, 224, 0.3);
+}
+
+/* ============================================================
+   Speakers Page — Detail Cards Grid
+   ============================================================ */
+.speakers-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.speaker-detail-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s, box-shadow 0.2s;
+  scroll-margin-top: 5rem;
+}
+
+.speaker-detail-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.speaker-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.speaker-keynote {
+  color: var(--color-brand-red);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.speaker-talk-title {
+  color: #007d9c;
+  font-weight: 600;
+  margin: 0.75rem 0 0.5rem;
+  font-size: 1rem;
+}
+
+.speaker-talk-title a {
+  color: inherit;
+}
+
+.speaker-bio {
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.speaker-bio p {
+  margin-bottom: 0.5rem;
+}
+
+/* ============================================================
+   Section Heading with Underline Decoration
+   ============================================================ */
+.section-heading-underline {
+  display: inline-block;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.section-heading-underline::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  background: var(--color-brand-blue);
+  border-radius: 2px;
 }
 
 /* ============================================================

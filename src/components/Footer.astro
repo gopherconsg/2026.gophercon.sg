@@ -1,7 +1,7 @@
 ---
+import { content } from "@/lib/data";
 import { Icon } from "astro-icon/components";
 import { marked } from "marked";
-import { content } from "@/lib/data";
 const footerConfig = content.footer;
 
 const copyright1Html = marked.parseInline(footerConfig.copyright1);

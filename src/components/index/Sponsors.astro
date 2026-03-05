@@ -1,8 +1,8 @@
 ---
 import { Image } from "astro:assets";
-import { marked } from "marked";
 import { isArchived } from "@/config";
 import { content, sponsors } from "@/lib/data";
+import { marked } from "marked";
 const sponsorCtaText = content.sponsors.ctaText;
 
 const sponsorCtaHtml = marked.parse(sponsorCtaText);

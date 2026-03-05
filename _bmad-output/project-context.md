@@ -112,12 +112,12 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - All three must agree on: `.copy-link` (button class), `data-href` (attribute), `.copy-link-tooltip` (tooltip class), `.copied` (active class)
 
 ### Timeline Layout
-- Shared `Timeline.astro` wrapper with vertical line at 25% via `::before` (desktop only, `md:` breakpoint)
+- Shared `Timeline.astro` wrapper with left-aligned vertical line via `::before` (always visible, all viewports)
 - `ScheduleEntry.astro` and `WorkshopEntry.astro` are timeline children
-- Desktop: time left (25% width, Merriweather, `#33b0c0`), dot marker on line, content right
-- Mobile (`< md`): stacked layout, time above content, no line, no dots
+- Left-aligned line with dot markers, time displayed as text above content, break items styled as pills (`.timeline-break-pill`)
 - All timeline entries have `scroll-margin-top: 5rem` to clear sticky header
 - Break/meta entries: monospace font, `font-weight: 600`. Talk entries: body font, `font-weight: 600`
+- Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`)
 
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)
@@ -135,7 +135,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 
 ### Code Quality & Style
 - Biome handles all formatting and linting — 2-space indent, organized imports. No ESLint, no Prettier
-- Font usage: Dangrek = display/hero/venue, Merriweather = headings/schedule times, system sans-serif = body, Source Code Pro = break entries
+- Font usage: Dangrek = display/hero/venue, Inter = headings/schedule times/body, Source Code Pro = break entries
 - Responsive: `md:` (768px) is the primary breakpoint used consistently across all components
 - Layout: `.container` class for page-width wrapper — don't reinvent it
 
@@ -144,6 +144,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ## Cross-File Dependencies (What Changes Together)
 
 - **Add a speaker:** `speakers.toml` + image file in `src/assets/images/speakers/`
+- **Speakers page layout:** Horizontal thumbnail row at top + detail card grid below (`.speakers-row`, `.speakers-detail-grid`, `.speaker-detail-card`)
 - **Add a schedule entry:** `schedule.toml` only (speaker images resolve from existing photos)
 - **Add a workshop:** `workshops.toml` + instructor image in `src/assets/images/speakers/` (if not already there)
 - **Add a sponsor:** `sponsors.toml` + logo file in `src/assets/images/sponsors/`
@@ -176,4 +177,4 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Update when technology stack or patterns change
 - Remove rules that become obvious over time
 
-Last Updated: 2026-02-24
+Last Updated: 2026-03-05

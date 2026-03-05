@@ -5,14 +5,20 @@ export const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
   { eager: true },
 );
 
-export function resolveSpeakerImage(imageMap: ImageMap, filename: string): ImageMetadata {
+export function resolveSpeakerImage(
+  imageMap: ImageMap,
+  filename: string,
+): ImageMetadata {
   const key = `/src/assets/images/speakers/${filename}`;
   const img = imageMap[key];
   if (!img) throw new Error(`Speaker image not found: ${filename}`);
   return img.default;
 }
 
-export function findSpeakerImage(imageMap: ImageMap, filename: string): ImageMetadata | null {
+export function findSpeakerImage(
+  imageMap: ImageMap,
+  filename: string,
+): ImageMetadata | null {
   const key = `/src/assets/images/speakers/${filename}`;
   return imageMap[key]?.default ?? null;
 }

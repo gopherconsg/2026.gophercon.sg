@@ -14,14 +14,22 @@ import { speakerImages } from "@/lib/images";
 >
   <div class="page-bg">
     <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
-      <h1 style="font-family: var(--font-heading); margin-bottom: 2rem;">Schedule</h1>
+      <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Conference Schedule</h1>
+
+      <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
+        <a href="/schedule" class="schedule-tab active">Conference</a>
+        <a href="/workshops" class="schedule-tab">Workshops</a>
+      </div>
 
       {schedule.length > 0 ? (
-        <Timeline>
-          {schedule.map((entry) => (
-            <ScheduleEntry entry={entry} imageMap={speakerImages} />
-          ))}
-        </Timeline>
+        <>
+          <p style="text-align: center; margin-bottom: 2rem; color: #888; font-style: italic; font-size: 0.95rem;">Schedule is subject to change.</p>
+          <Timeline>
+            {schedule.map((entry) => (
+              <ScheduleEntry entry={entry} imageMap={speakerImages} />
+            ))}
+          </Timeline>
+        </>
       ) : (
         <ComingSoon message="Schedule" />
       )}

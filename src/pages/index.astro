@@ -1,6 +1,6 @@
 ---
-import CodeOfConduct from "@/components/index/CodeOfConduct.astro";
 import ComingSoon from "@/components/ComingSoon.astro";
+import CodeOfConduct from "@/components/index/CodeOfConduct.astro";
 import Hero from "@/components/index/Hero.astro";
 import SpeakerCard from "@/components/index/SpeakerCard.astro";
 import Sponsors from "@/components/index/Sponsors.astro";
@@ -24,7 +24,7 @@ import { speakerImages } from "@/lib/images";
 
   <section class="speakers" style="margin-bottom: 4rem;">
     <div class="container text-center">
-      <h2 style="padding-top: 2rem; margin-bottom: 3rem; text-align: center;">Our Speakers</h2>
+      <h2 class="pt-8 mb-12 text-center md:pt-40 md:mb-24">Our Speakers</h2>
 
       {speakers.length > 0 ? (
         <ul class="speakers-flex">

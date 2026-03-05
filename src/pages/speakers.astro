@@ -1,33 +1,68 @@
 ---
+import { Image } from "astro:assets";
 import ComingSoon from "@/components/ComingSoon.astro";
 import SpeakerProfile from "@/components/SpeakerProfile.astro";
 import TicketCta from "@/components/TicketCta.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { speakers } from "@/lib/data";
-import { speakerImages } from "@/lib/images";
+import { resolveSpeakerImage, speakerImages } from "@/lib/images";
 ---
 
 <BaseLayout
   title="Speakers"
   description="Meet the speakers at GopherCon Singapore 2026"
 >
-  <div class="page-bg">
-    <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
-      <h1 style="font-family: var(--font-heading); margin-bottom: 2rem;">
-        Our Speakers{speakers.length > 0 ? ` (${speakers.length})` : ''}
-      </h1>
-
-      {speakers.length > 0 ? (
-        <div>
-          {speakers.map((speaker) => (
-            <SpeakerProfile speaker={speaker} imageMap={speakerImages} />
-          ))}
+  {speakers.length > 0 ? (
+    <>
+      {/* Horizontal Speaker Thumbnails */}
+      <section class="page-bg" style="padding: 3rem 0 2rem;">
+        <div style="max-width: 1400px; margin: 0 auto; padding: 0 1.5rem;">
+          <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Speakers</h1>
+          <div class="speakers-row">
+            {speakers.map((speaker) => (
+              <a href={`#${speaker.id}`} class="speaker-thumb">
+                <div class="speaker-thumb-img">
+                  <Image
+                    src={resolveSpeakerImage(speakerImages, speaker.image)}
+                    alt={speaker.name}
+                    width={100}
+                    height={100}
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                <h4 style="margin-top: 0.6rem; font-size: 0.82rem; font-weight: 600; line-height: 1.2;">{speaker.name}</h4>
+                {speaker.company && (
+                  <div style="font-size: 0.72rem; color: #888; margin-top: 0.15rem;">{speaker.company}</div>
+                )}
+              </a>
+            ))}
+          </div>
         </div>
-      ) : (
-        <ComingSoon message="Speaker lineup" />
-      )}
+      </section>
 
-      <TicketCta />
+      {/* Detail Cards Grid */}
+      <section style="padding: 4rem 0; background: #f4f8fb;">
+        <div class="container">
+          <div style="text-align: center; margin-bottom: 3rem;">
+            <h2 class="section-heading-underline">Meet Our Speakers</h2>
+            <p style="color: #555; margin-top: 1rem; font-size: 1.1rem;"><em>More speakers will be announced as they are confirmed.</em></p>
+          </div>
+          <div class="speakers-detail-grid">
+            {speakers.map((speaker) => (
+              <SpeakerProfile speaker={speaker} imageMap={speakerImages} />
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  ) : (
+    <div class="page-bg">
+      <div class="container" style="padding: 3rem 0 4rem;">
+        <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Speakers</h1>
+        <ComingSoon message="Speaker lineup" />
+      </div>
     </div>
-  </div>
+  )}
+
+  <TicketCta />
 </BaseLayout>

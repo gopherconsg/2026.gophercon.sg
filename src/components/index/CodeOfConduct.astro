@@ -1,6 +1,6 @@
 ---
-import { marked } from "marked";
 import { content } from "@/lib/data";
+import { marked } from "marked";
 const codeOfConductConfig = content.codeOfConduct;
 
 const contentHtml = marked.parse(codeOfConductConfig.content);
@@ -9,7 +9,7 @@ const contentHtml = marked.parse(codeOfConductConfig.content);
 <section style="padding: 4rem 0; background: #f9fafb;">
   <div class="container">
     <div style="max-width: 800px; margin: 0 auto;">
-      <h2 style="margin-bottom: 1.5rem;">Code of Conduct</h2>
+      <h2 style="margin-bottom: 1.5rem; text-align: center;">Code of Conduct</h2>
       <div set:html={contentHtml} />
     </div>
   </div>

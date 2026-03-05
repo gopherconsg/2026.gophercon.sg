@@ -1,9 +1,9 @@
 ---
 import { Image } from "astro:assets";
+import { type ImageMap, findSpeakerImage } from "@/lib/images";
+import type { Workshop } from "@/types";
 import { Icon } from "astro-icon/components";
 import { marked } from "marked";
-import { findSpeakerImage, type ImageMap } from "@/lib/images";
-import type { Workshop } from "@/types";
 
 interface Props {
   workshop: Workshop;
@@ -38,6 +38,7 @@ const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
       </h3>
       <span class="copy-link-wrapper">
         <button
+          type="button"
           class="copy-link"
           data-href={`/workshops#${workshop.id}`}
           aria-label="Copy link to this workshop"

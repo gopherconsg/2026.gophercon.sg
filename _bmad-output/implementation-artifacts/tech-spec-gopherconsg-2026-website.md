@@ -82,7 +82,7 @@ The GopherCon Singapore conference website needs to be rebuilt for 2026. The exi
 
 ### Solution
 
-Build a new Astro site with Tailwind v4 in the project root, combining the best of the 2019 and 2025 sites. Use TOML data files for content (imported directly via `vite-plugin-toml`, consistent with existing Hugo sites), `astro:assets` for image optimization, timeline layouts (from 2019) for schedule and workshops, the 2025 visual brand (hero, colors, Dangrek font) enhanced with Merriweather serif headings (from 2019), and Biome for linting. Integrate Tito ticketing, Snowplow analytics, and astro-icon/Iconify/FA4 for icons. Seed with 2025 content data updated to 2026.
+Build a new Astro site with Tailwind v4 in the project root, combining the best of the 2019 and 2025 sites. Use TOML data files for content (imported directly via `vite-plugin-toml`, consistent with existing Hugo sites), `astro:assets` for image optimization, timeline layouts for schedule and workshops, the 2025 visual brand (hero, colors, Dangrek font) with Inter for headings and body text, and Biome for linting. Integrate Tito ticketing, Snowplow analytics, and astro-icon/Iconify/FA4 for icons. Seed with 2025 content data updated to 2026.
 
 ### Scope
 
@@ -90,10 +90,10 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
 - New Astro + Tailwind v4 project in the workspace root
 - TOML data files: `speakers.toml`, `schedule.toml`, `workshops.toml`, `sponsors.toml` under `src/data/`, imported directly via `vite-plugin-toml` with TypeScript interfaces for type safety, plus `config.ts` for typed site config. Markdown fields rendered via `marked`.
 - Pages: Home (`/`), `/speakers`, `/schedule`, `/workshops`
-- Visual identity: 2025 hero (waves, mascot, Dangrek) + 2019 polish (Merriweather headings, circular speaker photos, timeline layouts)
-- Three-font stack: Dangrek (hero/venue display), Merriweather (headings, schedule times, page titles), Inter (body text)
-- Timeline layout for `/schedule` (vertical line, dot markers, time left, content right, speaker thumbnails, monospace break headers)
-- Timeline layout for `/workshops` (date/time left, description right, venue with location icon, instructor photo + bio)
+- Visual identity: 2025 hero (waves, mascot, Dangrek) + circular speaker photos, timeline layouts
+- Two-font stack: Dangrek (hero/venue display), Inter (headings, body, schedule times, page titles)
+- Timeline layout for `/schedule` (left-aligned vertical line, dot markers, break pills, speaker thumbnails, monospace break headers)
+- Timeline layout for `/workshops` (same left-aligned style, date/time as text, venue with location icon, instructor photo + bio)
 - Circular cropped speaker photos + keynote badge on `/speakers` page
 - Previous year video embed option on home page hero
 - "Become a partner" CTA in sponsors section
@@ -133,13 +133,13 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
   - `public/img/` — All hero section images (mascot, stars, wave layers), CSS background images (speaker background pattern, partner wave/bg), and logos. Referenced directly in CSS `background-image` rules or plain `<img>` tags. Hero images stay here because the hero is a visual composition with CSS animations and absolute positioning — `astro:assets` optimization would add complexity without meaningful benefit.
 - **Visual brand — best of both years:**
   - From 2025: Hero section with wave background layers, mascot popup animation, star burst, brand colors (`--brand-blue: #14C8E0`, `--brand-red: #EE4059`, `--link-blue: #0F71BB`), Dangrek display font for hero/venue.
-  - From 2019: Merriweather serif font for headings/schedule times/page titles (polished editorial feel), circular speaker photos, timeline layouts, keynote badge, location icon treatment, social icons in footer, "become a partner" CTA, previous year video embed.
-  - Combined: Three-font stack — Dangrek (display), Merriweather (headings), Inter (body).
-- **Timeline component (shared by schedule + workshops):** Vertical line at 25% width, circular dot markers, time/date on left, content on right. For schedule: speaker thumbnails (50px circular), monospace font for break entries. For workshops: full description, venue with location SVG icon, instructor section with circular photo + bio.
-  - **Mobile strategy:** On small screens (`< md`), the timeline switches to a stacked layout — time above content, no vertical line, no dot markers. The timeline visual treatment (line + dots) is desktop-only (`md:` and up). Do NOT replicate the 2019 mobile behavior which was broken.
+  - From 2019: Circular speaker photos, timeline layouts, keynote badge, location icon treatment, social icons in footer, "become a partner" CTA, previous year video embed.
+  - Combined: Two-font stack — Dangrek (display), Inter (headings + body).
+- **Timeline component (shared by schedule + workshops):** Left-aligned vertical line with circular dot markers, time displayed as text above content, break items styled as pills with badge background. For schedule: speaker thumbnails (32px circular), monospace font for break entries. For workshops: full description, venue with location SVG icon, instructor section with circular photo + bio.
+  - **Layout:** All viewport sizes use the same left-aligned layout — vertical line on the left, dot markers, content indented to the right. No separate time column.
 - **Component structure:** Header (responsive nav + CTA button), Hero (with tagline, CTA button, optional video embed), Venue info, Speakers grid (CSS Grid, auto-fill/minmax), Tickets (Tito embed + `<noscript>` fallback with direct link to ti.to event page), Code of Conduct, Sponsors by tier (with "become a partner" CTA), Footer (social icons, copyright).
   - **Sponsor tier display order** is hardcoded in `Sponsors.astro` (platinum → diversity → gold → workshop), not derived from TOML key order.
-  - **Auto-derived counts:** Section headings for speakers and workshops can display counts auto-derived from data file lengths (e.g., "Our Speakers (13)" or "2 Workshops"). No new data fields needed — just `speakers.length` and `workshops.length` in the component.
+  - **Auto-derived counts:** Section headings for workshops can display counts auto-derived from data file lengths (e.g., "2 Workshops"). The speakers page uses a simple "Speakers" heading without count.
 - **Empty state handling (data-driven, not status-driven):** Components conditionally render based on data presence, not `eventStatus`. If the speakers array has entries → show grid. If empty → show a centered placeholder. Same pattern for schedule, workshops, sponsors. If `eventStatus` is `"archived"` → always show sections regardless (historical content). This supports the natural conference lifecycle: announcement → speaker reveals → full program → archive.
   - **Empty state placeholder text:**
     - Speakers: "Speaker lineup coming soon. Follow us on Twitter for announcements." (link to `footerConfig.twitterURL`)
@@ -152,11 +152,11 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
     - `"live"`: Tito widget and ticket section visible. Tito script loaded in `<head>`. Header shows "Get Your Tickets" CTA. Sub-pages show "Get your ticket →" CTA at bottom.
     - `"archived"`: Tito widget and ticket section hidden. Header shows "Watch Recordings" CTA linking to `/schedule`. "Thank you!" banner displayed above Hero on home page. Sub-page ticket CTAs hidden.
   - **Archived mode behavior:** When `eventStatus` is `"archived"`: ticket widget and Tito script hidden, header CTA button changed to "Watch Recordings" (linking to schedule page), "Thank you!" banner displayed at top of home page (above Hero). Keep implementation simple — just conditional visibility checks on `eventStatus`.
-- **Sub-pages:** `/speakers` (circular photos, keynote badge, full bios, talk links), `/schedule` (timeline layout), `/workshops` (timeline layout with venue + instructor + prerequisites callout).
+- **Sub-pages:** `/speakers` (horizontal thumbnail row, detail card grid with circular photos, keynote badge, full bios, talk links, copy-link), `/schedule` (left-aligned timeline layout with Conference/Workshops tabs), `/workshops` (same timeline layout with venue + instructor + prerequisites callout, matching tabs).
   - **Ticket CTA on sub-pages:** Each sub-page (`/speakers`, `/schedule`, `/workshops`) includes a brief CTA section at the bottom linking to `/#tickets` (e.g., "Ready to join us? Get your ticket →"). Ensures visitors who land directly on a sub-page from a shared link have a clear path to purchase.
 - **Shareable anchors:** Every schedule entry and speaker profile has a clean anchor ID. A small "copy link" icon (via astro-icon) next to each title allows attendees and speakers to easily copy a direct link for social sharing. On click, show a brief "Copied!" tooltip that fades after 1.5s (CSS transition, no JS framework needed — just toggle a class).
   - **Scroll offset:** All anchored elements (`id` attributes on schedule entries, speaker profiles) must have `scroll-margin-top` set to match the header height (e.g., `scroll-margin-top: 5rem`). This prevents content from hiding behind a sticky/fixed header when navigating via anchor links.
-- **Third-party integrations:** Tito widget (`<tito-widget event="gopherconsg/2026">`), Snowplow analytics tracker, Google Fonts (Dangrek, Merriweather, Inter).
+- **Third-party integrations:** Tito widget (`<tito-widget event="gopherconsg/2026">`), Snowplow analytics tracker, Google Fonts (Dangrek, Inter).
   - **Font loading:** Use Google Fonts `<link>` with `preconnect` for initial implementation (matches proven 2025 pattern, simpler setup). Self-hosting in `public/fonts/` is a future optimization, not required for initial build.
   - **Tito dev mode:** For local development, include `<script>TitoDevelopmentMode = true</script>` conditionally (e.g., check `import.meta.env.DEV`). The Tito script (`https://js.tito.io/v2`) loads async in `<head>`. Include a `<noscript>` fallback below the `<tito-widget>`: `<noscript><p>JavaScript is required to display tickets. <a href="https://ti.to/gopherconsg/2026">Buy tickets on ti.to</a></p></noscript>`.
   - **Snowplow analytics:** Only fires in production (not dev). Config pattern from 2025: `appId: 'gcsg2026-website'`, CloudFront endpoint `d9ca3gcsg29e9.cloudfront.net`, `discoverRootDomain: true`. Wrap in a production-only conditional (`!import.meta.env.DEV`).
