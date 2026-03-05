@@ -4,7 +4,7 @@
    Tailwind v4 Theme Tokens
    ============================================================ */
 @theme {
-  --color-brand-blue: #0891b2;
+  --color-brand-blue: #10b8d6;
   --color-brand-red: #ee4059;
   --color-link-blue: #0f71bb;
   --color-body-text: #1d2939;
@@ -61,6 +61,10 @@ h4 {
 }
 
 a {
+  text-decoration: none;
+}
+
+a:hover {
   text-decoration: underline;
 }
 
@@ -438,9 +442,9 @@ p {
 }
 
 .timeline-time {
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  color: var(--color-brand-blue);
+  color: #0e7490;
   margin-bottom: 0.25rem;
 }
 

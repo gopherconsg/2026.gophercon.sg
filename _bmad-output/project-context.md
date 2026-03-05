@@ -27,7 +27,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - **Tailwind CSS v4** (`^4.0.0`) — CSS-first config via `@theme` block in `src/styles/global.css`. No `tailwind.config.js` exists or is needed
 - Key v3→v4 differences that cause build errors:
   - `@tailwind base; @tailwind components; @tailwind utilities;` → `@import "tailwindcss";`
-  - `tailwind.config.js` theme config → `@theme { --color-brand-blue: #0891B2; }` in CSS (auto-generates utilities like `bg-brand-blue`)
+  - `tailwind.config.js` theme config → `@theme { --color-brand-blue: #10B8D6; }` in CSS (auto-generates utilities like `bg-brand-blue`)
   - `bg-opacity-*` / `text-opacity-*` → slash syntax: `bg-white/80`, `text-black/50`
 
 ### Data & Content
@@ -115,8 +115,10 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Shared `Timeline.astro` wrapper with left-aligned vertical line via `::before` (always visible, all viewports)
 - `ScheduleEntry.astro` and `WorkshopEntry.astro` are timeline children
 - Left-aligned line with dot markers, time displayed as text above content, break items styled as pills (`.timeline-break-pill`)
+- Timeline times (`.timeline-time`): `0.95rem`, bold, hardcoded `#0e7490` (darker cyan for readability) — does NOT use `--color-brand-blue`
 - All timeline entries have `scroll-margin-top: 5rem` to clear sticky header
 - Break/meta entries: monospace font, `font-weight: 600`. Talk entries: body font, `font-weight: 600`
+- Links are not underlined by default — underline appears on hover only
 - Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`): active tab is solid brand-blue with white text; inactive is white with grey border
 
 ### Component Organization
