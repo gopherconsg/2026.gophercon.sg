@@ -159,9 +159,10 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Internal grid layout (workshop dates + conference dates side by side) uses Astro scoped `<style>`
 
 ### Header Height
-- Desktop header height now matches mobile (~85px) — no extra vertical padding on desktop nav items
+- `--header-height: 85px` defined in `@theme` in `global.css` — used for both `min-height` on `.header` and `top` on the workshop nav
+- Desktop and mobile header heights are identical — no extra vertical padding on desktop nav items
 - `.menu-item a` uses the same `padding: 0.5rem 0` at all breakpoints; only `text-align: left` changes on desktop
-- Workshop nav uses `top-[5.5rem]` to sit just below the header; timeline entries and speaker cards use matching scroll-margin values
+- Workshop nav uses `top-[var(--header-height)]` to sit flush below the header; timeline entries and speaker cards use matching `scroll-margin-top: 85px`
 
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)

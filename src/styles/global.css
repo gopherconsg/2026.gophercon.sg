@@ -9,6 +9,8 @@
   --color-link-blue: #0f71bb;
   --color-body-text: #1d2939;
 
+  --header-height: 85px;
+
   --font-display: "Dangrek", "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-heading: "Inter", "Helvetica Neue", Arial, sans-serif;
   --font-body: "Helvetica Neue", Arial, ui-sans-serif, system-ui, sans-serif;
@@ -104,7 +106,7 @@ p {
   z-index: 50;
   background: #fff;
   height: auto;
-  min-height: 5rem;
+  min-height: var(--header-height);
   display: flex;
   align-items: center;
 }
