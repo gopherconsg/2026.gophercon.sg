@@ -141,7 +141,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - All workshop styling uses Tailwind utility classes directly on elements — no custom CSS classes in `global.css`. Markdown content child selectors use Astro scoped `<style>` with `:global()` (e.g., `.section-content :global(h4)`)
 - Card-based design: header with instructor photo + title + date/time, body with overview, always-expanded sections for curriculum and instructor bio
 - Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (in a bordered section with heading)
-- Sticky jump navigation in `workshops.astro`: Tailwind utility classes (`sticky top-[5.5rem] z-40 bg-white/95 backdrop-blur`) for pill links below sticky header. Uses `overflow-x: clip` on `html, body` (not `hidden`) to avoid breaking sticky positioning
+- Sticky jump navigation in `workshops.astro`: responsive design — desktop uses pill links (`hidden md:flex`), mobile uses a compact `<select>` dropdown (`md:hidden`) with IntersectionObserver to auto-track the currently visible workshop. Both are `sticky top-[var(--header-height)]` with frosted-glass background. Uses `overflow-x: clip` on `html, body` (not `hidden`) to avoid breaking sticky positioning
 - Instructor photos use `findSpeakerImage` (returns null gracefully) — missing images show a gradient fallback with the instructor’s initial
 - Workshop cards have `scroll-mt-36` (9rem) to clear both sticky header and sticky workshop nav
 - Mobile responsive via Tailwind breakpoints: `flex-col md:flex-row`, `justify-center md:justify-start`, etc.
