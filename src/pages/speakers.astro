@@ -21,7 +21,7 @@ import { speakerImages } from "@/lib/images";
           {!isLineupConfirmed && (
             <p style="text-align: center; color: #555; margin-bottom: 2rem; font-size: 1.1rem;"><em>More speakers will be announced as they are confirmed.</em></p>
           )}
-          <div class="speakers-detail-grid">
+          <div class="flex flex-wrap gap-8 justify-center">
             {speakers.map((speaker) => (
               <SpeakerProfile speaker={speaker} imageMap={speakerImages} />
             ))}

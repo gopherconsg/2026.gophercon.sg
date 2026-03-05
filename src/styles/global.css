@@ -155,7 +155,6 @@ p {
 
 @media (min-width: 768px) {
   .menu-item a {
-    padding: 1.4375rem 0;
     text-align: left;
   }
 }
@@ -346,22 +345,6 @@ p {
 }
 
 /* ============================================================
-   Venue Section
-   ============================================================ */
-.venue {
-  padding: 2rem 0;
-  background-color: var(--color-brand-blue);
-  font-family: var(--font-display);
-  color: #fff;
-}
-
-@media (min-width: 768px) {
-  .venue {
-    padding: 4rem 0;
-  }
-}
-
-/* ============================================================
    Speakers Section
    ============================================================ */
 .speakers {
@@ -372,12 +355,6 @@ p {
       rgba(217, 217, 217, 0.0) 100%
     )
     no-repeat top center / 100% 25rem;
-}
-
-.speakers-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
 }
 
 .speakers-flex {
@@ -446,7 +423,7 @@ p {
 .timeline-entry {
   position: relative;
   padding: 0 0 2rem 2rem;
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 5.5rem;
 }
 
 .timeline-entry::before {
@@ -566,140 +543,6 @@ p {
   border-color: var(--color-brand-blue);
   background: var(--color-brand-blue);
   color: #fff;
-}
-
-/* ============================================================
-   Speakers Page — Thumbnail Row
-   ============================================================ */
-.speakers-row {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  padding-bottom: 1rem;
-  -webkit-overflow-scrolling: touch;
-}
-
-@media (max-width: 1200px) {
-  .speakers-row {
-    flex-wrap: wrap;
-  }
-}
-
-.speaker-thumb {
-  flex: 0 0 auto;
-  width: 140px;
-  text-align: center;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s;
-}
-
-.speaker-thumb:hover {
-  transform: translateY(-4px);
-}
-
-.speaker-thumb-img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin: 0 auto;
-  border: 3px solid var(--color-brand-blue);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.speaker-thumb:hover .speaker-thumb-img {
-  border-color: var(--color-brand-red);
-  box-shadow: 0 4px 16px rgba(20, 200, 224, 0.3);
-}
-
-/* ============================================================
-   Speakers Page — Detail Cards Grid
-   ============================================================ */
-.speakers-detail-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-  justify-content: center;
-}
-
-.speakers-detail-grid > .speaker-detail-card {
-  flex: 1 1 340px;
-  max-width: 500px;
-}
-
-.speaker-detail-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.2s, box-shadow 0.2s;
-  scroll-margin-top: 5rem;
-}
-
-.speaker-detail-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-
-.speaker-detail-header {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  margin-bottom: 1rem;
-}
-
-.speaker-keynote {
-  color: var(--color-brand-red);
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.speaker-talk-title {
-  color: #007d9c;
-  font-weight: 600;
-  margin: 0.75rem 0 0.5rem;
-  font-size: 1rem;
-}
-
-.speaker-talk-title a {
-  color: inherit;
-}
-
-.speaker-bio {
-  color: #555;
-  font-size: 0.9rem;
-  line-height: 1.6;
-}
-
-.speaker-bio p {
-  margin-bottom: 0.5rem;
-}
-
-/* ============================================================
-   Section Heading with Underline Decoration
-   ============================================================ */
-.section-heading-underline {
-  display: inline-block;
-  position: relative;
-  padding-bottom: 0.75rem;
-}
-
-.section-heading-underline::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 4px;
-  background: var(--color-brand-blue);
-  border-radius: 2px;
 }
 
 /* ============================================================

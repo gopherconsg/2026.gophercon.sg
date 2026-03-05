@@ -131,7 +131,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - `ScheduleEntry.astro` is a timeline child
 - Left-aligned line with dot markers, time displayed as text above content, break items styled as pills (`.timeline-break-pill`)
 - Timeline times (`.timeline-time`): `0.95rem`, bold, hardcoded `#0e7490` (darker cyan for readability) — does NOT use `--color-brand-blue`
-- All timeline entries have `scroll-margin-top: 5rem` to clear sticky header
+- All timeline entries have `scroll-margin-top: 5.5rem` to clear sticky header
 - Break/meta entries: monospace font, `font-weight: 600`. Talk entries: body font, `font-weight: 600`
 - Links are not underlined by default — underline appears on hover only
 - Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`): active tab is solid brand-blue with white text; inactive is white with grey border
@@ -141,11 +141,27 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - All workshop styling uses Tailwind utility classes directly on elements — no custom CSS classes in `global.css`. Markdown content child selectors use Astro scoped `<style>` with `:global()` (e.g., `.section-content :global(h4)`)
 - Card-based design: header with instructor photo + title + date/time, body with overview, always-expanded sections for curriculum and instructor bio
 - Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (in a bordered section with heading)
-- Sticky jump navigation in `workshops.astro`: Tailwind utility classes (`sticky top-20 z-40 bg-white/95 backdrop-blur`) for pill links below sticky header. Uses `overflow-x: clip` on `html, body` (not `hidden`) to avoid breaking sticky positioning
+- Sticky jump navigation in `workshops.astro`: Tailwind utility classes (`sticky top-[5.5rem] z-40 bg-white/95 backdrop-blur`) for pill links below sticky header. Uses `overflow-x: clip` on `html, body` (not `hidden`) to avoid breaking sticky positioning
 - Instructor photos use `findSpeakerImage` (returns null gracefully) — missing images show a gradient fallback with the instructor’s initial
 - Workshop cards have `scroll-mt-36` (9rem) to clear both sticky header and sticky workshop nav
 - Mobile responsive via Tailwind breakpoints: `flex-col md:flex-row`, `justify-center md:justify-start`, etc.
-- Mobile responsive via Tailwind breakpoints: `flex-col md:flex-row`, `justify-center md:justify-start`, etc.
+
+### Speaker Detail Cards
+- `SpeakerProfile.astro` renders each speaker as a card using Tailwind utility classes — no custom CSS classes in `global.css`
+- Card with circular photo (border brand-blue), optional keynote badge, name/company, talk title link, full bio (markdown via `set:html`), social link
+- Flex layout: `flex-[1_1_340px] max-w-[500px]` inside a `flex flex-wrap gap-8 justify-center` parent in `speakers.astro`
+- Hover: `-translate-y-1` lift + enhanced shadow transition
+- Scoped `<style>` with `:global()` for `.speaker-bio :global(p)` margin
+- Cards have `scroll-mt-[5.5rem]` to clear sticky header
+
+### Venue Section
+- `VenueInfo.astro` uses Tailwind utilities for the section wrapper (`py-8 md:py-16 bg-brand-blue font-display text-white`) — no `.venue` class in `global.css`
+- Internal grid layout (workshop dates + conference dates side by side) uses Astro scoped `<style>`
+
+### Header Height
+- Desktop header height now matches mobile (~85px) — no extra vertical padding on desktop nav items
+- `.menu-item a` uses the same `padding: 0.5rem 0` at all breakpoints; only `text-align: left` changes on desktop
+- Workshop nav uses `top-[5.5rem]` to sit just below the header; timeline entries and speaker cards use matching scroll-margin values
 
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)

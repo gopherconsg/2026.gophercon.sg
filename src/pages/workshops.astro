@@ -28,7 +28,7 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
       {workshops.length > 0 ? (
         <>
           {workshops.length > 1 && (
-            <nav class="flex gap-3 justify-center flex-wrap px-4 py-3 -mx-4 mb-10 sticky top-20 z-40 bg-white/95 backdrop-blur border-b border-gray-200">
+            <nav class="flex gap-3 justify-center flex-wrap px-4 py-3 -mx-4 mb-10 sticky top-[5.5rem] z-40 bg-white/95 backdrop-blur border-b border-gray-200">
               {workshops.map((w) => (
                 <a href={`#${w.id}`} class="px-5 py-2 rounded-full border-2 border-[#d0d5dd] font-semibold text-[0.9rem] text-[#667085] bg-white transition-all duration-200 no-underline hover:border-brand-blue hover:text-brand-blue hover:no-underline">{w.title}</a>
               ))}
