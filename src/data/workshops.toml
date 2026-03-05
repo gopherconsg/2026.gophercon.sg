@@ -1,13 +1,144 @@
 [[workshops]]
-id = "hardware-hacking-with-tinygo"
+id = "software-design"
+title = "Ultimate Software Design and Engineering"
+speaker = "William Kennedy"
+speakerLink = "/speakers#bill-kennedy"
+speakerImage = "bill-kennedy.jpg"
+date = "20 May 2026"
+time = "9:00am to 5:30pm"
+venueRegistration = ""
+venueMapUrl = ""
+additional = "Lunch and tea breaks will be provided."
+speakerBio = """William Kennedy is a managing partner at Ardan Labs in Miami, Florida, a mobile, web, and systems development company. He is also a co-author of the book Go in Action, the author of the blog GoingGo.Net, and a founding member of GoBridge which is working to increase Go adoption through diversity."""
+description = """This class teaches you how to engineer production-level software in Go leveraging the power of a domain-driven, data-oriented architecture that can run in Kubernetes. From the beginning, you will pair-program and read code with the instructor as he walks through the design philosophies and guidelines for engineering software in Go.
+
+With each new feature that is discussed, you will learn how to think about, read, maintain, manage, and debug code. The core of this class is to teach you how to handle and reduce the spread of complexity in the systems you are building.
+
+If one of your biggest challenges is maintaining consistent coding standards across your codebase, maybe because team members have different levels of Go experience and are coming from different programming backgrounds, this course is for you. You will learn a set of idiomatic coding standards that everyone can adopt and apply to your existing projects.
+
+#### What a student is expected to learn:
+
+##### Deploy First Mentality:
+
+We begin to focus on service design with a focus on the ability to maintain, manage, and debug the service in Kubernetes.
+
+- Design Philosophy, Guidelines, What to Expect
+- Project Layers, Policies, and Guidelines
+- Prepare Project
+<br />
+
+##### Domain-Driven, Data-Oriented Architecture:
+
+We talk about the data-driven, data-oriented architecture. We discuss the design philosophy, guidelines, and semantics of how the three layers of App, Business, and Storage work together.
+
+- Architecture Review
+- Applying and Implementing Firewalls
+- Data Flow Trust vs Non-Trust
+- Data Shaping and Data Validation
+- Developer Isolation with Domains
+- Extending Functionality through Composition
+"""
+prerequisites = """
+- It is expected that you have been coding in Go for several months.
+- A working Go environment running on the device you will be bringing to class.
+<br />
+Recommended Preparation:
+
+- Please [clone the main repo](https://github.com/ardanlabs/service) for the class.
+- Please read the notes in the makefile for installing all the tooling and testing the code before class.
+- Please email the instructor, [Bill Kennedy](mailto:bill@ardanlabs.com) for assistance."""
+venue = """
+To be confirmed
+"""
+
+[[workshops]]
+id = "practical-ai"
+title = "Ultimate Practical AI"
+speaker = "Florin Pățan"
+speakerLink = "/speakers#florin-patan"
+speakerImage = "florin-patan.jpg"
+date = "21 May 2026"
+time = "9:00am to 5:30pm"
+venueRegistration = ""
+venueMapUrl = ""
+additional = "Lunch and tea breaks will be provided."
+speakerBio = """
+Florin Pățan is a consultant at Ardan Labs with over 12 years of Go experience.
+
+He's worked across distributed systems, application architecture, observability, and cloud infrastructure —
+with time spent at fintech, healthcare, and AI companies like Bread Financial, Press Ganey, drand, and PredictionGuard.
+
+He has worked AI startups and enterprise companies where he built the infrastructure from the ground up and designed
+the systems backend from scratch, taking an early-stage platform to something production teams could actually rely on.
+Before Ardan Labs, he was at JetBrains as a Developer Advocate for Go — contributing to the Delve debugger and helping
+make GoLand the IDE that thousands of Go developers use daily.
+
+Florin's seen firsthand how the jump from AI prototype to production system is where most projects fall apart.
+This workshop is built around the patterns and lessons he's picked up from shipping AI systems at companies where
+things have to work."""
+description = """This is a hands-on, full-day workshop where you'll build a complete AI-powered application in Go — from first prompt to production-ready system.
+
+You'll start by connecting your Go application to a language model and grounding its responses in real data using Retrieval-Augmented Generation (RAG). Then you'll give it the ability to act on the world through Tool Calling, Function Execution, and the Model Context Protocol (MCP). With the core system working, you'll learn the advanced optimization techniques that separate prototypes from production — speculative decoding, semantic caching, and intelligent model routing.
+
+Finally, you'll harden everything against the security threats unique to LLM-powered systems, from prompt injection to data exfiltration.
+
+Each part builds on the last.
+
+By the end of the day, you won't just understand these concepts — you'll have built, optimized, and secured a working system that retrieves, reasons, and acts.
+
+#### What a Student Is Expected to Learn
+
+By the end of this workshop, you'll leave with working code, a production-ready mindset for AI-powered Go applications, and hands-on experience across the full stack: retrieval, action, performance, and security. 🚀
+
+##### Part 1: Ground It — Retrieval-Augmented Generation (RAG) in Go
+
+- **Understanding RAG Concepts** – Improve responses by dynamically retrieving relevant context rather than relying solely on static training data.
+- **Ingesting and Processing Documents** – Build pipelines to index and retrieve documents from client systems.
+- **Interacting with AI-Compatible APIs** – Learn how Go applications can connect to local inference engines, OpenAI-compatible servers, or cloud AI services.
+- **Optimizing Performance & Latency** – Implement caching, batching, and parallel processing to enhance efficiency.
+- **Using Vector Databases** – Store and search embeddings with tools such as Chroma, Pinecone, Weaviate, Milvus or pgvector in PostgreSQL.
+
+##### Part 2: Make It Act — Tool Calling, Function Execution & MCP in Go
+
+- **How AI Uses Tool Calling** – Enable external system control by allowing AI to invoke predefined functions in Go.
+- **Building Function Calls with OpenAI-Compatible Systems** – Define structured function inputs and outputs for AI-driven interactions.
+- **Connecting to External APIs & Databases** – Trigger real-world actions, query databases, and automate workflows.
+- **Handling Responses & Errors** – Ensure safe and reliable execution of AI-invoked functions.
+- **Introduction to the Model Context Protocol (MCP)** – Understand how MCP standardizes the way models discover and invoke tools. Build a simple MCP server in Go that exposes tools to any MCP-compatible client, showing how it compares to direct function calling.
+
+##### Part 3: Make It Fast — Advanced Optimizations
+
+- **Speculative Decoding** – Use a smaller draft model alongside a larger verification model to get near-large-model quality at small-model speeds. Applicable to both local inference libraries and serving engines that support it natively.
+- **Automatic Prefix Caching & KV Cache Reuse** – Structure multi-turn conversations so shared prefixes (system prompts, conversation history) are cached and reused across requests, avoiding redundant computation. Manage message arrays carefully to keep prefixes stable across turns.
+- **Semantic Caching** – Embed user queries and check vector similarity against cached query-response pairs, returning cached answers for semantically equivalent questions without running inference — implementable in Go with any embedding model or API.
+- **Adaptive Retrieval** – Use a lightweight classifier or a small local model to decide whether RAG context is needed at all, avoiding irrelevant context injection that can degrade response quality.
+- **Cascading Model Routing** – Route queries to different models based on complexity: a fast small model for simple questions, escalating to a larger model only when confidence is low, implemented as Go middleware.
+
+##### Part 4: Lock It Down — Securing LLM-Powered Go Applications
+
+- **Prompt Injection Defenses** – Understand direct and indirect prompt injection attacks, and implement role separation, input sanitization, and detection strategies. Demonstrate how injected instructions in user input or retrieved documents can hijack model behavior.
+- **Securing Tool Calls** – Apply least-privilege principles to exposed functions, prevent command injection from model output, and enforce authorization checks before execution.
+- **RAG Pipeline Security** – Guard against data poisoning and indirect injection via ingested documents. Show how a malicious document in the vector DB can manipulate retrieval results and model responses, and defend with access controls, relevance thresholds, and content isolation.
+- **Output Sanitization & Exfiltration Prevention** – Sanitize model-generated content before rendering in web UIs to prevent XSS. Defend against data exfiltration where the model encodes sensitive retrieved data into tool call arguments targeting attacker-controlled endpoints, using domain allowlists and egress filtering.
+- **Chain-of-Call Escalation** – Show how a model can chain multiple tool calls in a single turn to escalate privileges. Implement call budgets, supervision layers, and human-in-the-loop checkpoints in Go.
+"""
+prerequisites = """
+Don't worry if you don't have the hardware required for this.
+The instructor will provide everything you need to follow along and be able to run the examples.
+"""
+venue = """
+To be confirmed
+"""
+
+[[workshops]]
+id = "tinygo"
 title = "Hardware Hacking with TinyGo"
 speaker = "Ron Evans"
 speakerLink = "/speakers#ron-evans"
 speakerImage = "ron-evans.webp"
 speakerSocialUrl = "https://twitter.com/deadprogram"
-date = "22 January 2026"
+date = "20 & 21 May 2026"
 time = "9:30am to 5:30pm"
-venueRegistration = "registration starts at 9:00am"
 venueMapUrl = ""
 additional = ""
 speakerBio = """Ron is an award-winning software developer and expert in robotics/IoT/computer vision who is very active in the free and open-source community. He has helped many clients such as AT&T, Intel, Sphero, and Northvolt solve some of their most difficult technical and business problems.
@@ -23,42 +154,5 @@ prerequisites = """
 - Have a functioning Go environment installed
 """
 venue = """
-**IMDA Pixel Innovation Hub**
-10 Central Exchange Green
-Singapore 138649
-"""
-
-[[workshops]]
-id = "go-for-experienced-programmers"
-title = "Go for Experienced Programmers"
-speaker = "Johnny Boursiquot"
-speakerLink = "/speakers#johnny-boursiquot"
-speakerImage = "johnny-boursiquot.webp"
-date = "23 January 2026"
-time = "9:30am to 5:30pm"
-venueRegistration = "registration starts at 9:00am"
-venueMapUrl = ""
-additional = "Lunch and tea breaks will be provided."
-speakerBio = """Johnny is a multi-disciplined software engineer with a love for teaching and community-building. He stays busy as a trainer and speaker within the Go community where he also serves as a podcast host on Go Time, a user group organizer for Baltimore Go, and a conference programming chair for GopherCon. Johnny's works appear on a number of publishing platforms, including O'Reilly, LinkedIn Learning, and Packt."""
-description = """You're an experienced programmer looking to get up and running quickly with Go. You want the knowledge, tools, and techniques to write idiomatic, professional-grade Go using fun exercises that get you comfortable with the language and its ecosystem. This is the workshop you're looking for.
-
-This immersive and hands-on workshop equips you with the essential knowledge and practical experience to become a proficient Go developer. Throughout this intensive training, you'll discover the core principles and advanced techniques that make Go a standout language for building robust and high-performance applications.
-
-#### What a student is expected to learn
-
-* Comprehensive Introduction: Gain a solid understanding of Go's syntax, data types, control flow, and package management system.
-* Go Tools: Get to know the tool chain for building, testing, benchmarking, and profiling your programs.
-* Effective Error Handling: Discover Go's approach to error handling and techniques for creating robust, failure-resistant code.
-* Testing: Use the standard library package and other community favorites along with advanced techniques for testing.
-* Concurrency: Learn how to use goroutines, channels, and how thread synchronization works."""
-prerequisites = """
-* Complete the [Go Tour](https://go.dev/tour/welcome/1)
-* Browse through [Go by Example](https://gobyexample.com/)
-* Have a functioning [Go environment](https://golang.org/dl/) installed with Go 1.22 or later
-* Use an editor/IDE with Go plugin installed
-"""
-venue = """
-**IMDA Pixel Innovation Hub**
-10 Central Exchange Green
-Singapore 138649
+To be confirmed
 """
