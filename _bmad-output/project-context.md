@@ -137,13 +137,15 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`): active tab is solid brand-blue with white text; inactive is white with grey border
 
 ### Workshops Card Layout
-- `WorkshopEntry.astro` renders each workshop as a standalone card (`.workshop-card`) — NOT inside a Timeline
-- Card-based design: header with instructor photo + title + date/time, body with overview, always-expanded sections (`.workshop-section`) for curriculum and instructor bio
-- Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (in a separate `.workshop-section` with heading)
-- Sticky jump navigation (`.workshop-nav`): pill links below sticky header for quick access to each workshop card. Uses `position: sticky; top: 5rem; z-index: 40` with frosted-glass background (`backdrop-filter: blur`)
+- `WorkshopEntry.astro` renders each workshop as a standalone card — NOT inside a Timeline
+- All workshop styling uses Tailwind utility classes directly on elements — no custom CSS classes in `global.css`. Markdown content child selectors use Astro scoped `<style>` with `:global()` (e.g., `.section-content :global(h4)`)
+- Card-based design: header with instructor photo + title + date/time, body with overview, always-expanded sections for curriculum and instructor bio
+- Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (in a bordered section with heading)
+- Sticky jump navigation in `workshops.astro`: Tailwind utility classes (`sticky top-20 z-40 bg-white/95 backdrop-blur`) for pill links below sticky header. Uses `overflow-x: clip` on `html, body` (not `hidden`) to avoid breaking sticky positioning
 - Instructor photos use `findSpeakerImage` (returns null gracefully) — missing images show a gradient fallback with the instructor’s initial
-- Workshop cards have `scroll-margin-top: 9rem` to clear both sticky header and sticky workshop nav
-- Mobile: card header stacks vertically and centers; instructor bio stacks vertically; workshop-nav wraps and remains sticky
+- Workshop cards have `scroll-mt-36` (9rem) to clear both sticky header and sticky workshop nav
+- Mobile responsive via Tailwind breakpoints: `flex-col md:flex-row`, `justify-center md:justify-start`, etc.
+- Mobile responsive via Tailwind breakpoints: `flex-col md:flex-row`, `justify-center md:justify-start`, etc.
 
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)
