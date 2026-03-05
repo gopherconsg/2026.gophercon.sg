@@ -18,6 +18,7 @@ files_to_modify:
   - 'src/lib/data.ts'
   - 'src/lib/images.ts'
   - 'src/layouts/BaseLayout.astro'
+  - 'src/layouts/RedirectLayout.astro'
   - 'src/pages/index.astro'
   - 'src/pages/speakers.astro'
   - 'src/pages/schedule.astro'
@@ -89,7 +90,7 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
 **In Scope:**
 - New Astro + Tailwind v4 project in the workspace root
 - TOML data files: `speakers.toml`, `schedule.toml`, `workshops.toml`, `sponsors.toml` under `src/data/`, imported directly via `vite-plugin-toml` with TypeScript interfaces for type safety, plus `config.ts` for typed site config. Markdown fields rendered via `marked`.
-- Pages: Home (`/`), `/speakers`, `/schedule`, `/workshops`
+- Pages: Home (`/`), `/speakers`, `/schedule`, `/workshops`, `/cfp` (redirect)
 - Visual identity: 2025 hero (waves, mascot, Dangrek) + circular speaker photos, timeline layouts
 - Two-font stack: Dangrek (hero/venue display), Inter (headings, body, schedule times, page titles)
 - Timeline layout for `/schedule` (left-aligned vertical line, dot markers, break pills, speaker thumbnails, monospace break headers)
@@ -165,6 +166,7 @@ Build a new Astro site with Tailwind v4 in the project root, combining the best 
   1. Mobile nav toggle in Header component (show/hide nav menu on hamburger click).
   2. Copy-link-to-clipboard on schedule/speaker anchor icons (`navigator.clipboard.writeText()`) with "Copied!" tooltip feedback (toggle a `.copied` class, CSS handles fade after 1.5s).
 - **BaseLayout title pattern:** Sub-pages pass `title` and `description` props. Title rendered as `{title} — GopherCon Singapore 2026` for sub-pages, or just `GopherCon Singapore 2026` for the home page. Description used for `<meta name="description">` — each sub-page provides its own (e.g., `/speakers`: "Meet the speakers at GopherCon Singapore 2026", `/schedule`: "Conference schedule for GopherCon Singapore 2026").
+- **RedirectLayout:** A variant of `BaseLayout` for pages that immediately redirect to an external URL. Same `<head>` (SEO meta, OG image, Snowplow analytics) but adds `<meta http-equiv="refresh" content="0; url={redirectURL}">` and omits Tito JS and copy-link scripts. Props: `title?`, `description?`, `redirectURL`. Slot content renders a fallback message with a manual link. Used for SEO-friendly redirects (e.g., `/cfp` → Google Forms CFP).
 - **SEO meta in BaseLayout `<head>`:** `<title>`, `<meta name="description">`, `<link rel="canonical">`, `<meta property="og:title/type/url/image">`, `<meta name="twitter:card/title/image">`, favicon links, `<meta name="theme-color">`. Drop IE conditional comments (not needed for 2026).
 - **Tailwind v4 configuration:** CSS-first — no `tailwind.config.js`. Configuration via `@theme` block in `src/styles/global.css`. Custom properties defined in `@theme`. Custom CSS (hero animations, timeline, wave backgrounds) in global CSS or scoped `<style>` blocks.
   - **IMPORTANT v4 migration notes:** The 2025 site's CSS is Tailwind v3 — use it as design intent reference only, do NOT copy-paste. Key v4 differences: `@import "tailwindcss"` replaces `@tailwind base/components/utilities`; `@theme {}` replaces `theme.extend` in config; `@apply` syntax may differ; some utility names shifted. Rewrite custom CSS for v4 syntax.
@@ -485,7 +487,8 @@ export const footerConfig = {
 │   │   ├── workshops.toml     # Workshop details
 │   │   └── sponsors.toml      # Sponsor tiers and logos
 │   ├── layouts/
-│   │   └── BaseLayout.astro   # <head>, meta, analytics, fonts, nav, footer
+│   │   ├── BaseLayout.astro       # <head>, meta, analytics, fonts, nav, footer
+│   │   └── RedirectLayout.astro   # Like BaseLayout but with meta refresh, no Tito/copy-link
 │   ├── lib/
 │   │   ├── data.ts            # Centralized TOML loading + typed exports
 │   │   └── images.ts          # Shared speaker image glob + resolve/find helpers
@@ -494,6 +497,7 @@ export const footerConfig = {
 │   │   ├── speakers.astro
 │   │   ├── schedule.astro
 │   │   ├── workshops.astro
+│   │   ├── cfp.astro              # Redirect to external CFP form (uses RedirectLayout)
 │   │   └── 404.astro
 │   ├── styles/
 │   │   └── global.css         # Tailwind v4 @theme + custom CSS (hero, timeline, etc.)

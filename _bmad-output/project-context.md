@@ -67,7 +67,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Sponsor image glob is local to `Sponsors.astro` — `getSponsorImage()` returns null on missing, renders name as text fallback
 - All `eventStatus` checks → `isLive` / `isArchived` from `src/config.ts` (never compare strings directly)
 - All Tailwind theme tokens → `@theme {}` in `src/styles/global.css`
-- `global.css` is imported once in `BaseLayout.astro` — never in individual pages or components
+- `global.css` is imported once in `BaseLayout.astro` (and `RedirectLayout.astro`) — never in individual pages or components
 - Always use `@/` path alias for imports — never relative `../../` chains
 
 ### Config vs Content Split
@@ -145,6 +145,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - All pages use `BaseLayout` with optional `title` and `description` props
 - Pages provide only `<slot />` content — never import Header or Footer directly
 - Sub-page title: `{title} — GopherCon Singapore 2026`; home page omits the prefix
+- **Redirect pages** use `RedirectLayout` instead of `BaseLayout` — same `<head>` (SEO meta, OG tags, analytics) but adds `<meta http-equiv="refresh">` and omits Tito JS / copy-link script. Props: `title`, `description`, `redirectURL`. Slot content is a fallback message with a manual link
 
 ### Script Handling
 - Astro processes `<script>` tags through its build pipeline by default (TypeScript, bundling)
@@ -167,6 +168,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - **Add a sponsor:** `sponsors.toml` + logo file in `src/assets/images/sponsors/` + optional `url` field for linking
 - **Add a sponsor tier:** `sponsors.toml` + `SponsorsData` in `types.ts` + render order in `Sponsors.astro`
 - **Add a page:** `.astro` in `src/pages/` + nav entry in `siteConfig.nav` in `config.ts`
+- **Add a redirect page:** `.astro` in `src/pages/` using `RedirectLayout` with `redirectURL` prop — no nav entry needed (e.g., `/cfp` → Google Forms)
 - **Add a content section:** `content.toml` + `ContentData` interface in `types.ts` — cast in `data.ts` silently loses untyped sections
 - **Update site copy:** edit `content.toml` only — no TypeScript changes needed
 - **Change event status:** single field in `src/config.ts` — all components react via `isLive`/`isArchived`
