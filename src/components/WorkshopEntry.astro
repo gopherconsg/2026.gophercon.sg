@@ -12,44 +12,89 @@ interface Props {
 
 const { workshop, speakerImageMap } = Astro.props;
 
-const descriptionHtml = marked.parse(workshop.description);
-const venueHtml = marked.parse(workshop.venue);
+// Split description at first h4 heading for progressive disclosure
+const h4Index = workshop.description.indexOf("\n####");
+const hasSyllabus = h4Index > 0;
+const overviewMd = hasSyllabus
+  ? workshop.description.substring(0, h4Index).trim()
+  : workshop.description;
+const syllabusMd = hasSyllabus
+  ? workshop.description.substring(h4Index).trim()
+  : "";
+
+const overviewHtml = marked.parse(overviewMd);
+const syllabusHtml = hasSyllabus ? marked.parse(syllabusMd) : "";
 const speakerBioHtml = marked.parse(workshop.speakerBio);
 const prerequisitesHtml = workshop.prerequisites
   ? marked.parse(workshop.prerequisites)
   : "";
+const venueHtml = marked.parse(workshop.venue);
 
 const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
 ---
 
-<div
-  id={workshop.id}
-  class="timeline-entry timeline-entry-talk"
->
-  <div class="timeline-time">
-    <div>{workshop.date}</div>
-    <div style="font-size: 0.875rem;">{workshop.time}</div>
+<article id={workshop.id} class="workshop-card">
+  <div class="workshop-card-header">
+    <div class="workshop-card-photo">
+      {speakerImg ? (
+        <Image
+          src={speakerImg}
+          alt={workshop.speaker}
+          width={80}
+          height={80}
+          style="width: 100%; height: 100%; object-fit: cover;"
+        />
+      ) : (
+        <div class="workshop-card-photo-fallback">
+          {workshop.speaker.charAt(0)}
+        </div>
+      )}
+    </div>
+    <div class="workshop-card-meta">
+      <h2 class="workshop-card-title">
+        {workshop.title}
+        <span class="copy-link-wrapper" style="vertical-align: middle;">
+          <button
+            type="button"
+            class="copy-link"
+            data-href={`/workshops#${workshop.id}`}
+            aria-label="Copy link to this workshop"
+          >
+            <Icon name="fa:link" class="w-3.5 h-3.5" />
+          </button>
+          <span class="copy-link-tooltip" aria-live="polite">Copied!</span>
+        </span>
+      </h2>
+      <div class="workshop-card-instructor">
+        by{" "}
+        <a href={workshop.speakerLink}>{workshop.speaker}</a>
+        {workshop.speakerSocialUrl && (
+          <a
+            href={workshop.speakerSocialUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="workshop-card-social"
+          >
+            <Icon name="fa:twitter" class="w-3.5 h-3.5" />
+          </a>
+        )}
+      </div>
+      <div class="workshop-card-datetime">
+        <span><Icon name="fa:calendar" class="w-3.5 h-3.5" />{workshop.date}</span>
+        <span><Icon name="fa:clock-o" class="w-3.5 h-3.5" />{workshop.time}</span>
+      </div>
+    </div>
   </div>
 
-  <div class="timeline-content workshops">
-    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
-      <h3 style="margin-bottom: 0; font-size: 1.25rem; font-family: var(--font-body); font-weight: 600;">
-        {workshop.title}
-      </h3>
-      <span class="copy-link-wrapper">
-        <button
-          type="button"
-          class="copy-link"
-          data-href={`/workshops#${workshop.id}`}
-          aria-label="Copy link to this workshop"
-        >
-          <Icon name="fa:link" class="w-4 h-4" />
-        </button>
-        <span class="copy-link-tooltip" aria-live="polite">Copied!</span>
-      </span>
-    </div>
+  <div class="workshop-card-body">
+    <div class="workshop-card-overview" set:html={overviewHtml} />
 
-    <div set:html={descriptionHtml} style="margin-bottom: 1rem;" />
+    {syllabusHtml && (
+      <details class="workshop-details">
+        <summary>Full Curriculum</summary>
+        <div class="workshop-details-content" set:html={syllabusHtml} />
+      </details>
+    )}
 
     {prerequisitesHtml && (
       <div class="prerequisites-callout">
@@ -58,65 +103,50 @@ const speakerImg = findSpeakerImage(speakerImageMap, workshop.speakerImage);
       </div>
     )}
 
-    <div style="margin: 1rem 0; display: flex; align-items: flex-start; gap: 0.5rem;">
-      <Icon name="fa:map-marker" class="w-5 h-5" style="color: var(--color-brand-red); flex-shrink: 0; margin-top: 0.25rem;" />
-      <div>
-        <div set:html={venueHtml} style="margin-bottom: 0;" />
-        {workshop.venueRegistration && (
-          <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">({workshop.venueRegistration})</p>
-        )}
-        {workshop.venueMapUrl && (
-          <a
-            href={workshop.venueMapUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style="font-size: 0.875rem; color: var(--color-link-blue);"
-          >
-            View on map →
-          </a>
-        )}
-      </div>
-    </div>
-
-    {workshop.additional && (
-      <p style="font-size: 0.875rem; color: #666; margin-bottom: 1rem;">{workshop.additional}</p>
-    )}
-
-    <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #eee;">
-      <h4 style="margin-top: 0; margin-bottom: 1rem;">Instructor</h4>
-      <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: flex-start;">
-        {speakerImg && (
-          <div style="width: 170px; height: 170px; border-radius: 50%; overflow: hidden; flex-shrink: 0;">
-            <Image
-              src={speakerImg}
-              alt={workshop.speaker}
-              width={170}
-              height={170}
-              style="width: 100%; height: 100%; object-fit: cover;"
-            />
-          </div>
-        )}
-        <div style="flex: 1; min-width: 200px;">
-          <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; flex-wrap: wrap;">
-            <strong>
-              <a href={workshop.speakerLink} style="color: var(--color-link-blue);">
-                {workshop.speaker}
-              </a>
-            </strong>
-            {workshop.speakerSocialUrl && (
-              <a
-                href={workshop.speakerSocialUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                style="display: inline-flex; align-items: center; gap: 0.25rem; color: var(--color-link-blue); font-size: 0.875rem;"
-              >
-                <Icon name="fa:twitter" class="w-4 h-4" />
-              </a>
-            )}
-          </div>
+    <details class="workshop-details">
+      <summary>About the Instructor</summary>
+      <div class="workshop-details-content">
+        <div class="workshop-instructor-bio">
+          {speakerImg && (
+            <div class="workshop-instructor-photo">
+              <Image
+                src={speakerImg}
+                alt={workshop.speaker}
+                width={120}
+                height={120}
+                style="width: 100%; height: 100%; object-fit: cover;"
+              />
+            </div>
+          )}
           <div set:html={speakerBioHtml} />
         </div>
       </div>
+    </details>
+
+    <div class="workshop-card-footer">
+      <div class="workshop-card-venue">
+        <Icon name="fa:map-marker" class="w-4 h-4" style="color: var(--color-brand-red); flex-shrink: 0;" />
+        <div set:html={venueHtml} />
+      </div>
+      {workshop.venueRegistration && (
+        <p style="font-size: 0.875rem; color: #666; margin-bottom: 0;">({workshop.venueRegistration})</p>
+      )}
+      {workshop.venueMapUrl && (
+        <a
+          href={workshop.venueMapUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style="font-size: 0.875rem; color: var(--color-link-blue);"
+        >
+          View on map →
+        </a>
+      )}
+      {workshop.additional && (
+        <p class="workshop-card-additional">
+          <Icon name="fa:info-circle" class="w-4 h-4" style="color: var(--color-brand-blue); flex-shrink: 0;" />
+          {workshop.additional}
+        </p>
+      )}
     </div>
   </div>
-</div>
+</article>

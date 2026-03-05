@@ -1,7 +1,6 @@
 ---
 import ComingSoon from "@/components/ComingSoon.astro";
 import TicketCta from "@/components/TicketCta.astro";
-import Timeline from "@/components/Timeline.astro";
 import WorkshopEntry from "@/components/WorkshopEntry.astro";
 import { isNavEnabled } from "@/config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
@@ -27,11 +26,20 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
       )}
 
       {workshops.length > 0 ? (
-        <Timeline>
-          {workshops.map((workshop) => (
-            <WorkshopEntry workshop={workshop} speakerImageMap={speakerImages} />
-          ))}
-        </Timeline>
+        <>
+          {workshops.length > 1 && (
+            <nav class="workshop-nav">
+              {workshops.map((w) => (
+                <a href={`#${w.id}`}>{w.title}</a>
+              ))}
+            </nav>
+          )}
+          <div class="workshop-list">
+            {workshops.map((workshop) => (
+              <WorkshopEntry workshop={workshop} speakerImageMap={speakerImages} />
+            ))}
+          </div>
+        </>
       ) : (
         <ComingSoon message="Workshop details" />
       )}

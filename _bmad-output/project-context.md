@@ -126,9 +126,9 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - JS: Classic inline script (`is:inline`) in `BaseLayout.astro` — event delegation on `.copy-link` clicks, reads `data-href`, writes to clipboard (with `execCommand` fallback for non-secure contexts), toggles `.copied` class
 - All three must agree on: `.copy-link` (button class), `data-href` (attribute), `.copy-link-tooltip` (tooltip class), `.copied` (active class)
 
-### Timeline Layout
+### Schedule Timeline Layout
 - Shared `Timeline.astro` wrapper with left-aligned vertical line via `::before` (always visible, all viewports)
-- `ScheduleEntry.astro` and `WorkshopEntry.astro` are timeline children
+- `ScheduleEntry.astro` is a timeline child
 - Left-aligned line with dot markers, time displayed as text above content, break items styled as pills (`.timeline-break-pill`)
 - Timeline times (`.timeline-time`): `0.95rem`, bold, hardcoded `#0e7490` (darker cyan for readability) — does NOT use `--color-brand-blue`
 - All timeline entries have `scroll-margin-top: 5rem` to clear sticky header
@@ -136,9 +136,18 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - Links are not underlined by default — underline appears on hover only
 - Schedule and workshops pages have Conference/Workshops tab navigation (`.schedule-tab`): active tab is solid brand-blue with white text; inactive is white with grey border
 
+### Workshops Card Layout
+- `WorkshopEntry.astro` renders each workshop as a standalone card (`.workshop-card`) — NOT inside a Timeline
+- Card-based design: header with instructor photo + title + date/time, body with overview, collapsible `<details>` sections for curriculum and instructor bio
+- Description is split at the first `####` heading: text before = overview (always visible), text after = curriculum (collapsed by default via `<details>/<summary>`)
+- Jump navigation (`.workshop-nav`): pill links at page top for quick access to each workshop card
+- Instructor photos use `findSpeakerImage` (returns null gracefully) — missing images show a gradient fallback with the instructor's initial
+- Workshop cards have `scroll-margin-top: 6rem` to clear sticky header
+- Mobile: card header stacks vertically and centers; instructor bio stacks vertically
+
 ### Component Organization
 - `src/components/index/` — landing-page-only (Hero, VenueInfo, SpeakerCard, Sponsors, Tickets, CodeOfConduct)
-- `src/components/` root — shared across pages (Header, Footer, Timeline, ScheduleEntry, WorkshopEntry, SpeakerProfile, ComingSoon, TicketCta)
+- `src/components/` root — shared across pages (Header, Footer, Timeline, ScheduleEntry, WorkshopEntry, SpeakerProfile, ComingSoon, TicketCta). Timeline is used by schedule only; WorkshopEntry uses its own card layout
 - New shared components → `src/components/`. New home-page-only → `src/components/index/`
 
 ### Page Pattern
@@ -150,7 +159,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 ### Script Handling
 - Astro processes `<script>` tags through its build pipeline by default (TypeScript, bundling, deferred as ES modules)
 - Use `is:inline` on scripts that must run as-is without processing (e.g., `<script is:inline>TitoDevelopmentMode = true;</script>`)
-- **Tito widget script uses `is:inline`** — `<script is:inline src="https://js.tito.io/v2" async>` prevents Astro from transforming it. Explicit `<link rel="stylesheet" href="https://css.tito.io/v2" />` loaded alongside for reliability (Tito's self-injected CSS can fail intermittently)
+- **Tito widget script uses `is:inline`** — `<script is:inline src="https://js.tito.io/v2" async>` prevents Astro from transforming it. Tito loads its own CSS dynamically; no explicit CSS `<link>` needed (the `css.tito.io/v2` endpoint is unreliable/404)
 - **Header mobile nav toggle uses `is:inline`** with event delegation (`document.addEventListener('click', ...)` + `e.target.closest('#navbar-toggle')`) — Astro-bundled module scripts run deferred and can fail on iPhone Safari. Keep this script `is:inline`
 - Mobile nav dropdown: `.navbar-nav` class on the `<nav>` element, absolute-positioned below header on `max-width: 767px`. Links stack vertically with white background and box shadow
 
