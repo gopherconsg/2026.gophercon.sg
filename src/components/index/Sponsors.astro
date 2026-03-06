@@ -3,9 +3,8 @@ import { Image } from "astro:assets";
 import { isArchived } from "@/config";
 import { content, sponsors } from "@/lib/data";
 import { marked } from "marked";
-const sponsorCtaText = content.sponsors.ctaText;
-
-const sponsorCtaHtml = marked.parse(sponsorCtaText);
+const sponsorCtaHtml = marked.parse(content.sponsors.ctaText);
+const sponsorshipPdfUrl = content.sponsors.sponsorshipPdfUrl;
 
 const sponsorImages = import.meta.glob<{ default: ImageMetadata }>(
   "/src/assets/images/sponsors/*.{png,jpg,jpeg,webp}",
@@ -28,11 +27,10 @@ const tiers = [
 const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
 ---
 
-<section class="partners" style="padding-bottom: 2rem;">
-  <div class="container">
-    <h2 class="partners-heading">Our Partners</h2>
-
-    {hasAnySponsors ? (
+{hasAnySponsors && (
+  <section class="partners" style="padding-bottom: 2rem;">
+    <div class="container">
+      <h2 class="partners-heading">Our Partners</h2>
       <div>
         {tiers.map(({ key, label }) => {
           const list = sponsors[key] ?? [];
@@ -42,10 +40,9 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
               <strong class="sponsor-tier-label">{label}</strong>
               <div class="sponsor-tier-logos">
                 {list.map((sponsor) => {
-                  const img = getSponsorImage(sponsor.logo);
-                  const content = img ? (
+                  const logoContent = getSponsorImage(sponsor.logo) ? (
                     <Image
-                      src={img}
+                      src={getSponsorImage(sponsor.logo)!}
                       alt={sponsor.name}
                       height={80}
                       style="height: 80px; width: auto; object-fit: contain;"
@@ -55,21 +52,41 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
                   );
                   return sponsor.url ? (
                     <a href={sponsor.url} target="_blank" rel="noopener noreferrer" style="text-decoration: none;">
-                      {content}
+                      {logoContent}
                     </a>
-                  ) : content;
+                  ) : logoContent;
                 })}
               </div>
             </div>
           );
         })}
-        <div set:html={sponsorCtaHtml} style="text-align: center; margin-top: 2rem;" />
       </div>
-    ) : !isArchived ? (
-      <div set:html={sponsorCtaHtml} style="text-align: center;" />
-    ) : null}
-  </div>
-</section>
+    </div>
+  </section>
+)}
+
+{!isArchived && (
+  <section class="become-a-sponsor">
+    <div class="container" style="text-align: center;">
+      <h2 class="become-a-sponsor-heading">Become a Sponsor</h2>
+      <p class="become-a-sponsor-text">
+        Join us in making GopherCon Singapore 2026 an unforgettable experience!
+        As a sponsor, you&rsquo;ll connect with passionate Go developers, showcase your brand
+        to the community, and support the growth of the Go ecosystem in Southeast Asia.
+      </p>
+      <p class="become-a-sponsor-text">
+        We offer various sponsorship tiers with exciting benefits including logo placement,
+        speaking opportunities, booth space, and more.
+      </p>
+      {sponsorshipPdfUrl && (
+        <a href={sponsorshipPdfUrl} target="_blank" rel="noopener noreferrer" class="cta-button become-a-sponsor-cta">
+          View Sponsorship Packages
+        </a>
+      )}
+      <div class="become-a-sponsor-contact" set:html={sponsorCtaHtml} />
+    </div>
+  </section>
+)}
 
 <style>
   .partners-heading {
@@ -133,4 +150,48 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
       gap: 2rem;
     }
   }
+
+  /* Become a Sponsor section */
+  .become-a-sponsor {
+    background: linear-gradient(180deg, #f0fdff 0%, #ffffff 100%);
+    border-top: 4px solid var(--color-brand-blue);
+    padding: 5rem 0;
+  }
+
+  @media (min-width: 768px) {
+    .become-a-sponsor {
+      padding: 7rem 0;
+    }
+  }
+
+  .become-a-sponsor-heading {
+    margin-bottom: 2rem;
+  }
+
+  .become-a-sponsor-text {
+    max-width: 42rem;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2rem;
+    color: #475467;
+    line-height: 1.75;
+  }
+
+  .become-a-sponsor-cta {
+    font-size: 1.125rem;
+    padding: 0.75rem 2rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .become-a-sponsor-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(238, 64, 89, 0.3);
+    text-decoration: none;
+  }
+
+  .become-a-sponsor-contact {
+    margin-top: 2rem;
+    color: #475467;
+  }
 </style>
+

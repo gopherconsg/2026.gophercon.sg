@@ -82,6 +82,7 @@ _This is a static conference website for GopherCon Singapore 2026, built with As
 - TOML keys use camelCase (`topicTitle`, `speakerLink`), not snake_case
 - `speakers` field in `schedule.toml` is always an array (`[[schedule.speakers]]`) even for single speakers
 - Sponsor tier display order is hardcoded in `Sponsors.astro`, not derived from TOML key order
+- **Become a Sponsor section:** `Sponsors.astro` also renders a `<section class="become-a-sponsor">` when `!isArchived`: light gradient background (`#f0fdff → #ffffff`) with 4px brand-blue top border, descriptive copy, red CTA button linking to `/docs/sponsorship-info.pdf` (file at `public/docs/sponsorship-info.pdf`), and the `content.sponsors.ctaText` contact link. PDF URL stored in `content.toml` as `sponsors.sponsorshipPdfUrl` (typed as `ContentData.sponsors.sponsorshipPdfUrl?: string`)
 - Use `"""` triple-quoted strings for all multiline content
 
 ### Astro Component Patterns

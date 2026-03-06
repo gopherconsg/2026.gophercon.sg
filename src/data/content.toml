@@ -40,6 +40,7 @@ If someone makes you or anyone else feel unsafe or unwelcome, please report it a
 
 [sponsors]
 ctaText = "Interested in becoming a partner? [Get in touch!](mailto:hello@gophercon.sg)"
+sponsorshipPdfUrl = "/docs/sponsorship-info.pdf"
 
 [footer]
 email = "hello@gophercon.sg"

@@ -89,6 +89,7 @@ export interface ContentData {
   };
   sponsors: {
     ctaText: string;
+    sponsorshipPdfUrl?: string;
   };
   footer: {
     email: string;
