@@ -31,9 +31,9 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
             <>
               <div id="workshop-nav" class="-mx-4 mb-10 sticky top-[var(--header-height)] z-40 backdrop-blur border-b border-transparent transition-colors duration-300">
                 {/* Desktop: pill links */}
-                <div class="workshop-pills-desktop gap-3 justify-center flex-wrap px-4 py-3">
+                <div class="workshop-pills-desktop gap-2 justify-center flex-nowrap px-4 py-2.5">
                   {workshops.map((w) => (
-                    <a href={`#${w.id}`} class="workshop-pill px-5 py-2 rounded-full border-2 font-semibold text-[0.9rem] no-underline transition-colors duration-300 hover:no-underline">{w.title}</a>
+                    <a href={`#${w.id}`} class="workshop-pill px-3.5 py-1.5 rounded-full border-2 font-semibold text-[0.8rem] no-underline transition-colors duration-300 hover:no-underline whitespace-nowrap">{w.title}</a>
                   ))}
                 </div>
                 {/* Mobile: pill links (visible at page top, hidden when scrolled) */}
