@@ -1,0 +1,8 @@
+name = "Jon Kartago Lamida"
+company = "Grafana"
+image = "jon-kartago-lamida.jpg"
+bio = """Jon is a software engineer, traveler, infosec student, books hoarder, perpetually blocked writer, lifelong learner, video games player."""
+
+[[sessions]]
+title = "80% faster, 70% less memory: the Go tricks we've used to build a high-performance, low-cost Prometheus query engine"
+kind = "talk"

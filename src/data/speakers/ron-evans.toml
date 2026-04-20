@@ -1,0 +1,23 @@
+name = "Ron Evans"
+company = "The Hybrid Group"
+image = "ron-evans.webp"
+socialUrl = "https://twitter.com/deadprogram"
+bio = """Ron is an award-winning software developer and expert in robotics/IoT/computer vision who is very active in the free and open-source community. He has helped many clients such as AT&T, Intel, Sphero, and Northvolt solve some of their most difficult technical and business problems.
+
+Ron is a code contributor to many open-source hardware/software projects and is one of the maintainers of TinyGo (https://tinygo.org), as well as the creator of the open-source IoT/robotics framework Gobot (https://gobot.io), computer vision framework GoCV (https://gocv.io), and embedded WebAssembly framework Mechanoid (https://mechanoid.io)."""
+
+[[sessions]]
+title = "Life, the Universe, and everything GO"
+kind = "keynote"
+description = """In this fast-paced interactive keynote, we will Go from the incredibly small to as far as our imaginations can take us.
+
+By the end you will have shared a true 'out of the box' experience."""
+
+[[sessions]]
+title = "Hardware Hacking with TinyGo"
+kind = "workshop"
+description = """Get ready for an electrifying experience at GopherCon with the Hybrid Group's epic robot-fest session, powered by Go. Dive into drone control via joystick, reunite with our trusty pal GopherBot, and immerse yourself in more IoT wonders than you can handle!
+
+We are bringing a special collection of our favorite programmable robots and toys for you to play with and code, including some retro favorites and a few new friends.
+
+If music is your jam, don't miss the TinyGo Jam session! Rock out with TinyGo-powered MIDI controllers and enjoy a variety of self-guided musical activities to keep your earbuds delighted."""

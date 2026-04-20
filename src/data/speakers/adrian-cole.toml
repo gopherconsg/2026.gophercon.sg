@@ -1,0 +1,9 @@
+name = "Adrian Cole"
+company = "Elastic"
+image = "adrian-cole.jpg"
+bio = """Adrian is a software engineer working at Elastic. He's been a routine contributor to open source for over fifteen years. Lately, he spends most of his time on OpenTelemetry. His past notable project work includes wazero, Zipkin, OpenFeign, and Apache jclouds."""
+
+[[sessions]]
+title = "Practical GenAI with Go"
+kind = "talk"
+description = """Learn how to practice Generative AI in Golang, using some popular tools written in Golang. You'll learn the lingo needed commonly used, like LLM, GenAI, RAG and VectorDB and what they mean. You'll leave with some ideas on how to start coding, now, with a model hosted on your laptop!"""

@@ -1,0 +1,14 @@
+name = "Axel Wagner"
+image = "axel-wagner.jpg"
+bio = """Axel is a Senior Software Engineer. Previously he has been a Site Reliability Engineer, after getting an M.Sc. in Mathematics from University of Heidelberg.
+
+Since 2013, Go has been his primary programming language and he is an active member of the community, both online and offline. He is passionate about Open Source, an avid chess player and is trying to read every Science Fiction and Fantasy book ever written."""
+
+[[sessions]]
+title = "Why we can't have nice things: Generic methods"
+kind = "talk"
+description = """Generic methods would allow us to write chaining APIs. This is particularly important for functional iterator patterns, which currently have to stretch over multiple lines, or be awkwardly nested. It would also allow us to properly attach generic code to the type it belongs to.
+
+So no one really contests that it would be useful to have this feature. Even the Go team largely agrees. But the omission was intentional. The reasons for it stretch all the way back, to even before Go's first open source release. In fact, it might be the reason we even got generics at all.
+
+I walk through the uses of this feature, the reasons adding generics took so long and how they lead to this omission."""

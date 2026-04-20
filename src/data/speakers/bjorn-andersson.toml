@@ -1,0 +1,13 @@
+name = "Björn Andersson"
+company = "foodpanda"
+image = "bjorn-andersson.jpg"
+bio = """Björn is a Principal Engineer at foodpanda where he spends his time looking at how to make the production experience better while helping as many engineers as he can grow in their role. He explores this using continuous delivery, testing, observability, and incident management. In his 18 years, 13 of which were spent in Singapore, he has worked in several startups as a consultant, and has experienced retail, banking, goverment ministries, space, and most recently fintech and food delivery at foodpanda."""
+
+[[sessions]]
+title = "Mocking your codebase without cursing it"
+kind = "talk"
+description = """Working with mocks is a lot like working out: if you don't know what you're doing then you'll either a) don't get the results you want or b) hurt yourself. And in the worst case, you'll get both and be unhappy with the results and swear off mocking as a useless practice.
+
+This talk will show some common pitfalls of using mocks and how you can constrain how you work with mocks to make them work for you and make your test suite something you'll love to maintain.
+
+No matter where you are on the spectrum of "mock everything to don't mock at all," you'll get more confidence in your test suite, make it simpler to maintain, and very likely faster to run by being intentional in how you design your test suite and work with mocks."""

@@ -4,7 +4,7 @@ ctaText = "Get Your Tickets"
 ctaLink = "/#tickets"
 previousYearText = "Check out what happened in 2025!"
 previousYearVideoId = ""
-conferenceDate = "22&ndash;24 January 2026"
+conferenceDate = "22–24 January 2026"
 workshopDates = "22-23 January"
 workshopVenue = "IMDA PIXEL Innovation Hub"
 workshopVenueUrl = "https://maps.app.goo.gl/eS1CRMc8MSDW5GFY6"
@@ -12,6 +12,23 @@ conferenceDates = "24 January"
 conferenceVenue = "JW Marriott Singapore Ballroom"
 conferenceVenueUrl = "https://maps.app.goo.gl/7ag5ZuZWJ5NHSxsc9"
 practicalInfo = ""
+
+[newThisYear]
+# Toggle the "New this year" banner on the landing page.
+enabled = true
+label = "New this year"
+
+[[newThisYear.items]]
+icon = "🎤"
+title = "Panel Discussion"
+description = "a candid on-stage conversation between senior Go practitioners."
+href = "/schedule#go-panel"
+
+[[newThisYear.items]]
+icon = "⚡"
+title = "Lightning Talks"
+description = "rapid-fire community talks, 5 minutes each."
+href = "/schedule#lightning-talks"
 
 [tickets]
 headline = "Tickets"

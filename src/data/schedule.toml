@@ -1,248 +1,161 @@
+# Conference schedule.
+# Each entry has a `type` and references speakers by ID (see src/data/speakers/).
+# `time` is optional — omit when the program order has not yet been decided.
+#
+# Types:
+#   keynote   — headline talk, prominent card
+#   talk      — regular conference talk
+#   panel     — moderator + panelists (may include TBAs)
+#   lightning — grouped short community talks (no profile pages for lightning speakers)
+#   break     — tea/lunch/after-party (pill)
+#   meta      — registration, opening/closing remarks (pill)
+
+# ── MORNING ──
+
 [[schedule]]
 id = "registration"
 title = "Registration"
 description = "Doors open at 8 AM. See you there!"
-time = "8:00 AM"
 type = "meta"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
+time = "8:00am"
 
 [[schedule]]
 id = "opening-remarks"
 title = "Opening Remarks"
-description = ""
-time = "9:00 AM"
 type = "meta"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
+time = "9:00am"
 
 [[schedule]]
-id = "sau-sheong"
-title = "AI Programming with Go"
-description = """A short introduction to programming AI using Go. Learn about using Go packages, LLM frameworks, open LLMs using Ollama, RAG and also vision LLMs."""
-time = "9:10 AM"
-type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Chang Sau Sheong"
-link = "/speakers#sau-sheong"
-image = "sau-sheong.jpg"
+type = "keynote"
+speakers = ["ron-evans"]
+time = "9:15am"
 
 [[schedule]]
-id = "dave-cheney"
-title = "Starting and stopping things"
-description = """In Go it's trivia to start a goroutine, but, as I'm fond of saying, do you know when that goroutine will stop? How will it stop it? How will you know when it has stopped?
-
-This is a talk about a solution I find myself rewriting on pretty much every backend Go service I work on. Even in a microservice shop, the requirement to set up a bunch of parallel goroutines is ubiquitous.
-
-This is a story about concurrency vs parallelism, the places where it exists today in the std lib and where it does not, the patterns that evolve from that statement, and an introduction to the group type, an idea which has evolved since the Juju days a decade ago of William Reade's Manifold, through Peter Bourgon's "How I do things" talk, and through many of my own iterations."""
-time = "9:40 AM"
 type = "talk"
-recordingUrl = ""
+speakers = ["sau-sheong"]
+time = "10:00am"
 
-[[schedule.speakers]]
-name = "Dave Cheney"
-link = "/speakers#dave-cheney"
-image = "dave-cheney.jpg"
+[[schedule]]
+type = "talk"
+speakers = ["dave-cheney"]
+time = "10:30am"
 
 [[schedule]]
 id = "am-tea-break"
 title = "$GOPHERCONSG/teabreak"
 description = "Coffee and snacks."
-time = "10:20 AM"
 type = "break"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
+time = "11:15am"
 
 [[schedule]]
-id = "elisa-xu"
-title = "(Wrong) Comparison is the Thief of Joy"
-description = """You've heard the old adage - comparison is the thief of joy. Indeed it is. But more specifically, wrong comparison is the thief of joy. We compare for a living. We test to see if our expectations match our realities and write hundred of lines of code to compare what we want vs what we got. Yet do we actually know what we are comparing, and what obscure test failures threaten to steal our joy?"""
-time = "10:50 AM"
 type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Elisa Xu"
-link = "/speakers#elisa-xu"
-image = "elisa-xu.jpg"
+speakers = ["elisa-xu"]
+time = "11:45am"
 
 [[schedule]]
-id = "axel-wagner"
-title = "Why we can't have nice things: Generic methods"
-description = """Generic methods would allow us to write chaining APIs. This is particularly important for functional iterator patterns, which currently have to stretch over multiple lines, or be awkwardly nested. It would also allow us to properly attach generic code to the type it belongs to.
-
-So no one really contests that it would be useful to have this feature. Even the Go team largely agrees. But the omission was intentional. The reasons for it stretch all the way back, to even before Go's first open source release. In fact, it might be the reason we even got generics at all.
-
-I walk through the uses of this feature, the reasons adding generics took so long and how they lead to this omission."""
-time = "11:15 AM"
 type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Axel Wagner"
-link = "/speakers#axel-wagner"
-image = "axel-wagner.jpg"
-
-[[schedule]]
-id = "chewxy"
-title = "F()-ing Cox-Zucker Tunes a MA Screw unto a Kummer Surface"
-description = """Algebraic geometry can be fun in service of world building. This talk will go through the considerations of data structures and algorithms in the pursuit of making movies of exotic mathematical structures that may not necessarily make intuitive sense."""
-time = "11:45 AM"
-type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Chew Xuanyi"
-link = "/speakers#chewxy"
-image = "chewxy.jpg"
-
-[[schedule]]
-id = "swami"
-title = "Scaling Go Monorepo Workflows with Athens"
-description = """At Grab, our Go monorepo powers over 600 microservices and centralises shared libraries, but frequently used commands like go list and go get created significant bottlenecks. These commands overwhelmed our GitLab servers, leading to frustrated developers, disrupted CI pipelines, and constant fire-fighting by the GitLab team. To address this, we implemented Athens, a private Go module proxy, combined with GOVCS environment variable configurations and fallback network mode.
-
-In this talk, we'll explain how using a private Go module proxy enhances security, ensures module availability (think "left-pad" incident), and avoids the downsides of vendoring. Attendees will gain insights into setting up private proxies, using Athens in secure or offline environments, and scaling dependency management in large monorepos."""
-time = "12:15 PM"
-type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Swaminathan Venkatraman"
-link = "/speakers#swami"
-image = "swami.webp"
+speakers = ["axel-wagner"]
+time = "12:00pm"
 
 [[schedule]]
 id = "lunch"
 title = "$GOPHERCONSG/lunch"
-description = ""
-time = "12:40 PM"
 type = "break"
-recordingUrl = ""
+time = "12:30pm"
 
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
-
-[[schedule]]
-id = "adrian-cole"
-title = "Practical GenAI with Go"
-description = """Learn how to practice Generative AI in Golang, using some popular tools written in Golang. You'll learn the lingo needed commonly used, like LLM, GenAI, RAG and VectorDB and what they mean. You'll leave with some ideas on how to start coding, now, with a model hosted on your laptop!"""
-time = "1:40 PM"
-type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Adrian Cole"
-link = "/speakers#adrian-cole"
-image = "adrian-cole.jpg"
+# ── AFTERNOON ──
 
 [[schedule]]
-id = "manuel-de-la-pena"
-title = "Testing GenAI applications in Go"
-description = """The evolution of GenAI applications brings with it the challenge of developing testing methods that can effectively evaluate the complexity and subtlety of responses generated by advanced artificial intelligences.
-
-This proposal involves defining detailed validation criteria and using an LLM as an "Evaluator" to determine if the responses meet the specified requirements. This approach can be applied to validate answers to specific questions, drawing on both general knowledge and especialised information.
-
-In this session we'll leverage langchaingo to interact with LLMs, and Testcontainers Go to provision the runtime dependencies to use RAG."""
-time = "2:05 PM"
 type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Manuel de la Peña"
-link = "/speakers#manuel-de-la-pena"
-image = "manuel-de-la-pena.jpg"
+speakers = ["chewxy"]
+time = "1:30pm"
 
 [[schedule]]
-id = "bjorn-andersson"
-title = "Mocking your codebase without cursing it"
-description = """Working with mocks is a lot like working out: if you don't know what you're doing then you'll either a) don't get the results you want or b) hurt yourself. And in the worst case, you'll get both and be unhappy with the results and swear off mocking as a useless practice.
-
-This talk will show some common pitfalls of using mocks and how you can constrain how you work with mocks to make them work for you and make your test suite something you'll love to maintain.
-
-No matter where you are on the spectrum of "mock everything to don't mock at all," you'll get more confidence in your test suite, make it simpler to maintain, and very likely faster to run by being intentional in how you design your test suite and work with mocks."""
-time = "2:30 PM"
 type = "talk"
-recordingUrl = ""
+speakers = ["swami"]
+time = "2:00pm"
 
-[[schedule.speakers]]
-name = "Björn Andersson"
-link = "/speakers#bjorn-andersson"
-image = "bjorn-andersson.jpg"
+[[schedule]]
+type = "talk"
+speakers = ["adrian-cole"]
+time = "2:30pm"
+
+[[schedule]]
+type = "talk"
+speakers = ["manuel-de-la-pena"]
+time = "3:00pm"
 
 [[schedule]]
 id = "pm-tea-break"
 title = "$GOPHERCONSG/teabreak"
 description = "Coffee and snacks."
-time = "2:55 PM"
 type = "break"
-recordingUrl = ""
+time = "3:30pm"
 
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
+[[schedule]]
+type = "talk"
+speakers = ["bjorn-andersson"]
+time = "3:45pm"
 
 [[schedule]]
 id = "korn-lamida"
-title = "80% faster, 70% less memory: the Go tricks we've used to build a high-performance, low-cost Prometheus query engine"
-description = """We've been building a brand-new, Prometheus-compatible query engine from the ground up for Grafana Mimir in Go.
-
-Our new query engine has been designed to deliver an improved user experience and vastly improved performance: our benchmarks show queries running up to 80% faster and with 70% lower peak memory consumption than Prometheus' default engine, and our real-world testing shows similar results.
-
-As we've been building the engine, we've learnt a number of Go performance lessons the hard way, including why using byte slices can sometimes be preferable to strings, the benefits and costs of memory pooling and the surprisingly large impact of function pointers."""
-time = "3:30 PM"
 type = "talk"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "Charles Korn"
-link = "/speakers#charles-korn"
-image = "charles-korn.jpg"
-
-[[schedule.speakers]]
-name = "Jon Kartago Lamida"
-link = "/speakers#jon-kartago-lamida"
-image = "jon-kartago-lamida.jpg"
+speakers = ["charles-korn", "jon-kartago-lamida"]
+time = "4:15pm"
 
 [[schedule]]
-id = "ron-evans"
-title = "Life, the Universe, and everything GO"
-description = """In this fast-paced interactive keynote, we will Go from the incredibly small to as far as our imaginations can take us.
+id = "go-panel"
+title = "Panel: The State of Go in Production"
+type = "panel"
+time = "4:45pm"
+description = """An on-stage conversation between senior Go engineers across different industries, moderated by Dave Cheney. Expect candid takes on what's working, what's painful, and where Go is heading."""
+moderator = "dave-cheney"
 
-By the end you will have shared a true 'out of the box' experience."""
-time = "3:55 PM"
-type = "talk"
-recordingUrl = ""
+[[schedule.panelists]]
+id = "sau-sheong"
 
-[[schedule.speakers]]
-name = "Ron Evans"
-link = "/speakers#ron-evans"
-image = "ron-evans.webp"
+[[schedule.panelists]]
+id = "bill-kennedy"
+
+[[schedule.panelists]]
+tba = true
+
+[[schedule.panelists]]
+tba = true
+
+[[schedule]]
+id = "lightning-talks"
+title = "Lightning Talks"
+type = "lightning"
+time = "5:15pm"
+description = """A rapid-fire session of short community talks. 5 minutes each, huge range of topics."""
+
+[[schedule.talks]]
+title = "Lightning talk slot #1"
+speaker = "To be announced"
+
+[[schedule.talks]]
+title = "Lightning talk slot #2"
+speaker = "To be announced"
+
+[[schedule.talks]]
+title = "Lightning talk slot #3"
+speaker = "To be announced"
+
+[[schedule.talks]]
+title = "Lightning talk slot #4"
+speaker = "To be announced"
+
+# ── EVENING ──
 
 [[schedule]]
 id = "closing-remarks"
 title = "Closing Remarks & Group Photo"
-description = ""
-time = "4:45 PM"
 type = "meta"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
+time = "5:30pm"
 
 [[schedule]]
 id = "after-party"
 title = "$GOPHERCONSG/after/party/🎉"
-description = ""
-time = "7:00 PM to 11:59 PM"
 type = "break"
-recordingUrl = ""
-
-[[schedule.speakers]]
-name = "GopherCon Singapore Team"
+time = "6:30pm"

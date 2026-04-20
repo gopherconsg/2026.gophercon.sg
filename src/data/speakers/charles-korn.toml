@@ -1,0 +1,15 @@
+name = "Charles Korn"
+company = "Grafana"
+image = "charles-korn.jpg"
+bio = """Charles is a senior engineer on the Mimir team at Grafana Labs. He has worked with teams all around the globe and have a particular interest in developer experience, distributed systems and cloud-native infrastructure.
+
+When he is not at work, you'll find him travelling, taking photos, eating chocolate and playing with Lego. (Usually not all at once.)"""
+
+[[sessions]]
+title = "80% faster, 70% less memory: the Go tricks we've used to build a high-performance, low-cost Prometheus query engine"
+kind = "talk"
+description = """We've been building a brand-new, Prometheus-compatible query engine from the ground up for Grafana Mimir in Go.
+
+Our new query engine has been designed to deliver an improved user experience and vastly improved performance: our benchmarks show queries running up to 80% faster and with 70% lower peak memory consumption than Prometheus' default engine, and our real-world testing shows similar results.
+
+As we've been building the engine, we've learnt a number of Go performance lessons the hard way, including why using byte slices can sometimes be preferable to strings, the benefits and costs of memory pooling and the surprisingly large impact of function pointers."""

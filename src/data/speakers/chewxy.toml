@@ -1,0 +1,10 @@
+name = "Chew Xuanyi"
+preferredName = "Xuanyi"
+company = "Nine"
+image = "chewxy.jpg"
+bio = """Xuanyi is the primary author of [Gorgonia](https://gorgonia.org), a family of deep learning libraries written in Go. By day he is the lead data scientist at Nine, building AI applications to help make better media decisions. By night, he is an evangelist for doing machine learning and building artificial intelligence systems in Go."""
+
+[[sessions]]
+title = "F()-ing Cox-Zucker Tunes a MA Screw unto a Kummer Surface"
+kind = "talk"
+description = """Algebraic geometry can be fun in service of world building. This talk will go through the considerations of data structures and algorithms in the pursuit of making movies of exotic mathematical structures that may not necessarily make intuitive sense."""

@@ -1,0 +1,81 @@
+title = "Build Your Own Macropad: From Soldering to Software"
+date = "20 May 2026"
+time = "9:30am to 5:30pm"
+venueMapUrl = ""
+note = "Hardware kit included — nothing to bring except a laptop."
+description = """In this hands-on workshop, you'll go from a pile of parts to a fully functional, custom macropad. The morning is dedicated to soldering your hardware, and the afternoon is all about bringing it to life using TinyGo.
+
+A proven experience from Japan — the TinyGo Keeb Tour has successfully hosted 10 events across various cities since 2024, helping participants build their own zero-kb02 keyboards. Now, they're bringing this experience to Singapore!
+
+New to soldering? No problem! The team will be right there to guide you through every step. There are plenty of spare parts, so there's no need to worry about making mistakes — it's all part of the learning process.
+
+#### Meet the zero-kb02
+
+The zero-kb02 isn't just a simple keypad — it's a powerful, programmable controller designed for versatility. You'll be building and coding with:
+
+- **Brain:** Powered by the RP2040 microcontroller
+- **Controls:** 12 keys for your favorite shortcuts
+- **Interaction:** A Joystick and a Rotary Encoder for intuitive navigation
+- **Visuals:** An OLED Display and RGB LEDs to show status and add flair
+
+#### Endless Possibilities with TinyGo
+
+Beyond a simple keypad, the zero-kb02 is a gateway to embedded development. With the extensive documentation and the power of TinyGo, you can transform it into:
+
+- **Musical Instruments:** Create a buzzer-based synth or a MIDI controller
+- **Gadgets:** Build a weather station using I2C sensors and the OLED display
+- **Gaming:** Run 2D games using koebiten (a TinyGo-friendly subset of Ebitengine)
+- **Fully Customizable Keyboard:** It's Vial-compatible, allowing you to remap keys and change settings directly from your web browser
+
+#### Morning: Soldering Workshop
+
+You'll assemble your own zero-kb02 from scratch — soldering the RP2040 microcontroller, keys, joystick, rotary encoder, OLED display, and RGB LEDs. Expert staff will guide you through every step.
+
+#### Afternoon: Programming with TinyGo
+
+With your macropad assembled, you'll bring it to life with TinyGo firmware. Learn how to program key mappings, control the OLED display, drive RGB LEDs, and read the joystick and rotary encoder — all in Go. By the end of the day, you'll leave with a custom keyboard that you built and programmed yourself.
+"""
+prerequisites = """
+- Complete the [Go Tour](https://go.dev/tour/welcome/1)
+- Have a functioning Go environment installed
+"""
+venue = """
+To be confirmed
+"""
+
+[instructor]
+name = "TinyGo Keeb community (Japan)"
+url = "https://tinygo-keeb.org/"
+image = "tinygokeeb-sago35.png"
+socialUrl = "https://x.com/tinygo_keeb"
+bio = """We are the team behind the TinyGo Keeb Tour in Japan. Since 2024, we've successfully hosted 10 events across various cities, helping participants build their own zero-kb02 keyboards. Now, we're bringing this experience to Singapore!"""
+
+[[teamMembers]]
+name = "Masaaki Takasago (sago35)"
+image = "tinygokeeb-sago35.png"
+bio = """Embedded software engineer, TinyGo contributor, and author of a book on TinyGo. Creator of the TinyGo Keeb Tour and organizer of the 2025 TinyGo Conference in Japan — actively expanding the Go ecosystem into embedded systems and custom keyboards."""
+
+[[teamMembers]]
+name = "satoken"
+image = "tinygokeeb-satoken.png"
+bio = """Site reliability engineer and TinyGo Keeb core member. Electronics hobbyist and creator of Gopher board."""
+
+[[teamMembers]]
+name = "Michiru Shirakawa (@micchie)"
+image = "tinygokeeb-micchie.jpg"
+bio = """Corporate IT Engineer at Mercari, Inc. Active in the Go community through Gophers Japan and Women Who Go Tokyo. Part of the TinyGo Keeb team bringing hardware creativity to communities across Japan."""
+
+[[teamMembers]]
+name = "Takanobu Hagino (taknb2nch)"
+image = "tinygokeeb-taknb2nch.png"
+bio = """Software engineer with experience across the full development lifecycle. TinyGo Keeb core member — primarily handles rework on the TinyGo Keeb Tour."""
+
+[[teamMembers]]
+name = "Daisuke Makiuchi (MakKi)"
+image = "tinygokeeb-makki.jpg"
+bio = """Software engineer at KLab Inc., developing real-time communication systems for mobile games. Author of open-source projects including WSNet2, gozxing, and arelo."""
+
+[[teamMembers]]
+name = "Senoue"
+image = "tinygokeeb-senoue.jpg"
+bio = """Full-stack engineer building everything from backend to frontend and infrastructure. A Go enthusiast experimenting with TinyGo to write devices in Go — and occasional food truck operator."""

@@ -1,0 +1,47 @@
+title = "Ultimate Software Design and Engineering"
+speakers = ["bill-kennedy"]
+date = "20 May 2026"
+time = "9:00am to 5:30pm"
+venueRegistration = ""
+venueMapUrl = ""
+note = "Lunch and tea breaks will be provided."
+description = """This class teaches you how to engineer production-level software in Go leveraging the power of a domain-driven, data-oriented architecture that can run in Kubernetes. From the beginning, you will pair-program and read code with the instructor as he walks through the design philosophies and guidelines for engineering software in Go.
+
+With each new feature that is discussed, you will learn how to think about, read, maintain, manage, and debug code. The core of this class is to teach you how to handle and reduce the spread of complexity in the systems you are building.
+
+If one of your biggest challenges is maintaining consistent coding standards across your codebase, maybe because team members have different levels of Go experience and are coming from different programming backgrounds, this course is for you. You will learn a set of idiomatic coding standards that everyone can adopt and apply to your existing projects.
+
+#### What a student is expected to learn:
+
+##### Deploy First Mentality:
+
+We begin to focus on service design with a focus on the ability to maintain, manage, and debug the service in Kubernetes.
+
+- Design Philosophy, Guidelines, What to Expect
+- Project Layers, Policies, and Guidelines
+- Prepare Project
+<br />
+
+##### Domain-Driven, Data-Oriented Architecture:
+
+We talk about the data-driven, data-oriented architecture. We discuss the design philosophy, guidelines, and semantics of how the three layers of App, Business, and Storage work together.
+
+- Architecture Review
+- Applying and Implementing Firewalls
+- Data Flow Trust vs Non-Trust
+- Data Shaping and Data Validation
+- Developer Isolation with Domains
+- Extending Functionality through Composition
+"""
+prerequisites = """
+- It is expected that you have been coding in Go for several months.
+- A working Go environment running on the device you will be bringing to class.
+<br />
+Recommended Preparation:
+
+- Please [clone the main repo](https://github.com/ardanlabs/service) for the class.
+- Please read the notes in the makefile for installing all the tooling and testing the code before class.
+- Please email the instructor, [Bill Kennedy](mailto:bill@ardanlabs.com) for assistance."""
+venue = """
+To be confirmed
+"""

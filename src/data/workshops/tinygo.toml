@@ -1,0 +1,18 @@
+title = "Hardware Hacking with TinyGo"
+speakers = ["ron-evans"]
+date = "20 & 21 May 2026"
+time = "9:30am to 5:30pm"
+venueMapUrl = ""
+note = ""
+description = """Get ready for an electrifying experience at GopherCon with the Hybrid Group's epic robot-fest session, powered by Go. Dive into drone control via joystick, reunite with our trusty pal GopherBot, and immerse yourself in more IoT wonders than you can handle!
+
+We are bringing a special collection of our favorite programmable robots and toys for you to play with and code, including some retro favorites and a few new friends.
+
+If music is your jam, don't miss the TinyGo Jam session! Rock out with TinyGo-powered MIDI controllers and enjoy a variety of self-guided musical activities to keep your earbuds delighted."""
+prerequisites = """
+- Complete the [Go Tour](https://go.dev/tour/welcome/1)
+- Have a functioning Go environment installed
+"""
+venue = """
+To be confirmed
+"""
