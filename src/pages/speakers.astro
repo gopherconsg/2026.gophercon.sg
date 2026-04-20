@@ -1,5 +1,6 @@
 ---
 import ComingSoon from "@/components/ComingSoon.astro";
+import SpeakerNav from "@/components/SpeakerNav.astro";
 import SpeakerProfile from "@/components/SpeakerProfile.astro";
 import TicketCta from "@/components/TicketCta.astro";
 import { isLineupConfirmed } from "@/config";
@@ -13,22 +14,22 @@ import { speakerImages } from "@/lib/images";
   description="Meet the speakers at GopherCon Singapore 2026"
 >
   {speakers.length > 0 ? (
-    <>
-      {/* Detail Cards Grid */}
-      <section class="page-bg" style="padding: 3rem 0 4rem;">
-        <div class="container">
-          <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Speakers</h1>
-          {!isLineupConfirmed && (
-            <p style="text-align: center; color: #555; margin-bottom: 2rem; font-size: 1.1rem;"><em>More speakers will be announced as they are confirmed.</em></p>
-          )}
-          <div class="flex flex-wrap gap-8 justify-center">
-            {speakers.map((speaker) => (
-              <SpeakerProfile speaker={speaker} imageMap={speakerImages} />
-            ))}
-          </div>
+    <section class="page-bg" style="padding: 3rem 0 4rem;">
+      <div class="container">
+        <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 1.5rem;">Speakers</h1>
+        {!isLineupConfirmed && (
+          <p style="text-align: center; color: #555; margin-bottom: 1rem; font-size: 1.05rem;"><em>More speakers will be announced as they are confirmed.</em></p>
+        )}
+
+        <SpeakerNav speakers={speakers} speakerImageMap={speakerImages} />
+
+        <div class="speaker-stack" data-speaker-stack>
+          {speakers.map((speaker) => (
+            <SpeakerProfile speaker={speaker} imageMap={speakerImages} />
+          ))}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   ) : (
     <div class="page-bg">
       <div class="container" style="padding: 3rem 1rem 4rem;">
@@ -40,3 +41,12 @@ import { speakerImages } from "@/lib/images";
 
   <TicketCta />
 </BaseLayout>
+
+<style>
+  .speaker-stack {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+</style>

@@ -38,24 +38,33 @@ Built with [Astro](https://astro.build/) 5 and [Tailwind CSS](https://tailwindcs
 ```
 src/
 ├── assets/images/       # Speaker photos + sponsor logos (optimized at build)
-│   ├── speakers/
+│   ├── speakers/        # ALL people images: speakers, instructors, team members
 │   └── sponsors/
 ├── components/          # Shared Astro components
-│   └── index/           # Home-page-only components
+│   ├── index/           # Home-page-only components
+│   ├── SpeakerNav.astro # Sticky mosaic nav + mobile dropdown for speakers page
+│   ├── TimelineLayout.astro # Timeline CSS wrapper for schedule
+│   └── WorkshopNav.astro # Sticky dropdown nav for workshops page
 ├── data/                # TOML data files (edit these to update content)
 │   ├── content.toml     # Hero text, tickets, CoC, footer, sponsor CTA
-│   ├── speakers.toml    # Speaker profiles
+│   ├── speakers.toml    # Speaker display-order index
+│   ├── speakers/        # One TOML file per speaker (filename = ID)
 │   ├── schedule.toml    # Conference day schedule
-│   ├── workshops.toml   # Workshop details
+│   ├── workshops.toml   # Workshop display-order index
+│   ├── workshops/       # One TOML file per workshop (filename = ID)
 │   └── sponsors.toml    # Sponsor tiers and logos
 ├── layouts/
-│   └── BaseLayout.astro # Shared HTML shell (head, header, footer)
+│   ├── BaseLayout.astro # Shared HTML shell (head, header, footer)
+│   └── RedirectLayout.astro # Composes BaseLayout with meta-refresh
 ├── lib/
-│   ├── data.ts          # Centralized TOML loading (don't import TOML elsewhere)
-│   └── images.ts        # Speaker image helpers
+│   ├── data.ts          # Centralized TOML loading + cross-reference resolution
+│   ├── images.ts        # Speaker + sponsor image helpers
+│   ├── scroll.ts        # Shared rAF-throttled scroll utility
+│   ├── nav-select.ts    # Shared select→scroll navigation
+│   └── section-tracker.ts # IntersectionObserver section tracker
 ├── pages/               # Routes: /, /speakers, /schedule, /workshops, /404
 ├── styles/
-│   └── global.css       # Tailwind v4 theme + custom CSS
+│   └── global.css       # Tailwind v4 theme + base resets
 ├── config.ts            # Site config: URL, nav, eventStatus
 ├── env.d.ts             # TypeScript declarations
 └── types.ts             # Data shape interfaces
@@ -84,24 +93,45 @@ conferenceDate = "22&ndash;24 January 2026"
 ### Add a Speaker
 
 1. Add the speaker's photo to `src/assets/images/speakers/` (JPG, JPEG, WebP, or PNG)
-2. Add an entry to `src/data/speakers.toml`:
+2. Create `src/data/speakers/<speaker-id>.toml` (the filename becomes the ID):
 
 ```toml
-[[speakers]]
-id = "jane-doe"
 name = "Jane Doe"
 company = "Acme Corp"
 image = "jane-doe.jpg"
-topicTitle = "Building Resilient Go Services"
-topicLink = "/schedule#jane-doe"
-keynote = false
 socialUrl = "https://twitter.com/janedoe"
-description = """Jane is a senior engineer at Acme Corp specializing in distributed systems."""
+bio = """Jane is a senior engineer at Acme Corp specializing in distributed systems."""
+
+[[sessions]]
+title = "Building Resilient Go Services"
+kind = "talk"
 ```
 
-The `image` filename must match a file in `src/assets/images/speakers/`. A mismatch crashes the build.
+The `[[sessions]]` block lists what the speaker is presenting. Each session needs a `title` and `kind` (`keynote`, `talk`, `workshop`, `moderator`, or `panelist`). Speakers with multiple sessions get multiple `[[sessions]]` blocks. Links to `/schedule#...` or `/workshops#...` are auto-generated.
 
-The `id` field becomes the URL anchor (`/speakers#jane-doe`), so use lowercase kebab-case.
+#### Speaker Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `name` | yes | Full legal/professional name |
+| `image` | yes | Filename in `src/assets/images/speakers/` — missing file crashes build |
+| `bio` | yes | Triple-quoted (`"""`) biography, supports markdown |
+| `company` | no | Company or affiliation |
+| `socialUrl` | no | Social profile URL (Twitter/X, GitHub, etc.) |
+| `url` | no | Personal website URL |
+| `preferredName` | no | Display name if different from full name (e.g. "Bill" for "William Kennedy") |
+| `[[sessions]]` | no | Repeated block per session. Each needs `title`, `kind` (`keynote`, `talk`, `workshop`, `moderator`, `panelist`), and `description` (triple-quoted, supports markdown). For `talk`/`keynote` sessions, the title and description here are the canonical source — they auto-populate the schedule page. No need to duplicate them in `schedule.toml` |
+
+3. Add the speaker's ID (filename without `.toml`) to the `order` array in `src/data/speakers.toml`:
+
+```toml
+order = [
+  "existing-speaker",
+  "jane-doe",
+]
+```
+
+Speakers not listed in `order` are appended alphabetically. A missing image file crashes the build.
 
 ### Add a Schedule Entry
 
@@ -109,50 +139,117 @@ Add an entry to `src/data/schedule.toml`:
 
 ```toml
 [[schedule]]
-id = "jane-doe"
-title = "Building Resilient Go Services"
-time = "2:00 PM"
+time = "2:00pm"
 type = "talk"
-recordingUrl = ""
-description = """Talk description with **markdown** support."""
-
-[[schedule.speakers]]
-name = "Jane Doe"
-link = "/speakers#jane-doe"
-image = "jane-doe.jpg"
+speakers = ["jane-doe"]
 ```
 
-The `type` field must be one of: `talk`, `break`, or `meta`. The `speakers` field is always an array — use `[[schedule.speakers]]` even for a single speaker.
+For single-speaker `talk` and `keynote` entries, keep it minimal — only `time`, `type`, and `speakers` are needed. The `id`, `title`, and `description` are auto-resolved from the speaker's `[[sessions]]` block:
+
+- **`id`** defaults to the first speaker ID (e.g. `jane-doe`)
+- **`title`** comes from the matching `[[sessions]]` entry (matched by `kind` = entry `type`)
+- **`description`** comes from the matching `[[sessions]]` entry
+
+You can override any of these by adding them explicitly. Multi-speaker entries need an explicit `id` if neither speaker ID works as the anchor. For `panel`, `lightning`, `break`, and `meta` entries, add `id`, `title`, and `description` directly.
+
+The `type` field must be one of: `talk`, `keynote`, `panel`, `lightning`, `break`, or `meta`.
+
+The `speakers` field is an array of speaker IDs matching files in `src/data/speakers/`. Times use lowercase am/pm format (e.g., `9:00am`, `12:30pm`).
+
+Entries render in file order — keep them chronological.
+
+Dangling speaker references (IDs that don't match a speaker file) will produce a warning during build.
+
+#### Schedule Entry Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `type` | yes | One of: `talk`, `keynote`, `panel`, `lightning`, `break`, `meta` |
+| `speakers` | no | Array of speaker IDs, e.g. `["jane-doe"]` |
+| `time` | no | Lowercase am/pm format, e.g. `9:00am`, `12:30pm`. Omit for untimed entries |
+| `id` | no | Anchor ID for URLs (`/schedule#id`). Auto-derived from first speaker ID for `talk`/`keynote` — only needed for overrides or entries without speakers |
+| `title` | no | Session title. Auto-resolved from the speaker's `[[sessions]]` block for `talk`/`keynote` — only needed for overrides or entries without speakers |
+| `description` | no | Triple-quoted, supports markdown. Auto-resolved from speaker's `[[sessions]]` block for `talk`/`keynote`. Only add for `break`, `meta`, `panel`, `lightning` entries |
+| `moderator` | no | Speaker ID for panel moderator |
+| `panelists` | no | Array of `{ id = "speaker-id" }` or `{ tba = true, name = "TBA" }` |
+| `talks` | no | For `lightning` type: array of `{ title, speaker, duration? }` |
+| `recordingUrl` | no | Post-conference recording URL (for `archived` status) |
 
 ### Add a Workshop
 
-1. Add the instructor's photo to `src/assets/images/speakers/` (if not already there from the speakers list)
-2. Add an entry to `src/data/workshops.toml`:
+1. Create `src/data/workshops/<workshop-id>.toml` (the filename becomes the ID):
+
+**For workshops by conference speakers:**
 
 ```toml
-[[workshops]]
-id = "intro-to-go"
 title = "Introduction to Go"
-speaker = "Jane Doe"
-speakerLink = "/speakers#jane-doe"
-speakerImage = "jane-doe.jpg"
+speakers = ["jane-doe"]
 date = "22 January 2026"
-time = "9:30am to 5:30pm"
-venueRegistration = "registration starts at 9:00am"
+time = "9:00am to 5:30pm"
 venueMapUrl = ""
-additional = ""
-speakerBio = """Instructor bio text..."""
-description = """Workshop description with **markdown** support..."""
+note = ""
+description = """Workshop description with **markdown** support.
+
+#### Curriculum Section
+
+Content here...
+"""
 prerequisites = """
 - Complete the [Go Tour](https://go.dev/tour/welcome/1)
-- Have a functioning Go environment installed
 """
 venue = """
-**IMDA Pixel Innovation Hub**
-10 Central Exchange Green
-Singapore 138649
+To be confirmed
 """
 ```
+
+**For workshops by external/community instructors** (not on the speakers page):
+
+```toml
+title = "Build Your Own Macropad"
+date = "22 January 2026"
+time = "9:30am to 5:30pm"
+note = "Hardware kit included."
+description = """Workshop description..."""
+prerequisites = """..."""
+venue = """To be confirmed"""
+
+[instructor]
+name = "TinyGo Keeb community (Japan)"
+url = "https://tinygo-keeb.org/"
+image = "tinygokeeb-sago35.png"
+socialUrl = "https://x.com/tinygo_keeb"
+bio = """Community description..."""
+
+[[teamMembers]]
+name = "Member Name"
+image = "member-photo.png"
+bio = """Short bio..."""
+```
+
+2. Add the workshop ID to `src/data/workshops.toml`:
+
+```toml
+order = ["existing-workshop", "new-workshop"]
+```
+
+All instructor, team member, and speaker images go in `src/assets/images/speakers/` regardless of role.
+
+#### Workshop Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `title` | yes | Workshop title |
+| `date` | yes | Free-text date, e.g. `"22 January 2026"` or `"20 & 21 May 2026"` |
+| `time` | yes | Time range, e.g. `"9:00am to 5:30pm"` |
+| `venue` | yes | Venue name/address. Use triple-quotes for multi-line |
+| `description` | yes | Triple-quoted, supports markdown |
+| `speakers` | conditional | Array of speaker IDs — use for conference speakers on the speakers page |
+| `[instructor]` | conditional | Inline instructor block — use for external instructors not on the speakers page |
+| `prerequisites` | no | Triple-quoted prerequisites, supports markdown |
+| `note` | no | Short note shown as an aside (e.g. "Hardware kit included") |
+| `venueRegistration` | no | Note shown under venue (e.g. "registration starts at 9:00am") |
+| `venueMapUrl` | no | Link to venue map |
+| `[[teamMembers]]` | no | Repeated block for team-taught workshops. Each needs `name`, `image`, `bio` |
 
 ### Add a Sponsor
 
@@ -166,6 +263,14 @@ logo = "acme.png"
 ```
 
 Available tiers: `[[platinum]]`, `[[diversity]]`, `[[gold]]`, `[[workshop]]`. They display in that order on the site regardless of file order.
+
+#### Sponsor Fields
+
+| Field | Required | Description |
+|---|---|---|
+| `name` | yes | Sponsor/company name |
+| `logo` | yes | Filename in `src/assets/images/sponsors/` |
+| `url` | no | Sponsor website URL |
 
 ### Change Event Status
 
@@ -206,7 +311,7 @@ flowchart TD
 - **TOML for data, not content collections.** Editors already know TOML from the Hugo-era sites. Files are imported directly via `vite-plugin-toml` and typed with TypeScript interfaces.
 - **Two-tier images.** Speaker photos and sponsor logos go in `src/assets/images/` for Astro's build-time optimization. Hero backgrounds and wave layers stay in `public/img/` as plain files for CSS `background-image` usage.
 - **Centralized data loading.** All TOML imports happen in `src/lib/data.ts`. Components never import TOML files directly — they use typed exports like `import { speakers } from "@/lib/data"`.
-- **No client-side framework.** Two inline `<script>` blocks handle all interactivity (mobile nav toggle, copy-link-to-clipboard). No React, no Vue, no Astro islands.
+- **No client-side framework.** Inline `<script>` blocks handle all interactivity (mobile nav toggle, copy-link, scroll-tracking navigation). Shared utilities in `src/lib/` (`scroll.ts`, `nav-select.ts`, `section-tracker.ts`) eliminate duplication across pages. No React, no Vue, no Astro islands.
 - **Tailwind v4 CSS-first.** Theme tokens are defined in `@theme {}` inside `src/styles/global.css`. There is no `tailwind.config.js`.
 
 ### Adding a New Page
@@ -233,17 +338,21 @@ Pages only provide slot content. Header and Footer are rendered by BaseLayout �
 
 ### Working with Images
 
-Speaker and sponsor images use Astro's `<Image />` component, which requires statically analyzable imports. You cannot use dynamic string paths like `` `../assets/${filename}` ``.
+Speaker, instructor, and sponsor images use Astro's `<Image />` component, which requires statically analyzable imports. You cannot use dynamic string paths.
 
-Instead, use the centralized helpers:
+Instead, use the centralized helpers in `src/lib/images.ts`:
 
 ```typescript
-// Speaker images (centralized in src/lib/images.ts)
-import { speakerImages, resolveSpeakerImage } from "@/lib/images";
+import { speakerImages, resolveSpeakerImage, findSponsorImage } from "@/lib/images";
 const img = resolveSpeakerImage(speakerImages, "dave-cheney.jpg"); // throws if missing
+const logo = findSponsorImage("acme.png"); // returns null if missing
 ```
 
-Hero and background images in `public/img/` are referenced directly in CSS or plain `<img>` tags — they do not go through `<Image />`.
+**All people images** (speakers, workshop instructors, team members) go in `src/assets/images/speakers/` and are referenced by bare filename in TOML files.
+
+**Sponsor logos** go in `src/assets/images/sponsors/`.
+
+Hero and background images in `public/img/` are referenced directly in CSS — they do not go through `<Image />`.
 
 ### Styling
 

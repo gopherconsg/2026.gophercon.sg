@@ -1,7 +1,9 @@
 ---
 import ComingSoon from "@/components/ComingSoon.astro";
+import ScheduleTabs from "@/components/ScheduleTabs.astro";
 import TicketCta from "@/components/TicketCta.astro";
 import WorkshopEntry from "@/components/WorkshopEntry.astro";
+import WorkshopNav from "@/components/WorkshopNav.astro";
 import { isNavEnabled } from "@/config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { workshops } from "@/lib/data";
@@ -18,136 +20,18 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
     <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
       <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Workshops</h1>
 
-      {showTabs && (
-        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
-          <a href="/schedule" class="schedule-tab">Conference</a>
-          <a href="/workshops" class="schedule-tab active">Workshops</a>
-        </div>
-      )}
+      {showTabs && <ScheduleTabs active="workshops" />}
 
       {workshops.length > 0 ? (
         <>
           {workshops.length > 1 && (
-            <>
-              <div id="workshop-nav" class="-mx-4 mb-10 sticky top-[var(--header-height)] z-40 backdrop-blur border-b border-transparent transition-colors duration-300">
-                {/* Desktop: pill links */}
-                <div class="workshop-pills-desktop gap-2 justify-center flex-nowrap px-4 py-2.5">
-                  {workshops.map((w) => (
-                    <a href={`#${w.id}`} class="workshop-pill px-3.5 py-1.5 rounded-full border-2 font-semibold text-[0.8rem] no-underline transition-colors duration-300 hover:no-underline whitespace-nowrap">{w.title}</a>
-                  ))}
-                </div>
-                {/* Mobile: pill links (visible at page top, hidden when scrolled) */}
-                <div class="workshop-pills-mobile gap-2 justify-center flex-wrap px-4 py-3">
-                  {workshops.map((w) => (
-                    <a href={`#${w.id}`} class="workshop-pill px-3 py-1.5 rounded-full border font-semibold text-xs no-underline transition-colors duration-300 hover:no-underline">{w.title}</a>
-                  ))}
-                </div>
-                {/* Mobile: scroll-tracking dropdown (hidden at top, visible when scrolled) */}
-                <div class="workshop-select items-center gap-2 px-4 py-2">
-                  <label for="workshop-select" class="text-xs font-semibold text-[#667085] uppercase tracking-wide shrink-0">Jump to</label>
-                  <select
-                    id="workshop-select"
-                    class="flex-1 min-w-0 px-3 py-1.5 rounded-lg border border-gray-300 text-sm font-semibold text-body-text bg-white appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23667085%22%20d%3D%22M2.5%204.5L6%208l3.5-3.5%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_0.5rem_center] bg-no-repeat pr-7 truncate"
-                  >
-                    {workshops.map((w) => (
-                      <option value={w.id}>{w.title}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-              <style is:inline>
-                .workshop-pills-desktop { display: none; }
-                .workshop-pills-mobile { display: flex; }
-                .workshop-select { display: none; }
-                @media (min-width: 768px) {
-                  .workshop-pills-desktop { display: flex; }
-                  .workshop-pills-mobile { display: none; }
-                }
-
-                /* Pills: always grey text on semi-opaque white — legible over gradient and white */
-                .workshop-pill {
-                  border-color: #d0d5dd;
-                  color: #667085;
-                  background: rgba(255,255,255,0.85);
-                }
-                .workshop-pill:hover {
-                  border-color: var(--color-brand-blue);
-                  color: var(--color-brand-blue);
-                  background: rgba(255,255,255,0.95);
-                  text-decoration: none;
-                }
-
-                /* Scrolled: fully opaque nav background; pills colours already match */
-                #workshop-nav[data-scrolled] {
-                  background-color: rgba(255,255,255,0.95);
-                  border-bottom-color: #e5e7eb;
-                }
-                #workshop-nav[data-scrolled] .workshop-pill {
-                  background: white;
-                }
-
-                /* Mobile scrolled: swap pills for dropdown */
-                @media (max-width: 767px) {
-                  #workshop-nav[data-scrolled] .workshop-pills-mobile { display: none; }
-                  #workshop-nav[data-scrolled] .workshop-select { display: flex; }
-                }
-              </style>
-            </>
+            <WorkshopNav workshops={workshops} />
           )}
-          <div class="flex flex-col gap-10">
+          <div class="flex flex-col gap-10" data-workshop-list>
             {workshops.map((workshop) => (
               <WorkshopEntry workshop={workshop} speakerImageMap={speakerImages} />
             ))}
           </div>
-          <script is:inline>
-            (function() {
-              var nav = document.getElementById('workshop-nav');
-              var select = document.getElementById('workshop-select');
-              if (!nav) return;
-
-              // Toggle data-scrolled based on scroll position
-              var ticking = false;
-              function onScroll() {
-                if (window.scrollY > 80) {
-                  nav.setAttribute('data-scrolled', '');
-                } else {
-                  nav.removeAttribute('data-scrolled');
-                }
-                ticking = false;
-              }
-              window.addEventListener('scroll', function() {
-                if (!ticking) {
-                  requestAnimationFrame(onScroll);
-                  ticking = true;
-                }
-              }, { passive: true });
-              onScroll();
-
-              if (select) {
-                // Jump to workshop on select change
-                select.addEventListener('change', function() {
-                  var el = document.getElementById(this.value);
-                  if (el) el.scrollIntoView({ block: 'start' });
-                });
-
-                // Track which workshop is in view and update dropdown
-                if ('IntersectionObserver' in window) {
-                  var articles = document.querySelectorAll('article[id]');
-                  var observer = new IntersectionObserver(function(entries) {
-                    for (var i = 0; i < entries.length; i++) {
-                      if (entries[i].isIntersecting) {
-                        select.value = entries[i].target.id;
-                        break;
-                      }
-                    }
-                  }, { rootMargin: '-120px 0px -60% 0px', threshold: 0 });
-                  for (var i = 0; i < articles.length; i++) {
-                    observer.observe(articles[i]);
-                  }
-                }
-              }
-            })();
-          </script>
         </>
       ) : (
         <ComingSoon message="Workshop details" />
@@ -157,3 +41,5 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
     </div>
   </div>
 </BaseLayout>
+
+

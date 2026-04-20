@@ -40,9 +40,11 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={ogImageURL} />
+    <meta property="og:description" content={description} />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:description" content={description} />
     {isLive && import.meta.env.DEV && (
       <script is:inline>TitoDevelopmentMode = true;</script>
     )}
@@ -62,6 +64,7 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
         snowplow('trackPageView');
       </script>
     )}
+    <slot name="head" />
   </head>
   <body>
     <a
@@ -77,7 +80,7 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
     <Footer />
     <script is:inline>
       document.addEventListener('click', function(e) {
-        var btn = e.target.closest && e.target.closest('.copy-link');
+        var btn = e.target.closest('.copy-link');
         if (!btn) return;
         e.preventDefault();
         var href = btn.getAttribute('data-href');
@@ -99,8 +102,10 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
           textarea.style.left = '-9999px';
           textarea.style.opacity = '0';
           document.body.appendChild(textarea);
-          textarea.select();
-          try { document.execCommand('copy'); } catch(err) {}
+          try {
+            textarea.select();
+            document.execCommand('copy');
+          } catch(err) {}
           document.body.removeChild(textarea);
         }
 
@@ -117,3 +122,54 @@ const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
     </script>
   </body>
 </html>
+
+<style>
+  :global(.copy-link-wrapper) {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  :global(.copy-link) {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.25rem;
+    color: #999;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+
+  :global(.copy-link:hover) {
+    opacity: 1;
+    color: var(--color-brand-blue);
+  }
+
+  :global(.copy-link-tooltip) {
+    position: absolute;
+    left: 100%;
+    margin-left: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    white-space: nowrap;
+    font-size: 0.75rem;
+    background: #333;
+    color: #fff;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0.25rem;
+  }
+
+  :global(.copy-link-tooltip.copied) {
+    opacity: 1;
+  }
+
+  @media (max-width: 480px) {
+    :global(.copy-link-tooltip) {
+      left: auto;
+      right: 100%;
+      margin-left: 0;
+      margin-right: 0.5rem;
+    }
+  }
+</style>

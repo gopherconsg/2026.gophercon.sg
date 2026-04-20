@@ -1,10 +1,12 @@
 ---
 import { content } from "@/lib/data";
+import { mdInline } from "@/lib/markdown";
 import { Icon } from "astro-icon/components";
-import { marked } from "marked";
 const footerConfig = content.footer;
 
-const copyright1Html = marked.parseInline(footerConfig.copyright1);
+const copyrightHtml = mdInline(footerConfig.copyright);
+const copyright1Html = mdInline(footerConfig.copyright1);
+const copyright2Html = mdInline(footerConfig.copyright2);
 ---
 
 <footer class="footer">
@@ -43,9 +45,9 @@ const copyright1Html = marked.parseInline(footerConfig.copyright1);
       </div>
 
       <div style="font-size: 0.875rem; color: #ccc; max-width: 600px;">
-        <p set:html={footerConfig.copyright} style="margin-bottom: 0.5rem;" />
+        <p set:html={copyrightHtml} style="margin-bottom: 0.5rem;" />
         <p set:html={copyright1Html} style="margin-bottom: 0.5rem;" />
-        <p set:html={footerConfig.copyright2} style="margin-bottom: 0.5rem;" />
+        <p set:html={copyright2Html} style="margin-bottom: 0.5rem;" />
         <p style="margin-bottom: 0;">Last updated: {footerConfig.updatedDate}</p>
       </div>
     </div>

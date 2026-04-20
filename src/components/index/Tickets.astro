@@ -1,11 +1,11 @@
 ---
 import { isLive } from "@/config";
 import { content } from "@/lib/data";
-import { marked } from "marked";
+import { md } from "@/lib/markdown";
 const ticketsConfig = content.tickets;
 
-const scholarshipHtml = marked.parse(ticketsConfig.scholarshipInfo);
-const refundHtml = marked.parse(ticketsConfig.refundPolicy);
+const scholarshipHtml = md(ticketsConfig.scholarshipInfo);
+const refundHtml = md(ticketsConfig.refundPolicy);
 ---
 
 {isLive && (

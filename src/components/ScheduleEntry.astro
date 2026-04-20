@@ -1,103 +1,634 @@
 ---
 import { Image } from "astro:assets";
 import { type ImageMap, findSpeakerImage } from "@/lib/images";
-import type { ScheduleEntry } from "@/types";
+import { md } from "@/lib/markdown";
+import type {
+  LightningTalk,
+  ResolvedPanelist,
+  ResolvedScheduleSpeaker,
+  ScheduleEntry,
+} from "@/types";
 import { Icon } from "astro-icon/components";
-import { marked } from "marked";
 
 interface Props {
   entry: ScheduleEntry;
   imageMap: ImageMap;
+  showTime?: boolean;
 }
 
-const { entry, imageMap } = Astro.props;
+const { entry, imageMap, showTime = true } = Astro.props;
 
-const descriptionHtml = entry.description
-  ? marked.parse(entry.description)
-  : "";
-const isBreakOrMeta = entry.type === "break" || entry.type === "meta";
+const descriptionHtml = entry.description ? md(entry.description) : "";
+const isBreak = entry.type === "break";
+const isMeta = entry.type === "meta";
+const isKeynote = entry.type === "keynote";
+const isPanel = entry.type === "panel";
+const isLightning = entry.type === "lightning";
+const hasTime = showTime && !!entry.time && entry.time.trim() !== "";
+
+// Emoji prefix for meta dividers (registration, opening/closing remarks)
+function metaEmoji(id: string): string {
+  if (id === "registration") return "🎟️";
+  if (id === "opening-remarks" || id.startsWith("opening")) return "🎤";
+  if (id === "closing-remarks" || id.startsWith("closing")) return "📸";
+  return "•";
+}
+
+// After-party gets a special rainbow divider
+const isAfterParty = entry.id === "after-party";
+
+function speakerThumb(
+  speaker: ResolvedScheduleSpeaker | ResolvedPanelist,
+): ImageMetadata | null {
+  return speaker.image ? findSpeakerImage(imageMap, speaker.image) : null;
+}
+
+function initials(name: string): string {
+  return name.charAt(0).toUpperCase();
+}
 ---
 
-<div
-  id={entry.id}
-  class:list={[
-    "timeline-entry",
-    `timeline-entry-${entry.type}`,
-  ]}
->
-  <div class="timeline-time">{entry.time}</div>
+{isBreak || isMeta ? (
+  <div
+    id={entry.id}
+    class:list={[
+      "sched-divider",
+      isBreak ? "sched-divider-break" : "sched-divider-meta",
+      isAfterParty && "sched-divider-party",
+    ]}
+  >
+    <span>
+      {hasTime && <strong class="sched-divider-time">{entry.time}</strong>}
+      {isMeta && `${metaEmoji(entry.id)} `}{entry.title}{entry.description ? ` · ${entry.description}` : ""}
+    </span>
+  </div>
+) : (
+  <article
+    id={entry.id}
+    class:list={[
+      "sched-card",
+      isKeynote && "sched-card-keynote",
+      isPanel && "sched-card-panel",
+      isLightning && "sched-card-lightning",
+    ]}
+  >
+    {hasTime && <div class="sched-time">{entry.time}</div>}
 
-  {isBreakOrMeta ? (
-    <div class="timeline-break-pill">
-      {entry.title}{entry.description ? ` — ${entry.description}` : ""}
-    </div>
-  ) : (
-    <>
-      <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.25rem;">
-        <div class="timeline-title">{entry.title}</div>
-        <span class="copy-link-wrapper">
-          <button
-            type="button"
-            class="copy-link"
-            data-href={`/schedule#${entry.id}`}
-            aria-label="Copy link to this session"
-          >
-            <Icon name="fa:link" class="w-3.5 h-3.5" />
-          </button>
-          <span class="copy-link-tooltip" aria-live="polite">Copied!</span>
-        </span>
+    {isKeynote && (
+      <div class="sched-badge-row">
+        <span class="sched-badge sched-badge-keynote">Keynote</span>
       </div>
+    )}
 
-      {entry.speakers.map((speaker) => {
-        const img = speaker.image ? findSpeakerImage(imageMap, speaker.image) : null;
-        return (
-          <div class="timeline-speaker-inline">
-            {img && (
-              <div class="timeline-speaker-thumb">
-                {speaker.link ? (
-                  <a href={speaker.link} style="display: block; width: 100%; height: 100%;">
-                    <Image
-                      src={img}
-                      alt={speaker.name}
-                      width={32}
-                      height={32}
-                      class="w-full h-full object-cover"
-                    />
-                  </a>
-                ) : (
-                  <Image
-                    src={img}
-                    alt={speaker.name}
-                    width={32}
-                    height={32}
-                    class="w-full h-full object-cover"
-                  />
-                )}
-              </div>
-            )}
-            {speaker.link ? (
-              <a href={speaker.link} style="font-size: 0.9rem; color: #555;">{speaker.name}</a>
-            ) : (
-              <span style="font-size: 0.9rem; color: #555;">{speaker.name}</span>
-            )}
-          </div>
-        );
-      })}
-
-      {descriptionHtml && (
-        <div class="timeline-desc" set:html={descriptionHtml} />
-      )}
-
-      {entry.recordingUrl && (
-        <a
-          href={entry.recordingUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          style="display: inline-block; background: var(--color-brand-blue); color: #fff; padding: 0.25rem 0.75rem; border-radius: 1rem; font-size: 0.875rem; text-decoration: none; margin-top: 0.5rem;"
+    <div class="sched-title-row">
+      <h3 class:list={["sched-title", isKeynote && "sched-title-keynote"]}>{entry.title}</h3>
+      <span class="copy-link-wrapper">
+        <button
+          type="button"
+          class="copy-link"
+          data-href={`/schedule#${entry.id}`}
+          aria-label="Copy link to this session"
         >
-          Watch Recording ▶
-        </a>
-      )}
-    </>
-  )}
-</div>
+          <Icon name="fa:link" class="w-3.5 h-3.5" />
+        </button>
+        <span class="copy-link-tooltip" aria-live="polite">Copied!</span>
+      </span>
+    </div>
+
+    {/* Talk / Keynote speakers */}
+    {(entry.type === "talk" || entry.type === "keynote") && entry.speakers.length > 0 && (
+      <div class="sched-speakers">
+        {entry.speakers.map((speaker) => {
+          const img = speakerThumb(speaker);
+          return (
+            <a href={speaker.link} class="sched-chip">
+              <span class="sched-chip-avatar">
+                {img ? (
+                  <Image src={img} alt={speaker.name} width={36} height={36} class="w-full h-full object-cover" />
+                ) : (
+                  <span>{initials(speaker.name)}</span>
+                )}
+              </span>
+              <span class="sched-chip-info">
+                <span class="sched-chip-name">{speaker.name}</span>
+                {speaker.company && (
+                  <span class="sched-chip-co">{speaker.company}</span>
+                )}
+              </span>
+            </a>
+          );
+        })}
+      </div>
+    )}
+
+    {/* Panel: panelists prominent, moderator footer */}
+    {isPanel && (
+      <>
+        {entry.panelists && entry.panelists.length > 0 && (
+          <div class="sched-panel-roster">
+            {entry.panelists.map((p) => {
+              const img = !p.tba ? speakerThumb(p) : null;
+              const inner = (
+                <>
+                  <span class:list={["sched-panel-avatar", p.tba && "sched-panel-avatar-tba"]}>
+                    {img ? (
+                      <Image src={img} alt={p.name} width={48} height={48} class="w-full h-full object-cover" />
+                    ) : p.tba ? (
+                      <span aria-hidden="true">?</span>
+                    ) : (
+                      <span>{initials(p.name)}</span>
+                    )}
+                  </span>
+                  <span class="sched-panel-info">
+                    <span class:list={["sched-panel-name", p.tba && "sched-panel-name-tba"]}>{p.name}</span>
+                    {p.company && !p.tba && (
+                      <span class="sched-panel-co">{p.company}</span>
+                    )}
+                  </span>
+                </>
+              );
+              return p.link ? (
+                <a href={p.link} class="sched-panel-chip">{inner}</a>
+              ) : (
+                <span class:list={["sched-panel-chip", p.tba && "sched-panel-chip-tba"]}>{inner}</span>
+              );
+            })}
+          </div>
+        )}
+      </>
+    )}
+
+    {/* Lightning: chip slots */}
+    {isLightning && entry.talks && entry.talks.length > 0 && (
+      <div class="sched-lt-slots">
+        {entry.talks.map((t: LightningTalk) => {
+          const tba = !t.speaker || /^to be announced/i.test(t.speaker);
+          return (
+            <div class:list={["sched-lt-slot", tba && "sched-lt-slot-tba"]}>
+              <span class:list={["sched-lt-avatar", tba && "sched-lt-avatar-tba"]}>
+                {tba ? "?" : initials(t.speaker)}
+              </span>
+              <span class="sched-lt-info">
+                <span class="sched-lt-title">⚡ {t.title}</span>
+                <span class:list={["sched-lt-speaker", tba && "sched-lt-speaker-tba"]}>
+                  {tba ? "To be announced" : t.speaker}
+                  {t.duration && <span class="sched-lt-duration"> · {t.duration}</span>}
+                </span>
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    )}
+
+    {descriptionHtml && (
+      <div class="sched-desc" set:html={descriptionHtml} />
+    )}
+
+    {/* Panel moderator footer — placed after description, deemphasized */}
+    {isPanel && entry.moderator && (
+      <div class="sched-moderator">
+        <span class="sched-moderator-avatar">
+          {(() => {
+            const img = entry.moderator ? speakerThumb(entry.moderator) : null;
+            return img ? (
+              <Image src={img} alt={entry.moderator.name} width={28} height={28} class="w-full h-full object-cover" />
+            ) : (
+              <span>{initials(entry.moderator.name)}</span>
+            );
+          })()}
+        </span>
+        <span><em>moderated by</em>{" "}<a href={entry.moderator.link}>{entry.moderator.name}</a></span>
+      </div>
+    )}
+
+    {entry.recordingUrl && (
+      <a
+        href={entry.recordingUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="sched-recording-btn"
+      >
+        Watch Recording ▶
+      </a>
+    )}
+  </article>
+)}
+
+<style>
+  /* ============ Dividers (break + meta) ============ */
+  .sched-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    margin: 0.4rem 0;
+    scroll-margin-top: calc(var(--header-height, 85px) + 3.5rem);
+  }
+  .sched-divider::before,
+  .sched-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d0dbe6, transparent);
+  }
+  .sched-divider span {
+    font-size: 0.9rem;
+    font-weight: 600;
+    white-space: nowrap;
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .sched-divider-break span {
+    font-family: var(--font-mono, "SF Mono", Menlo, Consolas, monospace);
+    color: #007d9c;
+  }
+  .sched-divider-meta span {
+    color: var(--color-body-text);
+    letter-spacing: 0.01em;
+  }
+  .sched-divider-party::before,
+  .sched-divider-party::after {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #8b5cf6 30%, var(--color-brand-blue) 50%, #f0b300 70%, transparent);
+  }
+  .sched-divider-time {
+    font-family: var(--font-mono, "SF Mono", Menlo, Consolas, monospace);
+    font-weight: 700;
+    color: #0e7490;
+    margin-right: 0.5rem;
+  }
+
+  /* ============ Cards ============ */
+  .sched-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-left: 4px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 1.1rem 1.25rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      border-color 0.18s ease;
+    scroll-margin-top: calc(var(--header-height, 85px) + 3.5rem);
+  }
+  .sched-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  .sched-card-keynote {
+    border-left-color: var(--color-brand-blue);
+    background: linear-gradient(180deg, #f0fdff 0%, #ffffff 60%);
+    padding: 1.4rem 1.5rem;
+  }
+  .sched-card-panel {
+    border-left-color: #f0b300;
+    background: linear-gradient(180deg, #fffbf0 0%, #ffffff 60%);
+  }
+  .sched-card-lightning {
+    border-left-color: #8b5cf6;
+    background: #fafafa;
+    padding: 1rem 1.25rem;
+  }
+
+  /* ============ Time ============ */
+  .sched-time {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #0e7490;
+    margin-bottom: 0.4rem;
+  }
+
+  /* ============ Badges + tags ============ */
+  .sched-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.5rem;
+  }
+  .sched-badge {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.18rem 0.55rem;
+    border-radius: 9999px;
+  }
+  .sched-badge-keynote {
+    background: var(--color-brand-blue);
+    color: #fff;
+  }
+
+  /* ============ Title ============ */
+  .sched-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.55rem;
+  }
+  .sched-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.35;
+    color: var(--color-body-text);
+  }
+  .sched-title-keynote {
+    font-size: 1.25rem;
+  }
+  .sched-card-lightning .sched-title {
+    font-size: 1rem;
+  }
+
+  /* ============ Talk speaker chips ============ */
+  .sched-speakers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    margin-bottom: 0.55rem;
+  }
+  .sched-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: inherit;
+  }
+  .sched-chip:hover .sched-chip-name {
+    text-decoration: underline;
+  }
+  .sched-chip-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: #e0e7ee;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #667085;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .sched-chip-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    line-height: 1.25;
+    min-width: 0;
+  }
+  .sched-chip-name {
+    font-size: 0.9rem;
+    color: #374151;
+    font-weight: 500;
+  }
+  .sched-chip-co {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0.01em;
+  }
+
+  /* ============ Panel: panelist chips ============ */
+  .sched-panel-roster {
+    /* Free-flowing row — chips size to their content, no fixed grid columns. */
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem 1rem;
+    margin: 0.25rem 0 0.75rem;
+  }
+  .sched-panel-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    text-decoration: none;
+    color: inherit;
+    transition: opacity 0.15s ease;
+  }
+  a.sched-panel-chip:hover {
+    opacity: 0.75;
+  }
+  a.sched-panel-chip:hover .sched-panel-name {
+    text-decoration: underline;
+  }
+  .sched-panel-chip-tba {
+    opacity: 0.85;
+  }
+  .sched-panel-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #8a6400;
+    font-weight: 700;
+    font-size: 0.75rem;
+    border: 2px solid #f0b300;
+  }
+  .sched-panel-avatar-tba {
+    background: repeating-linear-gradient(
+      45deg,
+      #f1f5f9,
+      #f1f5f9 4px,
+      #e2e8f0 4px,
+      #e2e8f0 8px
+    );
+    color: #64748b;
+    font-size: 0.95rem;
+    border-color: #cbd5e1;
+    border-style: dashed;
+  }
+  .sched-panel-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    line-height: 1.2;
+  }
+  .sched-panel-name {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--color-body-text);
+  }
+  .sched-panel-name-tba {
+    color: #94a3b8;
+    font-style: italic;
+    font-weight: 500;
+  }
+  .sched-panel-co {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: #6b7280;
+    letter-spacing: 0.01em;
+  }
+
+  /* ============ Panel: moderator footer ============ */
+  .sched-moderator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-top: 0.85rem;
+    padding-top: 0.65rem;
+    border-top: 1px dashed #e5e7eb;
+  }
+  .sched-moderator em {
+    font-style: italic;
+    color: #94a3b8;
+    font-weight: 400;
+  }
+  .sched-moderator a {
+    color: #475569;
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px dotted #cbd5e1;
+  }
+  .sched-moderator a:hover {
+    color: #007d9c;
+    border-bottom-color: var(--color-brand-blue);
+  }
+  .sched-moderator-avatar {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #cffafe, #a5f3fc);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #0e7490;
+    font-weight: 700;
+    font-size: 0.6rem;
+  }
+
+  /* ============ Lightning: chip slots ============ */
+  .sched-lt-slots {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin: 0.65rem 0 0;
+  }
+  .sched-lt-slot {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    background: #fff;
+    border: 1px solid #e9ecf0;
+    border-left: 3px solid #8b5cf6;
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+    transition: box-shadow 0.15s ease;
+  }
+  .sched-lt-slot:hover {
+    box-shadow: 0 2px 8px rgba(139, 92, 246, 0.08);
+  }
+  .sched-lt-slot-tba {
+    border-left-style: dashed;
+    border-left-color: #c4b5fd;
+  }
+  .sched-lt-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #6b3fd4;
+    font-weight: 700;
+    font-size: 0.75rem;
+  }
+  .sched-lt-avatar-tba {
+    background: repeating-linear-gradient(
+      45deg,
+      #f3efff,
+      #f3efff 4px,
+      #e9e1ff 4px,
+      #e9e1ff 8px
+    );
+    color: #8b5cf6;
+    font-size: 0.9rem;
+  }
+  .sched-lt-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+    flex: 1;
+  }
+  .sched-lt-title {
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: var(--color-body-text);
+  }
+  .sched-lt-speaker {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #64748b;
+  }
+  .sched-lt-speaker-tba {
+    font-style: italic;
+    color: #94a3b8;
+  }
+  .sched-lt-duration {
+    color: #94a3b8;
+    font-weight: 400;
+  }
+
+  /* ============ Description ============ */
+  .sched-desc {
+    color: #4b5563;
+    font-size: 0.9rem;
+    line-height: 1.65;
+    margin-top: 0.25rem;
+  }
+  .sched-desc :global(p) {
+    margin: 0 0 0.5rem;
+  }
+  .sched-desc :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  /* ============ Recording ============ */
+  .sched-recording-btn {
+    display: inline-block;
+    background: var(--color-brand-blue);
+    color: #fff;
+    padding: 0.35rem 0.9rem;
+    border-radius: 9999px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 0.75rem;
+  }
+  .sched-recording-btn:hover {
+    filter: brightness(1.05);
+  }
+
+  @media (max-width: 480px) {
+    .sched-divider span {
+      font-size: 0.82rem;
+      white-space: normal;
+    }
+  }
+</style>

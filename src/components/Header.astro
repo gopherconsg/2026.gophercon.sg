@@ -54,12 +54,31 @@ const pathname = Astro.url.pathname;
 
 <script is:inline>
   document.addEventListener('click', function(e) {
-    var toggle = e.target.closest && e.target.closest('#navbar-toggle');
-    if (!toggle) return;
+    var toggle = e.target.closest('#navbar-toggle');
     var nav = document.getElementById('navbar-container');
     if (!nav) return;
-    var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-    toggle.setAttribute('aria-expanded', String(!isExpanded));
-    nav.classList.toggle('hidden');
+
+    if (toggle) {
+      var isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!isExpanded));
+      nav.classList.toggle('hidden');
+    } else if (!nav.contains(e.target) && !nav.classList.contains('hidden')) {
+      nav.classList.add('hidden');
+      var btn = document.getElementById('navbar-toggle');
+      if (btn) btn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var nav = document.getElementById('navbar-container');
+      if (nav && !nav.classList.contains('hidden')) {
+        nav.classList.add('hidden');
+        var btn = document.getElementById('navbar-toggle');
+        if (btn) {
+          btn.setAttribute('aria-expanded', 'false');
+          btn.focus();
+        }
+      }
+    }
   });
 </script>

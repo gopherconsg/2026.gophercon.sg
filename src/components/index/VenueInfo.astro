@@ -1,10 +1,10 @@
 ---
 import { content } from "@/lib/data";
-import { marked } from "marked";
+import { md } from "@/lib/markdown";
 const heroConfig = content.hero;
 
 const practicalInfoHtml = heroConfig.practicalInfo
-  ? marked.parse(heroConfig.practicalInfo)
+  ? md(heroConfig.practicalInfo)
   : "";
 ---
 

@@ -1,0 +1,382 @@
+---
+import { Image } from "astro:assets";
+import type { ImageMap } from "@/lib/images";
+import { findSpeakerImage } from "@/lib/images";
+import type { Speaker } from "@/types";
+
+interface Props {
+  speakers: Speaker[];
+  speakerImageMap: ImageMap;
+}
+
+const { speakers, speakerImageMap } = Astro.props;
+
+const firstImg = speakers[0]?.image
+  ? findSpeakerImage(speakerImageMap, speakers[0].image)
+  : null;
+---
+
+<nav class="speaker-nav" id="speaker-nav" aria-label="Jump to speaker">
+  {/* Desktop + mobile top: thumbnail mosaic */}
+  <ul class="speaker-mosaic" id="speaker-mosaic">
+    {speakers.map((s) => {
+      const displayName = s.preferredName || s.name.split(" ")[0];
+      const tileImg = s.image ? findSpeakerImage(speakerImageMap, s.image) : null;
+      return (
+        <li>
+          <a
+            href={`#${s.id}`}
+            class="mosaic-tile"
+            data-target={s.id}
+            aria-label={`Jump to ${s.name}`}
+          >
+            <span class="mosaic-thumb">
+              {tileImg ? (
+                <Image
+                  src={tileImg}
+                  alt={s.name}
+                  width={50}
+                  height={50}
+                  class="w-full h-full object-cover"
+                />
+              ) : (
+                <span class="mosaic-thumb-placeholder" aria-hidden="true">{s.name.charAt(0)}</span>
+              )}
+            </span>
+            <span class="mosaic-name">{displayName}</span>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+
+  {/* Mobile scrolled: image + dropdown selector */}
+  <div class="speaker-select" id="speaker-select-wrap">
+    <span class="speaker-select-thumb" id="speaker-select-thumb">
+      {firstImg ? (
+        <Image
+          src={firstImg}
+          alt=""
+          width={36}
+          height={36}
+          class="w-full h-full object-cover"
+          id="speaker-select-img"
+        />
+      ) : (
+        <span class="speaker-select-placeholder" id="speaker-select-img-placeholder" aria-hidden="true">{speakers[0]?.name.charAt(0) ?? "?"}</span>
+      )}
+    </span>
+    <select id="speaker-select" class="speaker-select-input">
+      {speakers.map((s) => (
+        <option value={s.id}>{s.name}</option>
+      ))}
+    </select>
+  </div>
+</nav>
+
+<button
+  type="button"
+  id="go-to-top"
+  class="go-to-top"
+  aria-label="Back to top"
+  hidden
+>
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <path
+      d="M12 5l-7 7h4v7h6v-7h4z"
+      fill="currentColor"
+    />
+  </svg>
+</button>
+
+<style>
+  .speaker-nav {
+    position: sticky;
+    top: var(--header-height, 85px);
+    z-index: 20;
+    /* Subtle tinted frost that blends with the page gradient */
+    background: rgba(240, 253, 255, 0.55);
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border-bottom: 1px solid rgba(16, 184, 214, 0.08);
+    padding: 0.6rem 0 0.45rem;
+    margin: 0 calc(-1 * var(--container-pad, 1rem)) 1.25rem;
+  }
+
+  /* Single row, centred, scrolls to keep active tile in view */
+  .speaker-mosaic {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 0.35rem;
+    list-style: none;
+    padding: 0 2rem;
+    margin: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    /* Fade edges hint that more content exists */
+    mask-image: linear-gradient(to right, transparent 0%, black 2rem, black calc(100% - 2rem), transparent 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 2rem, black calc(100% - 2rem), transparent 100%);
+  }
+  .speaker-mosaic::-webkit-scrollbar { display: none; }
+  .speaker-mosaic li { flex: 0 0 auto; }
+
+  .mosaic-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    text-decoration: none;
+    width: 64px;
+    transition: transform 0.15s ease;
+  }
+  .mosaic-tile:hover { transform: scale(1.06); }
+
+  .mosaic-thumb {
+    display: block;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #e5e7eb;
+    background: #f1f5f9;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+  .mosaic-thumb-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #667085;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .speaker-select-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: #667085;
+    font-weight: 700;
+    font-size: 0.95rem;
+    background: #f1f5f9;
+  }
+  .mosaic-name {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    color: #475569;
+    text-align: center;
+    max-width: 64px;
+    line-height: 1.25;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    transition: color 0.15s ease;
+  }
+
+  /* Active state — applied by scroll observer */
+  .mosaic-tile.is-active .mosaic-thumb {
+    border-color: var(--color-brand-blue);
+    box-shadow: 0 0 0 2px rgba(16, 184, 214, 0.25);
+  }
+  .mosaic-tile.is-active .mosaic-name {
+    color: #0e7490;
+  }
+
+  /* Mobile dropdown selector (hidden by default, shown on mobile when scrolled) */
+  .speaker-select {
+    display: none;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.45rem 1rem;
+  }
+  .speaker-select-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--color-brand-blue);
+    background: #f1f5f9;
+  }
+  .speaker-select-input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.4rem 2rem 0.4rem 0.65rem;
+    border-radius: 8px;
+    border: 1px solid rgba(16, 184, 214, 0.18);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #0e7490;
+    background-color: rgba(224, 247, 250, 0.55);
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%230e7490%22%20d%3D%22M2.5%204.5L6%208l3.5-3.5%22%2F%3E%3C%2Fsvg%3E");
+    background-size: 12px;
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+  }
+
+  /* Go-to-top button */
+  .go-to-top {
+    position: fixed;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    z-index: 50;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: none;
+    background: var(--color-brand-blue);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(16, 184, 214, 0.35);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      filter 0.15s ease;
+  }
+  .go-to-top.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .go-to-top:hover { filter: brightness(1.05); }
+  .go-to-top[hidden] { display: none; }
+
+  @media (max-width: 767px) {
+    /* Tablet/phone: show dropdown, hide mosaic */
+    .speaker-mosaic { display: none; }
+    .speaker-select { display: flex; }
+  }
+
+  /* When mosaic overflows, left-align so proportional scroll starts correctly */
+  @media (max-width: 1099px) and (min-width: 768px) {
+    .speaker-mosaic { justify-content: flex-start; }
+  }
+</style>
+
+<script>
+  import { onThrottledScroll } from "@/lib/scroll";
+  import { trackVisibleSection } from "@/lib/section-tracker";
+
+  const mosaic = document.getElementById("speaker-mosaic");
+  const tiles = mosaic
+    ? Array.from(mosaic.querySelectorAll<HTMLAnchorElement>(".mosaic-tile"))
+    : [];
+  const tileById = new Map<string, HTMLAnchorElement>(
+    tiles.map((t) => [t.dataset.target ?? "", t]),
+  );
+
+  // Dropdown elements
+  const selectEl = document.getElementById("speaker-select") as HTMLSelectElement | null;
+  const selectImg = document.getElementById("speaker-select-img") as HTMLImageElement | null;
+
+  // Build a map of speaker id → image src from the mosaic tiles
+  const imgSrcById = new Map<string, string>();
+  for (const tile of tiles) {
+    const id = tile.dataset.target ?? "";
+    const img = tile.querySelector("img");
+    if (img && id) imgSrcById.set(id, img.src);
+  }
+
+  // Update dropdown image to match the selected speaker
+  function syncDropdownImage(id: string) {
+    if (!selectImg || !selectEl) return;
+    selectEl.value = id;
+    const src = imgSrcById.get(id);
+    if (src) selectImg.src = src;
+  }
+
+  // Dropdown change → jump to speaker
+  if (selectEl) {
+    selectEl.addEventListener("change", () => {
+      const el = document.getElementById(selectEl.value);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      const src = imgSrcById.get(selectEl.value);
+      if (src && selectImg) selectImg.src = src;
+    });
+  }
+
+  // Intersection observer: highlight mosaic tile + sync dropdown
+  if (mosaic && tiles.length > 0) {
+    let activeId: string | null = null;
+    const setActive = (id: string) => {
+      if (id === activeId) return;
+      activeId = id;
+      for (const tile of tiles) tile.classList.remove("is-active");
+      const tile = tileById.get(id);
+      if (!tile) return;
+      tile.classList.add("is-active");
+      syncDropdownImage(id);
+    };
+
+    trackVisibleSection(
+      ".speaker-row[id]",
+      setActive,
+      { rootMargin: "-30% 0px -55% 0px", threshold: [0, 0.5] },
+    );
+
+    // Proportional scroll + go-to-top in a single throttled handler
+    const speakerStack = document.querySelector("[data-speaker-stack]") as HTMLElement | null;
+    const goTop = document.getElementById("go-to-top") as HTMLButtonElement | null;
+
+    // Cache geometry, update on resize
+    let stackTop = 0;
+    let stackHeight = 0;
+    const updateGeometry = () => {
+      if (speakerStack) {
+        const rect = speakerStack.getBoundingClientRect();
+        stackTop = rect.top + window.scrollY;
+        stackHeight = rect.height;
+      }
+    };
+    updateGeometry();
+    window.addEventListener("resize", updateGeometry, { passive: true });
+
+    if (goTop) goTop.hidden = false;
+
+    const onScroll = () => {
+      // Proportional mosaic scroll
+      if (speakerStack) {
+        const maxScroll = mosaic.scrollWidth - mosaic.clientWidth;
+        if (maxScroll > 0) {
+          const scrollable = stackHeight - window.innerHeight;
+          if (scrollable > 0) {
+            const progress = Math.max(0, Math.min(1,
+              (window.scrollY - stackTop) / scrollable,
+            ));
+            mosaic.scrollLeft = progress * maxScroll;
+          }
+        }
+      }
+      // Go-to-top visibility
+      if (goTop) {
+        const show = window.scrollY > window.innerHeight * 0.6;
+        goTop.classList.toggle("is-visible", show);
+      }
+    };
+
+    onThrottledScroll(onScroll);
+    onScroll();
+
+    if (goTop) {
+      goTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+  }
+</script>

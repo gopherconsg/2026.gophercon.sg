@@ -1,9 +1,9 @@
 ---
 import { Image } from "astro:assets";
-import { type ImageMap, resolveSpeakerImage } from "@/lib/images";
+import { type ImageMap, findSpeakerImage } from "@/lib/images";
+import { md } from "@/lib/markdown";
 import type { Speaker } from "@/types";
 import { Icon } from "astro-icon/components";
-import { marked } from "marked";
 
 interface Props {
   speaker: Speaker;
@@ -11,7 +11,10 @@ interface Props {
 }
 
 const { speaker, imageMap } = Astro.props;
-const descriptionHtml = marked.parse(speaker.description);
+const descriptionHtml = md(speaker.bio);
+const speakerImg = speaker.image
+  ? findSpeakerImage(imageMap, speaker.image)
+  : null;
 
 function getSocialHandle(url: string): string {
   try {
@@ -24,23 +27,27 @@ function getSocialHandle(url: string): string {
 }
 ---
 
-<div id={speaker.id} class="flex-[1_1_340px] max-w-[500px] bg-white border border-[#e0e0e0] rounded-2xl p-8 shadow-[0_2px_12px_rgba(0,0,0,0.08)] transition-[transform,box-shadow] duration-200 scroll-mt-[5.5rem] hover:-translate-y-1 hover:shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
-  <div class="flex items-center gap-5 mb-4">
-    <div class="w-20 h-20 rounded-full overflow-hidden shrink-0" style="border: 3px solid var(--color-brand-blue);">
-      <Image
-        src={resolveSpeakerImage(imageMap, speaker.image)}
-        alt={speaker.name}
-        width={80}
-        height={80}
-        class="w-full h-full object-cover"
-      />
-    </div>
-    <div>
-      {speaker.keynote && (
-        <span class="text-brand-red text-[0.8rem] font-semibold uppercase tracking-[0.5px]">&mdash; Keynote Speaker &mdash;</span>
+<article id={speaker.id} class="speaker-row">
+  <div class="speaker-head">
+    <div class:list={["speaker-photo", speaker.keynote && "speaker-photo-keynote"]}>
+      {speakerImg ? (
+        <Image
+          src={speakerImg}
+          alt={speaker.name}
+          width={80}
+          height={80}
+          class="w-full h-full object-cover"
+        />
+      ) : (
+        <div class="speaker-photo-placeholder" aria-hidden="true">{speaker.name.charAt(0)}</div>
       )}
-      <div class="flex items-center gap-2 flex-wrap">
-        <h3 style="font-size: 1.15rem; margin-bottom: 0; line-height: 1.3;">{speaker.name}</h3>
+    </div>
+    <div class="speaker-info">
+      {speaker.keynote && (
+        <span class="speaker-badge">Keynote Speaker</span>
+      )}
+      <div class="speaker-title-row">
+        <h3 class="speaker-name">{speaker.name}</h3>
         <span class="copy-link-wrapper">
           <button
             type="button"
@@ -54,33 +61,156 @@ function getSocialHandle(url: string): string {
         </span>
       </div>
       {speaker.company && (
-        <div style="color: #888; font-size: 0.9rem;">{speaker.company}</div>
+        <div class="speaker-company">{speaker.company}</div>
+      )}
+
+      {speaker.topicTitle && (
+        <a href={speaker.topicLink} class="speaker-topic">
+          {speaker.topicTitle} &rarr;
+        </a>
+      )}
+
+      <div class="speaker-bio">
+        <div set:html={descriptionHtml} />
+      </div>
+
+      {speaker.socialUrl && (
+        <a
+          href={speaker.socialUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="speaker-social"
+        >
+          {getSocialHandle(speaker.socialUrl)} &rarr;
+        </a>
+      )}
+      {speaker.url && (
+        <a
+          href={speaker.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="speaker-social"
+        >
+          Website &rarr;
+        </a>
       )}
     </div>
   </div>
-
-  {speaker.topicTitle && (
-    <div class="text-[#007d9c] font-semibold mt-3 mb-2 text-base">
-      <a href={speaker.topicLink} class="text-inherit">{speaker.topicTitle}</a>
-    </div>
-  )}
-
-  <div class="speaker-bio text-[#555] text-[0.9rem] leading-[1.6]" set:html={descriptionHtml} />
-
-  {speaker.socialUrl && (
-    <a
-      href={speaker.socialUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      style="display: inline-block; margin-top: 0.75rem; font-size: 0.85rem; font-weight: 600; color: var(--color-brand-blue);"
-    >
-      {getSocialHandle(speaker.socialUrl)} &rarr;
-    </a>
-  )}
-</div>
+</article>
 
 <style>
+  .speaker-row {
+    padding: 1.5rem 0.25rem;
+    border-bottom: 1px solid #e5e7eb;
+    /* Clear sticky header (85px) + sticky mosaic nav (~80px) */
+    scroll-margin-top: calc(var(--header-height, 85px) + 6rem);
+  }
+  .speaker-row:last-child {
+    border-bottom: none;
+  }
+
+  .speaker-head {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .speaker-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 3px solid var(--color-brand-blue);
+  }
+  .speaker-photo-keynote {
+    border-color: var(--color-brand-red);
+  }
+
+  .speaker-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .speaker-badge {
+    display: inline-block;
+    color: var(--color-brand-red);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 0.15rem;
+  }
+
+  .speaker-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .speaker-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .speaker-company {
+    color: #888;
+    font-size: 0.9rem;
+    margin-top: 0.05rem;
+  }
+
+  .speaker-topic {
+    display: block;
+    color: #007d9c;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    margin: 0.45rem 0 0.55rem;
+  }
+  .speaker-topic:hover {
+    text-decoration: underline;
+  }
+
+  .speaker-bio {
+    color: #4b5563;
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
   .speaker-bio :global(p) {
-    margin-bottom: 0.5rem;
+    margin: 0 0 0.5rem;
+  }
+  .speaker-bio :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .speaker-social {
+    display: inline-block;
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-brand-blue);
+    text-decoration: none;
+  }
+  .speaker-social:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 480px) {
+    .speaker-photo { width: 64px; height: 64px; }
+  }
+
+  .speaker-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #e0e7ee;
+    color: #667085;
+    font-weight: 700;
+    font-size: 2rem;
   }
 </style>

@@ -1,11 +1,12 @@
 ---
 import ComingSoon from "@/components/ComingSoon.astro";
 import ScheduleEntry from "@/components/ScheduleEntry.astro";
+import ScheduleTabs from "@/components/ScheduleTabs.astro";
 import TicketCta from "@/components/TicketCta.astro";
-import Timeline from "@/components/Timeline.astro";
+import TimelineLayout from "@/components/TimelineLayout.astro";
 import { isNavEnabled } from "@/config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { schedule } from "@/lib/data";
+import { schedule, scheduleHasAnyTime } from "@/lib/data";
 import { speakerImages } from "@/lib/images";
 
 const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
@@ -19,21 +20,51 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
     <div class="container" style="padding-top: 3rem; padding-bottom: 4rem;">
       <h1 style="font-size: 2.5rem; font-weight: 800; text-align: center; margin-bottom: 2rem;">Conference Schedule</h1>
 
-      {showTabs && (
-        <div style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap;">
-          <a href="/schedule" class="schedule-tab active">Conference</a>
-          <a href="/workshops" class="schedule-tab">Workshops</a>
-        </div>
-      )}
+      {showTabs && <ScheduleTabs active="conference" />}
 
       {schedule.length > 0 ? (
         <>
-          <p style="text-align: center; margin-bottom: 2rem; color: #888; font-style: italic; font-size: 0.95rem;">Schedule is subject to change.</p>
-          <Timeline>
-            {schedule.map((entry) => (
-              <ScheduleEntry entry={entry} imageMap={speakerImages} />
-            ))}
-          </Timeline>
+          {!scheduleHasAnyTime ? (
+            <p style="text-align: center; margin-bottom: 2rem; color: #0e7490; font-weight: 600; font-size: 0.95rem;">Program order to be announced. Sessions below are listed in no particular order.</p>
+          ) : (
+            <p style="text-align: center; margin-bottom: 2rem; color: #888; font-style: italic; font-size: 0.95rem;">Schedule is subject to change.</p>
+          )}
+
+          {scheduleHasAnyTime ? (
+            <>
+              <nav id="sched-nav" class="sched-nav" aria-label="Jump to schedule entry">
+                <select id="sched-nav-select" class="sched-nav-select" aria-label="Jump to session">
+                  {schedule.map((entry) => (
+                    <option value={entry.id}>
+                      {entry.time ? `${entry.time} — ` : ""}{entry.title}
+                    </option>
+                  ))}
+                </select>
+              </nav>
+              <TimelineLayout>
+                {schedule.map((entry) => {
+                  const hasTime = !!entry.time && entry.time.trim() !== "";
+                  return (
+                    <div class:list={["tl-row", !hasTime && "tl-row-no-time"]} data-type={entry.type}>
+                      <div class="tl-gutter">
+                        {hasTime && <span class="tl-time">{entry.time}</span>}
+                        <span class="tl-dot" />
+                      </div>
+                      <div class="tl-body">
+                        <ScheduleEntry entry={entry} imageMap={speakerImages} showTime={false} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </TimelineLayout>
+            </>
+          ) : (
+            <div class="schedule-stack">
+              {schedule.map((entry) => (
+                <ScheduleEntry entry={entry} imageMap={speakerImages} showTime={false} />
+              ))}
+            </div>
+          )}
         </>
       ) : (
         <ComingSoon message="Schedule" />
@@ -43,3 +74,107 @@ const showTabs = isNavEnabled("/schedule") && isNavEnabled("/workshops");
     </div>
   </div>
 </BaseLayout>
+
+<style>
+  /* ─── Untimed stack (fallback) ─── */
+  .schedule-stack {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* ─── Sticky schedule dropdown nav ─── */
+  .sched-nav {
+    position: sticky;
+    top: var(--header-height, 85px);
+    z-index: 40;
+    display: flex;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    margin: 0 calc(-1 * var(--container-pad, 1rem)) 0.75rem;
+    background: rgba(240, 253, 255, 0.55);
+    backdrop-filter: blur(16px) saturate(1.3);
+    -webkit-backdrop-filter: blur(16px) saturate(1.3);
+    border-bottom: 1px solid rgba(16, 184, 214, 0.08);
+    /* Hidden by default, revealed by JS on scroll */
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+  }
+  .sched-nav.is-visible {
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .sched-nav-select {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    color: #334155;
+    font-family: var(--font-mono, "SF Mono", Menlo, Consolas, monospace);
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 0.4rem 2rem 0.4rem 0.75rem;
+    border-radius: 8px;
+    max-width: min(92vw, 480px);
+    width: 100%;
+    cursor: pointer;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%230e7490' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.65rem center;
+    background-size: 12px 8px;
+  }
+  .sched-nav-select:focus-visible {
+    border-color: #0e7490;
+    box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.2);
+  }
+
+
+</style>
+
+<script>
+  import { onThrottledScroll } from "@/lib/scroll";
+  import { bindSelectNavigation } from "@/lib/nav-select";
+
+  const nav = document.getElementById("sched-nav") as HTMLElement | null;
+  const sel = document.getElementById("sched-nav-select") as HTMLSelectElement | null;
+  const timeline = document.querySelector(".timeline") as HTMLElement | null;
+
+  if (nav && sel && timeline) {
+    const rows = Array.from(timeline.querySelectorAll<HTMLElement>(".tl-row"));
+    const rowEntries = rows.map((row) => {
+      const body = row.querySelector(".tl-body > *");
+      return { row, id: body?.id ?? "" };
+    });
+
+    let currentId = "";
+    const headerH =
+      parseInt(getComputedStyle(document.documentElement).getPropertyValue("--header-height")) || 85;
+    const anchor = headerH + nav.offsetHeight;
+
+    const onScroll = () => {
+      const tlRect = timeline.getBoundingClientRect();
+      const show = tlRect.top < anchor && tlRect.bottom > anchor + 50;
+      nav.classList.toggle("is-visible", show);
+
+      let bestId = "";
+      for (const { row, id } of rowEntries) {
+        if (!id) continue;
+        if (row.getBoundingClientRect().top <= anchor) bestId = id;
+      }
+      if (bestId && bestId !== currentId) {
+        currentId = bestId;
+        sel.value = bestId;
+      }
+    };
+
+    onThrottledScroll(onScroll);
+    onScroll();
+    bindSelectNavigation("sched-nav-select");
+  }
+</script>

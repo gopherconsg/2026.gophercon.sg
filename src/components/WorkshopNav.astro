@@ -1,0 +1,112 @@
+---
+import type { Workshop } from "@/types";
+
+interface Props {
+  workshops: Workshop[];
+}
+
+const { workshops } = Astro.props;
+---
+
+<div id="workshop-nav" class="-mx-4 mb-10 sticky top-[var(--header-height)] z-40 backdrop-blur border-b border-transparent transition-colors duration-300">
+  {/* Desktop: pill links */}
+  <div class="workshop-pills-desktop gap-2 justify-center flex-nowrap px-4 py-2.5">
+    {workshops.map((w) => (
+      <a href={`#${w.id}`} class="workshop-pill px-3.5 py-1.5 rounded-full border-2 font-semibold text-[0.8rem] no-underline transition-colors duration-300 hover:no-underline whitespace-nowrap">{w.title}</a>
+    ))}
+  </div>
+  {/* Mobile: pill links (visible at page top, hidden when scrolled) */}
+  <div class="workshop-pills-mobile gap-2 justify-center flex-wrap px-4 py-3">
+    {workshops.map((w) => (
+      <a href={`#${w.id}`} class="workshop-pill px-3 py-1.5 rounded-full border font-semibold text-xs no-underline transition-colors duration-300 hover:no-underline">{w.title}</a>
+    ))}
+  </div>
+  {/* Mobile: scroll-tracking dropdown (hidden at top, visible when scrolled) */}
+  <div class="workshop-select items-center gap-2 px-4 py-2">
+    <label for="workshop-select" class="text-xs font-semibold text-[#667085] uppercase tracking-wide shrink-0">Jump to</label>
+    <select
+      id="workshop-select"
+      class="flex-1 min-w-0 px-3 py-1.5 rounded-lg border border-gray-300 text-sm font-semibold text-body-text bg-white appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%23667085%22%20d%3D%22M2.5%204.5L6%208l3.5-3.5%22%2F%3E%3C%2Fsvg%3E')] bg-[length:12px] bg-[right_0.5rem_center] bg-no-repeat pr-7 truncate"
+    >
+      {workshops.map((w) => (
+        <option value={w.id}>{w.title}</option>
+      ))}
+    </select>
+  </div>
+</div>
+
+<style>
+  .workshop-pills-desktop { display: none; }
+  .workshop-pills-mobile { display: flex; }
+  .workshop-select { display: none; }
+  @media (min-width: 768px) {
+    .workshop-pills-desktop { display: flex; }
+    .workshop-pills-mobile { display: none; }
+  }
+
+  /* Pills: always grey text on semi-opaque white — legible over gradient and white */
+  .workshop-pill {
+    border-color: #d0d5dd;
+    color: #667085;
+    background: rgba(255,255,255,0.85);
+  }
+  .workshop-pill:hover {
+    border-color: var(--color-brand-blue);
+    color: var(--color-brand-blue);
+    background: rgba(255,255,255,0.95);
+    text-decoration: none;
+  }
+
+  /* Scrolled: fully opaque nav background; pills colours already match */
+  #workshop-nav[data-scrolled] {
+    background-color: rgba(255,255,255,0.95);
+    border-bottom-color: #e5e7eb;
+  }
+  #workshop-nav[data-scrolled] .workshop-pill {
+    background: white;
+  }
+
+  /* Mobile scrolled: swap pills for dropdown */
+  @media (max-width: 767px) {
+    #workshop-nav[data-scrolled] .workshop-pills-mobile { display: none; }
+    #workshop-nav[data-scrolled] .workshop-select { display: flex; }
+  }
+</style>
+
+<script>
+  import { onThrottledScroll } from "@/lib/scroll";
+  import { bindSelectNavigation } from "@/lib/nav-select";
+  import { trackVisibleSection } from "@/lib/section-tracker";
+
+  const nav = document.getElementById("workshop-nav");
+  const select = document.getElementById("workshop-select") as HTMLSelectElement | null;
+
+  if (nav) {
+    // Toggle data-scrolled based on scroll position
+    const navTop = nav.offsetTop;
+    const updateScrolled = () => {
+      if (window.scrollY > navTop) {
+        nav.setAttribute("data-scrolled", "");
+      } else {
+        nav.removeAttribute("data-scrolled");
+      }
+    };
+
+    onThrottledScroll(updateScrolled);
+    updateScrolled();
+
+    // Jump to workshop on select change
+    bindSelectNavigation("workshop-select");
+
+    // Track which workshop is in view and update dropdown
+    if (select) {
+      trackVisibleSection(
+        "[data-workshop-list] > article[id]",
+        (id: string) => {
+          select.value = id;
+        },
+        { rootMargin: "-120px 0px -60% 0px", threshold: 0 },
+      );
+    }
+  }
+</script>

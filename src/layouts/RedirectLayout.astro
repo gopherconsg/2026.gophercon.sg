@@ -1,8 +1,5 @@
 ---
-import "@/styles/global.css";
-import Footer from "@/components/Footer.astro";
-import Header from "@/components/Header.astro";
-import { siteConfig } from "@/config";
+import BaseLayout from "./BaseLayout.astro";
 
 interface Props {
   title?: string;
@@ -10,70 +7,10 @@ interface Props {
   redirectURL: string;
 }
 
-const {
-  title,
-  description = siteConfig.description,
-  redirectURL,
-} = Astro.props;
-const pageTitle = title ? `${title} — ${siteConfig.title}` : siteConfig.title;
-const canonicalURL = new URL(Astro.url.pathname, siteConfig.baseUrl);
-const ogImageURL = new URL(`/img/${siteConfig.ogImage}`, siteConfig.baseUrl);
+const { title, description, redirectURL } = Astro.props;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="refresh" content={`0; url=${redirectURL}`} />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <title>{pageTitle}</title>
-    <meta name="description" content={description} />
-    <link rel="canonical" href={canonicalURL} />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Dangrek&family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/site.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#10b8d6" />
-    <meta name="msapplication-TileColor" content="#10b8d6" />
-    <meta name="theme-color" content="#10b8d6" />
-    <meta property="og:title" content={pageTitle} />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
-    <meta property="og:image" content={ogImageURL} />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={pageTitle} />
-    <meta name="twitter:image" content={ogImageURL} />
-    {!import.meta.env.DEV && (
-      <script>
-        ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
-        p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
-        };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
-        n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","//dq946n1u2xxy.cloudfront.net/t.js","snowplow"));
-        snowplow('newTracker', 'cf', 'd9ca3gcsg29e9.cloudfront.net', {
-          appId: 'gcsg2026-website',
-          discoverRootDomain: true
-        });
-        snowplow('trackPageView');
-      </script>
-    )}
-  </head>
-  <body>
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-white focus:px-4 focus:py-2"
-    >
-      Skip to content
-    </a>
-    <Header />
-    <main id="main-content">
-      <slot />
-    </main>
-    <Footer />
-  </body>
-</html>
+<BaseLayout title={title} description={description}>
+  <meta http-equiv="refresh" content={`0; url=${redirectURL}`} slot="head" />
+  <slot />
+</BaseLayout>

@@ -1,9 +1,9 @@
 ---
 import { content } from "@/lib/data";
-import { marked } from "marked";
+import { md } from "@/lib/markdown";
 const codeOfConductConfig = content.codeOfConduct;
 
-const contentHtml = marked.parse(codeOfConductConfig.content);
+const contentHtml = md(codeOfConductConfig.content);
 ---
 
 <section style="padding: 4rem 0; background: #f9fafb;">

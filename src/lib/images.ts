@@ -8,10 +8,14 @@ export const speakerImages = import.meta.glob<{ default: ImageMetadata }>(
 export function resolveSpeakerImage(
   imageMap: ImageMap,
   filename: string,
+  speakerId?: string,
 ): ImageMetadata {
   const key = `/src/assets/images/speakers/${filename}`;
   const img = imageMap[key];
-  if (!img) throw new Error(`Speaker image not found: ${filename}`);
+  if (!img)
+    throw new Error(
+      `Speaker image not found: ${filename}${speakerId ? ` (speaker: ${speakerId})` : ""}`,
+    );
   return img.default;
 }
 
@@ -21,4 +25,16 @@ export function findSpeakerImage(
 ): ImageMetadata | null {
   const key = `/src/assets/images/speakers/${filename}`;
   return imageMap[key]?.default ?? null;
+}
+
+// ─────────────── Sponsor images ───────────────
+
+export const sponsorImages = import.meta.glob<{ default: ImageMetadata }>(
+  "/src/assets/images/sponsors/*.{png,jpg,jpeg,webp}",
+  { eager: true },
+);
+
+export function findSponsorImage(filename: string): ImageMetadata | null {
+  const key = `/src/assets/images/sponsors/${filename}`;
+  return sponsorImages[key]?.default ?? null;
 }

@@ -2,20 +2,10 @@
 import { Image } from "astro:assets";
 import { isArchived } from "@/config";
 import { content, sponsors } from "@/lib/data";
-import { marked } from "marked";
-const sponsorCtaHtml = marked.parse(content.sponsors.ctaText);
+import { findSponsorImage } from "@/lib/images";
+import { md } from "@/lib/markdown";
+const sponsorCtaHtml = md(content.sponsors.ctaText);
 const sponsorshipPdfUrl = content.sponsors.sponsorshipPdfUrl;
-
-const sponsorImages = import.meta.glob<{ default: ImageMetadata }>(
-  "/src/assets/images/sponsors/*.{png,jpg,jpeg,webp}",
-  { eager: true },
-);
-
-function getSponsorImage(filename: string): ImageMetadata | null {
-  const key = `/src/assets/images/sponsors/${filename}`;
-  const img = sponsorImages[key];
-  return img ? img.default : null;
-}
 
 const tiers = [
   { key: "platinum" as const, label: "Platinum" },
@@ -40,9 +30,10 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
               <strong class="sponsor-tier-label">{label}</strong>
               <div class="sponsor-tier-logos">
                 {list.map((sponsor) => {
-                  const logoContent = getSponsorImage(sponsor.logo) ? (
+                  const logoImg = findSponsorImage(sponsor.logo);
+                  const logoContent = logoImg ? (
                     <Image
-                      src={getSponsorImage(sponsor.logo)!}
+                      src={logoImg}
                       alt={sponsor.name}
                       height={80}
                       style="height: 80px; width: auto; object-fit: contain;"
@@ -89,6 +80,17 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
 )}
 
 <style>
+  .partners {
+    background:
+      url("/img/partners-wave.png") repeat-x center top,
+      url("/img/partners-bg.png") no-repeat center 100px,
+      linear-gradient(
+        180deg,
+        var(--color-brand-blue) 0%,
+        rgba(217, 217, 217, 0.0) 100%
+      ) no-repeat center 70px / 100% 22rem;
+  }
+
   .partners-heading {
     text-align: center;
     padding-top: 8rem;

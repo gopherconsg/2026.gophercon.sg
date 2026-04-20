@@ -8,7 +8,7 @@ const heroConfig = content.hero;
   <div class="container">
     <div class="antialiased hero-text">
       <h1>{siteConfig.title}</h1>
-      <h2 set:html={heroConfig.conferenceDate} style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 1.5rem;" />
+      <h2 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 1.5rem;">{heroConfig.conferenceDate}</h2>
       {heroConfig.previousYearVideoId && (
         <div style="margin-top: 2rem; position: relative; z-index: 20;">
           <p style="margin-bottom: 0.5rem;">{heroConfig.previousYearText}</p>
@@ -33,3 +33,136 @@ const heroConfig = content.hero;
     </div>
   </div>
 </section>
+
+<style>
+  .hero {
+    background-color: var(--color-brand-blue);
+    font-family: var(--font-display);
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .hero-text {
+    text-align: center;
+    margin-top: 3rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .hero-text h1 {
+    font-size: 4.5rem;
+    line-height: 1;
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+    font-family: var(--font-display);
+  }
+
+  .hero-mascots {
+    position: relative;
+    max-width: 100%;
+    margin-bottom: 3rem;
+    animation: 1s cubic-bezier(0.36, 1.39, 0.58, 0.92) 0.5s both popup;
+  }
+
+  .hero-stars-offset {
+    display: flex;
+    justify-content: center;
+    transform: translate(-44%, 0);
+    position: absolute;
+    left: 50%;
+    bottom: 5.75rem;
+  }
+
+  .hero-stars {
+    max-width: 200%;
+    animation: 1s cubic-bezier(0.13, 0.71, 0.19, 0.99) 1s both boomz;
+    transform-origin: 50% 100%;
+  }
+
+  .hero-wave-back {
+    height: 333px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: url("/img/hero-wave-back.png") repeat-x bottom center;
+  }
+
+  .hero-wave-mid {
+    height: 258px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: url("/img/hero-wave-mid.png") repeat-x bottom center;
+  }
+
+  .hero-wave-front {
+    height: 207px;
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: url("/img/hero-wave-front.png") repeat-x bottom center;
+  }
+
+  @media (min-width: 768px) {
+    .hero {
+      height: 46.25rem;
+    }
+
+    .hero-text {
+      text-align: left;
+      max-width: 24.375rem;
+      margin-top: 5rem;
+      margin-left: 6rem;
+    }
+
+    .hero-mascots {
+      position: absolute;
+      left: 50%;
+      top: 4.375rem;
+      transform: translate(-28%, 0);
+      margin-bottom: 0;
+      animation-name: popup-desktop;
+    }
+
+    .hero-stars {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .hero-stars-offset {
+      display: none;
+    }
+  }
+
+  @keyframes popup {
+    from {
+      transform: translate(0, 100%);
+    }
+    to {
+      transform: translate(0, 0);
+    }
+  }
+
+  @keyframes popup-desktop {
+    from {
+      transform: translate(-28%, 100%);
+    }
+    to {
+      transform: translate(-28%, 0);
+    }
+  }
+
+  @keyframes boomz {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+</style>

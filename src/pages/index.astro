@@ -1,5 +1,6 @@
 ---
 import ComingSoon from "@/components/ComingSoon.astro";
+import NewThisYear from "@/components/NewThisYear.astro";
 import CodeOfConduct from "@/components/index/CodeOfConduct.astro";
 import Hero from "@/components/index/Hero.astro";
 import SpeakerCard from "@/components/index/SpeakerCard.astro";
@@ -8,8 +9,12 @@ import Tickets from "@/components/index/Tickets.astro";
 import VenueInfo from "@/components/index/VenueInfo.astro";
 import { isArchived, isLineupConfirmed } from "@/config";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { speakers } from "@/lib/data";
+import { content, speakers } from "@/lib/data";
 import { speakerImages } from "@/lib/images";
+
+const showNewThisYear =
+  (content.newThisYear?.enabled ?? false) &&
+  (content.newThisYear?.items?.length ?? 0) > 0;
 ---
 
 <BaseLayout>
@@ -40,6 +45,12 @@ import { speakerImages } from "@/lib/images";
       ) : (
         <ComingSoon message="Speaker lineup" />
       )}
+
+      {!isArchived && showNewThisYear && (
+        <div style="margin-top: 3rem; text-align: left;">
+          <NewThisYear />
+        </div>
+      )}
     </div>
   </section>
 
@@ -47,3 +58,43 @@ import { speakerImages } from "@/lib/images";
   <CodeOfConduct />
   <Sponsors />
 </BaseLayout>
+
+<style>
+  .speakers {
+    background: url("/img/speakers-bg.png") no-repeat top center,
+      linear-gradient(
+        180deg,
+        var(--color-brand-blue) 0%,
+        rgba(217, 217, 217, 0.0) 100%
+      )
+      no-repeat top center / 100% 25rem;
+  }
+
+  .speakers-flex {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    padding: 0;
+    margin: 0 0 3rem;
+    list-style: none;
+  }
+
+  .speakers-flex > :global(li) {
+    flex: 0 0 auto;
+    width: 100px;
+  }
+
+  @media (min-width: 768px) {
+    .speakers-flex {
+      flex-wrap: nowrap;
+      gap: 0.75rem;
+    }
+
+    .speakers-flex > :global(li) {
+      width: 0;
+      flex: 1 1 0%;
+      min-width: 0;
+    }
+  }
+</style>

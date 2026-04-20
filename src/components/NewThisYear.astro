@@ -1,0 +1,154 @@
+---
+import { content } from "@/lib/data";
+import type { NewThisYearItem } from "@/types";
+
+interface Props {
+  /** Override the pill label. Falls back to content.toml, then "New this year". */
+  label?: string;
+  /** Compact variant uses less vertical space (good for mid-page placement). */
+  compact?: boolean;
+  /** Override items. Falls back to content.toml entries. */
+  items?: NewThisYearItem[];
+}
+
+const cfg = content.newThisYear;
+const enabled = cfg?.enabled ?? false;
+
+const { label: labelProp, compact = false, items: itemsProp } = Astro.props;
+
+const label = labelProp ?? cfg?.label ?? "New this year";
+const items = itemsProp ?? cfg?.items ?? [];
+
+const shouldRender = enabled && items.length > 0;
+---
+
+{shouldRender && (
+  <section
+    class:list={["new-banner", compact && "new-banner-compact"]}
+    aria-label={label}
+  >
+    <div class="new-banner-inner">
+      <span class="new-banner-badge">{label}</span>
+      <ul class="new-banner-items">
+        {items.map((item) => {
+          const body = (
+            <>
+              {item.icon && (
+                <span class="new-banner-icon" aria-hidden="true">{item.icon}</span>
+              )}
+              <div>
+                <strong>{item.title}</strong>
+                {item.description && (
+                  <span class="new-banner-desc"> — {item.description}</span>
+                )}
+              </div>
+            </>
+          );
+          return (
+            <li>
+              {item.href ? (
+                <a href={item.href} class="new-banner-link">{body}</a>
+              ) : (
+                <span class="new-banner-link">{body}</span>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+)}
+
+<style>
+  .new-banner {
+    background: linear-gradient(135deg, #f0fdff 0%, #fffbf0 100%);
+    border: 1px solid #b0e7f2;
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .new-banner-compact {
+    padding: 1rem 1.25rem;
+  }
+
+  .new-banner-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: 768px) {
+    .new-banner-inner {
+      flex-direction: row;
+      align-items: center;
+      gap: 1.25rem;
+    }
+  }
+
+  .new-banner-badge {
+    display: inline-block;
+    align-self: flex-start;
+    background: var(--color-brand-blue);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.75rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+
+  .new-banner-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    color: #334155;
+  }
+
+  @media (min-width: 900px) {
+    .new-banner-items {
+      flex-direction: row;
+      gap: 2rem;
+    }
+  }
+
+  .new-banner-items li {
+    line-height: 1.5;
+  }
+
+  .new-banner-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: inherit;
+    padding: 0.25rem 0;
+    border-radius: 6px;
+  }
+
+  .new-banner-link:hover strong {
+    text-decoration: underline;
+    text-decoration-color: var(--color-brand-blue);
+  }
+
+  .new-banner-icon {
+    font-size: 1.15rem;
+    line-height: 1.2;
+    flex-shrink: 0;
+  }
+
+  .new-banner-items strong {
+    color: var(--color-body-text);
+    font-weight: 700;
+  }
+
+  .new-banner-desc {
+    color: #475569;
+  }
+</style>

@@ -1,0 +1,155 @@
+---
+---
+<div class="timeline">
+  <slot />
+</div>
+
+<style>
+  /* ─── Timed timeline ─── */
+  .timeline {
+    max-width: 820px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    position: relative;
+  }
+
+  .timeline :global(.tl-row) {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0;
+    position: relative;
+    padding-bottom: 1rem;
+    scroll-margin-top: calc(var(--header-height, 85px) + 3.5rem);
+  }
+
+  /* Break/meta rows get extra vertical breathing room as section separators */
+  .timeline :global(.tl-row[data-type="break"]),
+  .timeline :global(.tl-row[data-type="meta"]) {
+    padding-top: 0.75rem;
+    padding-bottom: 1.25rem;
+  }
+  .timeline :global(.tl-row[data-type="meta"]:first-child) {
+    padding-top: 0;
+  }
+
+  /* Vertical line — 1px, softer */
+  .timeline :global(.tl-row)::before {
+    content: "";
+    position: absolute;
+    left: calc(5.5rem - 0.5px);
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: #e5e7eb;
+  }
+  .timeline :global(.tl-row:first-child)::before { top: 0.65rem; }
+  .timeline :global(.tl-row:last-child)::before { bottom: calc(100% - 0.65rem); }
+
+  .timeline :global(.tl-gutter) {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding-right: 1.25rem;
+    padding-top: 0.35rem;
+  }
+
+  .timeline :global(.tl-time) {
+    font-family: var(--font-mono, "SF Mono", Menlo, Consolas, monospace);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0e7490;
+    line-height: 1;
+    white-space: nowrap;
+  }
+
+  /* Default dot — hollow, brand-blue border (regular talks) */
+  .timeline :global(.tl-dot) {
+    position: absolute;
+    right: -5px;
+    top: 0.35rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #fff;
+    border: 2px solid var(--color-brand-blue);
+    z-index: 1;
+  }
+
+  /* Type-colored dots — unified 10px for content entries */
+  .timeline :global(.tl-row[data-type="keynote"] .tl-dot) {
+    border-color: var(--color-brand-blue);
+    background: var(--color-brand-blue);
+  }
+  .timeline :global(.tl-row[data-type="panel"] .tl-dot) {
+    border-color: #f0b300;
+    background: #f0b300;
+  }
+  .timeline :global(.tl-row[data-type="lightning"] .tl-dot) {
+    border-color: #8b5cf6;
+    background: #8b5cf6;
+  }
+  /* Small grey dots for break/meta */
+  .timeline :global(.tl-row[data-type="break"] .tl-dot),
+  .timeline :global(.tl-row[data-type="meta"] .tl-dot) {
+    width: 6px;
+    height: 6px;
+    right: -3px;
+    top: 0.55rem;
+    border-color: #94a3b8;
+    background: #94a3b8;
+  }
+  .timeline :global(.tl-row-no-time .tl-dot) {
+    width: 6px;
+    height: 6px;
+    right: -3px;
+    top: 0.55rem;
+    border-color: #cbd5e1;
+    background: #cbd5e1;
+  }
+
+  .timeline :global(.tl-body) {
+    min-width: 0;
+    padding-left: 1.75rem;
+  }
+
+  /* ─── Strip card chrome inside timeline ─── */
+  .timeline :global(.tl-body .sched-card) {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0.35rem 0;
+    box-shadow: none;
+  }
+  .timeline :global(.tl-body .sched-card:hover) {
+    transform: none;
+    box-shadow: none;
+  }
+  .timeline :global(.tl-body .sched-card-keynote) {
+    background: transparent;
+    padding: 0.35rem 0;
+  }
+  .timeline :global(.tl-body .sched-card-panel) {
+    background: transparent;
+  }
+  .timeline :global(.tl-body .sched-card-lightning) {
+    background: transparent;
+    padding: 0.35rem 0;
+  }
+
+  @media (max-width: 640px) {
+    .timeline :global(.tl-row) {
+      grid-template-columns: 3.5rem 1fr;
+      padding-bottom: 0.85rem;
+    }
+    .timeline :global(.tl-row)::before { left: calc(3.5rem - 0.5px); }
+    .timeline :global(.tl-time) { font-size: 0.68rem; }
+    .timeline :global(.tl-dot) { right: -5px; }
+    .timeline :global(.tl-row[data-type="keynote"] .tl-dot) { right: -5px; }
+    .timeline :global(.tl-row[data-type="break"] .tl-dot),
+    .timeline :global(.tl-row[data-type="meta"] .tl-dot),
+    .timeline :global(.tl-row-no-time .tl-dot) { right: -3px; }
+  }
+</style>
