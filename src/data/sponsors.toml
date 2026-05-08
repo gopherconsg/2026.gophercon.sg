@@ -3,6 +3,11 @@ name = "SerpApi"
 logo = "serpapi.png"
 url = "https://serpapi.com"
 
+[[gold]]
+name = "SP Group"
+logo = "sp-group.png"
+url = "https://www.spgroup.com.sg"
+
 
 [[diversity]]
 name = "GoBridge"
