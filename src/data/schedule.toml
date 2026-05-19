@@ -1,23 +1,83 @@
 [[schedule]]
-type = "keynote"
-speakers = ["dave-cheney"]
+id = "registration"
+title = "Registration"
+description = "Doors open at 8 AM. See you there!"
+type = "meta"
+time = "8:00am"
+
+[[schedule]]
+id = "opening-remarks"
+title = "Opening Remarks"
+type = "meta"
+time = "9:00am"
 
 [[schedule]]
 type = "keynote"
-speakers = ["ron-evans"]
+speakers = ["dave-cheney"]
+time = "9:10am"
+
+[[schedule]]
+type = "talk"
+speakers = ["arseniy-terekhov"]
+time = "9:45am"
+
+[[schedule]]
+id = "am-tea-break"
+title = "$GOPHERCONSG/teabreak"
+type = "break"
+time = "10:15am"
+
+[[schedule]]
+type = "talk"
+speakers = ["ellen-gao"]
+time = "10:45am"
+
+[[schedule]]
+type = "talk"
+speakers = ["sago35"]
+time = "11:15am"
+
+[[schedule]]
+type = "talk"
+speakers = ["umang-mathur"]
+time = "11:45am"
+
+[[schedule]]
+id = "lunch"
+title = "$GOPHERCONSG/lunch"
+type = "break"
+time = "12:15pm"
+
+[[schedule]]
+type = "talk"
+speakers = ["bill-kennedy"]
+time = "1:15pm"
+
+[[schedule]]
+id = "lightning-talks"
+title = "Lightning Talks"
+type = "lightning"
+description = """A rapid-fire session of short community talks. 5 minutes each."""
+time = "1:45pm"
+
+[[schedule]]
+type = "talk"
+speakers = ["florin-patan"]
+time = "2:15pm"
+
+[[schedule]]
+id = "pm-tea-break"
+title = "$GOPHERCONSG/teabreak"
+type = "break"
+time = "2:45pm"
 
 [[schedule]]
 id = "ai-panel"
 title = "Software Development in the Age of AI"
 type = "panel"
 description = """AI is reshaping how software is written, reviewed, and operated. This panel brings together industry leaders to discuss how development practices are evolving, what skills matter most, and how teams are adapting to an AI-augmented future."""
+time = "3:15pm"
 moderator = "dave-cheney"
-
-[[schedule.panelists]]
-id = "bill-kennedy"
-
-[[schedule.panelists]]
-id = "winston-teo"
 
 [[schedule.panelists]]
 id = "ajey-gore"
@@ -25,32 +85,25 @@ id = "ajey-gore"
 [[schedule.panelists]]
 id = "sam-hon"
 
-[[schedule]]
-type = "talk"
-speakers = ["ellen-gao"]
+[[schedule.panelists]]
+id = "bill-kennedy"
+
+[[schedule.panelists]]
+id = "winston-teo"
 
 [[schedule]]
-type = "talk"
-speakers = ["sago35"]
+type = "keynote"
+speakers = ["ron-evans"]
+time = "4:00pm"
 
 [[schedule]]
-type = "talk"
-speakers = ["umang-mathur"]
+id = "closing-remarks"
+title = "Closing Remarks & Group Photo"
+type = "meta"
+time = "4:50pm"
 
 [[schedule]]
-type = "talk"
-speakers = ["bill-kennedy"]
-
-[[schedule]]
-type = "talk"
-speakers = ["arseniy-terekhov"]
-
-[[schedule]]
-type = "talk"
-speakers = ["florin-patan"]
-
-[[schedule]]
-id = "lightning-talks"
-title = "Lightning Talks"
-type = "lightning"
-description = """A rapid-fire session of short community talks. 5 minutes each."""
+id = "after-party"
+title = "$GOPHERCONSG/after/party/🎉"
+type = "break"
+time = "5:30pm"
