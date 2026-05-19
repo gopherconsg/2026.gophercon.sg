@@ -8,7 +8,7 @@ export const siteConfig = {
   ogImage: "gopherconsg202x-og.png",
   logo: "gopherconsg202x-long.png",
   eventStatus: "live" as EventStatus,
-  speakerLineup: "unconfirmed" as SpeakerLineup,
+  speakerLineup: "confirmed" as SpeakerLineup,
   nav: [
     { title: "Workshops", link: "/workshops", enabled: true },
     { title: "Schedule", link: "/schedule", enabled: true },
