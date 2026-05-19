@@ -8,6 +8,10 @@ name = "SP Group"
 logo = "sp-group.png"
 url = "https://www.spgroup.com.sg"
 
+[[gold]]
+name = "GovTech"
+logo = "govtech.png"
+
 
 [[diversity]]
 name = "GoBridge"

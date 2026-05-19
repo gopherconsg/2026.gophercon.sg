@@ -140,15 +140,17 @@ const hasAnySponsors = tiers.some((t) => sponsors[t.key]?.length > 0);
 
   .sponsor-tier-logos {
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
-    gap: 0.5rem;
+    gap: 1rem;
     flex: 1;
   }
 
   @media (min-width: 768px) {
     .sponsor-tier-logos {
+      flex-direction: row;
       gap: 2rem;
     }
   }
