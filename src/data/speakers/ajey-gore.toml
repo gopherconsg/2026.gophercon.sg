@@ -1,6 +1,8 @@
 name = "Ajey Gore"
 company = "Builder"
 image = "ajey-gore.jpg"
+socialUrl = "https://twitter.com/AjeyGore/"
+
 bio = """Ajey Gore is a veteran technology leader and builder best known for scaling Gojek from a fast-growing startup into one of Southeast Asia’s largest technology platforms. As Group CTO, he led the company’s engineering transformation, growing the organisation to more than 2,000 engineers across the region while building the platform architecture and engineering culture that powered Gojek’s hypergrowth.
 
 Today, Ajey advises startups, institutions, and technology leaders on AI, infrastructure, engineering culture, and organisational transformation. He has held leadership and advisory roles with organisations including Peak XV Partners, DBS Bank, and NUS Enterprise, and is widely respected for his practical, hands-on approach to building teams and systems at scale."""

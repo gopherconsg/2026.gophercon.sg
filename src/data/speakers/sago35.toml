@@ -1,7 +1,7 @@
 name = "Masaaki Takasago (sago35)"
 company = "TinyGo Keeb"
 image = "sago35.png"
-socialUrl = "https://x.com/sago35tk"
+socialUrl = "https://twitter.com/sago35tk"
 bio = """Masaaki Takasago is an embedded software engineer who works with Go for both professional and hobby projects. A contributor to the TinyGo project and the author of a book on TinyGo, he is the creator of the "TinyGo Keeb Tour," a hands-on workshop that combines hardware soldering with Go firmware development. In 2025, he organized the TinyGo Conference in Japan, actively expanding the Go ecosystem into embedded systems and custom keyboards."""
 
 [[sessions]]

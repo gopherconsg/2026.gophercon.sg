@@ -14,13 +14,16 @@ description = """AI is reshaping how software is written, reviewed, and operated
 moderator = "dave-cheney"
 
 [[schedule.panelists]]
-id = "sau-sheong"
-
-[[schedule.panelists]]
 id = "bill-kennedy"
 
 [[schedule.panelists]]
+id = "winston-teo"
+
+[[schedule.panelists]]
 id = "ajey-gore"
+
+[[schedule.panelists]]
+id = "sam-hon"
 
 [[schedule]]
 type = "talk"
@@ -45,10 +48,6 @@ speakers = ["arseniy-terekhov"]
 [[schedule]]
 type = "talk"
 speakers = ["florin-patan"]
-
-[[schedule]]
-type = "talk"
-speakers = ["sivchari"]
 
 [[schedule]]
 id = "lightning-talks"

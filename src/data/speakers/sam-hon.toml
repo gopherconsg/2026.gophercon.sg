@@ -1,0 +1,8 @@
+name = "Sam Hon"
+company = "CREX"
+image = "sam-hon.jpg"
+socialUrl = "https://www.linkedin.com/in/coffeesam/"
+bio = """Sam Hon is the CEO and co-founder of CREX, where he is building an AI-native verified context layer for trusted discovery. Previously, he was Director of Engineering at Viki and CTO of Banpu NEXT.
+
+His current work focuses on AI agents, context retrieval systems, and structured knowledge pipelines. Sam is also a BSI-certified ISO/IEC 42001 AI Governance Lead Auditor, and his company was named the top winner of Meta’s first Llama Incubator program.
+"""
