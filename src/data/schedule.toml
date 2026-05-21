@@ -1,9 +1,9 @@
 [[schedule]]
 id = "registration"
 title = "Registration"
-description = "Doors open at 8 AM. See you there!"
+description = "Doors open at 8:30 AM. See you there!"
 type = "meta"
-time = "8:00am"
+time = "8:30am"
 
 [[schedule]]
 id = "opening-remarks"
