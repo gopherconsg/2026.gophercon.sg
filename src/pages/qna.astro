@@ -1,0 +1,20 @@
+---
+import RedirectLayout from "@/layouts/RedirectLayout.astro";
+
+const cfpUrl =
+  "https://docs.google.com/forms/d/e/1FAIpQLSelpFAenqDjzRsqkzNNez5lfbnMjHWAKG5j8j0DRG36xpfLkA/viewform";
+---
+
+<RedirectLayout
+  title="Q&A"
+  description="Submit your Q&A for GopherCon Singapore 2026."
+  redirectURL={cfpUrl}
+>
+  <section class="container" style="padding: 4rem 1rem; text-align: center;">
+    <h2>Q&A</h2>
+    <p>
+      Redirecting you to our Q&A form. If you are not redirected automatically,
+      <a href={cfpUrl}>click here</a>.
+    </p>
+  </section>
+</RedirectLayout>
